@@ -87,24 +87,24 @@
 <meta property="og:site_name" content="pukr&#39;s BLOG">
 <meta property="og:description" content="代理与通道技术在内网渗透和线下AWD攻防中具有很大的作用，本文主要介绍常用工具和应用场景。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/.com//11/05/代理与通道/常用工具.jpg">
-<meta property="og:image" content="http://yoursite.com/.com//11/05/代理与通道/工具.jpg">
-<meta property="og:image" content="http://yoursite.com/.com//Tunna1.jpg">
-<meta property="og:image" content="http://yoursite.com/.com//Tunna2.jpg">
-<meta property="og:image" content="http://yoursite.com/.com//reGeorg1.jpg">
-<meta property="og:image" content="http://yoursite.com/.com//reGeorg2.jpg">
-<meta property="og:image" content="http://yoursite.com/.com//reGeorg3.jpg">
-<meta property="og:image" content="http://yoursite.com/.com//reGeorg4.jpg">
-<meta property="og:image" content="http://yoursite.com/.com//abptts1.jpg">
-<meta property="og:image" content="http://yoursite.com/.com//abptts2.jpg">
-<meta property="og:image" content="http://yoursite.com/.com//abptts3.jpg">
-<meta property="og:image" content="http://yoursite.com/.com//ew1.jpg">
-<meta property="og:image" content="http://yoursite.com/.com//ew2.jpg">
-<meta property="og:updated_time" content="2019-11-05T06:29:31.804Z">
+<meta property="og:image" content="http://yoursite.com/2019/11/05/代理与通道/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7.jpg">
+<meta property="og:image" content="http://yoursite.com/2019/11/05/代理与通道/%E5%B7%A5%E5%85%B7.jpg">
+<meta property="og:image" content="http://yoursite.com/2019/11/05/代理与通道/Tunna1.jpg">
+<meta property="og:image" content="http://yoursite.com/2019/11/05/代理与通道/Tunna2.jpg">
+<meta property="og:image" content="http://yoursite.com/2019/11/05/代理与通道/reGeorg1.jpg">
+<meta property="og:image" content="http://yoursite.com/2019/11/05/代理与通道/reGeorg2.jpg">
+<meta property="og:image" content="http://yoursite.com/2019/11/05/代理与通道/reGeorg3.jpg">
+<meta property="og:image" content="http://yoursite.com/2019/11/05/代理与通道/reGeorg4.jpg">
+<meta property="og:image" content="http://yoursite.com/2019/11/05/代理与通道/abptts1.jpg">
+<meta property="og:image" content="http://yoursite.com/2019/11/05/代理与通道/abptts2.jpg">
+<meta property="og:image" content="http://yoursite.com/2019/11/05/代理与通道/abptts3.jpg">
+<meta property="og:image" content="http://yoursite.com/2019/11/05/代理与通道/ew1.jpg">
+<meta property="og:image" content="http://yoursite.com/2019/11/05/代理与通道/ew2.jpg">
+<meta property="og:updated_time" content="2019-11-05T06:59:46.118Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="代理与通道">
 <meta name="twitter:description" content="代理与通道技术在内网渗透和线下AWD攻防中具有很大的作用，本文主要介绍常用工具和应用场景。">
-<meta name="twitter:image" content="http://yoursite.com/.com//11/05/代理与通道/常用工具.jpg">
+<meta name="twitter:image" content="http://yoursite.com/2019/11/05/代理与通道/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7.jpg">
 
 
 
@@ -359,12 +359,9 @@
         <p>代理与通道技术在内网渗透和线下AWD攻防中具有很大的作用，本文主要介绍常用工具和应用场景。</p>
 <a id="more"></a>
 <h1 id="代理"><a href="#代理" class="headerlink" title="代理"></a>代理</h1><p><strong>正向代理</strong><br>借助一台外网机器转发流量到内网。外网机器又两块网卡，一块内网网卡，一块公网网卡。<br><strong>反向代理</strong><br>假设内网被种了木马，但从外网无法访问到内网木马，或者内网机器只开放某一个特定的端口，而这个特定端口又不能直接访问。所以需要内网主动连接外网，使内网流量转发到外网。</p>
-<h1 id="工具介绍"><a href="#工具介绍" class="headerlink" title="工具介绍"></a>工具介绍</h1><img src="/.com//11/05/代理与通道/常用工具.jpg">
-<p>Lcx, frp等一上传就会被杀掉/xk ,reGeorg和ew目前还不会被杀。<br>1.Termit -&gt; earthworm升级版<br>2.Lcz是对windows 3389的转发<br>3.reGeorg通过上传对应的脚本（php/aspx/jsp），然后全局代理进一步内网渗透。<br>4.ew可应用于多重网络。</p>
-<p>采用TCP连接的比较多，更高级的技术采用P2P连接（如区块链技术）。<br><strong>总结：</strong><br>1.windows 系列主机转发3389比较直接，lcx是首选可是会被查杀，可以套一个免杀的壳。重要的还是免杀。<br>2.Linux系列主机可以转发22，但是需求不如3389大（大多数还是Windows主机）。需要交互式shell的话可直接反弹shell，比如bash nc python等。有时候不需要转发22，只需要为metasploit打开通道就好了，因为一旦溢出会自动反弹shell。<br>3.Web代理的适用性比较强，reGeorg（可做全局代理）和ew（可做多层代理）都可以，速度和稳定性都OK，而且是命令行执行。挂全局代理（或局部）后，可以nmap/fenghuangscanner/POC-fuzz等，挂代理进行SSRF作用也可能会很大。（码，等待测试）<br>4.实测Tunna &amp; reDuh速度比较慢，但reDuh在RDP过程中比Tunna快。而且一定会被查杀的。<br>5.Proxifier操作稍繁琐但强大，挂代理后可远控内网db。<br>6.Sockscap64（win）&amp; proxychains（linux）局部代理，简便快速。<br>7.Htran支持全面的支持正反向代理和正反向端口转发，但实际渗透测试中web不会支持随意开端口，故正向端口转发略显鸡肋。<br>8.SSH转发、NC、bash等反弹方便快捷而且不用上传东西，但是基本会被查杀。9.Powershell直接写代理比较棒。</p>
-<img src="/.com//11/05/代理与通道/工具.jpg">
-<p>Porttunnel不会被查杀，随意拿下机器后直接装这个软件会更稳些。</p>
-<h2 id="Tunna"><a href="#Tunna" class="headerlink" title="Tunna"></a>Tunna</h2><p><img src="/.com//Tunna1.jpg" alt="Tunna"><br><img src="/.com//Tunna2.jpg" alt="Tunna"><br>攻击机是kali，目标机win2008在内网并且具有可以访问的公网ip。<br>kali里执行：</p>
+<h1 id="工具介绍"><a href="#工具介绍" class="headerlink" title="工具介绍"></a>工具介绍</h1><p><img src="/2019/11/05/代理与通道/%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7.jpg" alt="常用工具"><br>Lcx, frp等一上传就会被杀掉 ,reGeorg和ew目前还不会被杀。<br>1.Termit -&gt; earthworm升级版<br>2.Lcz是对windows 3389的转发<br>3.reGeorg通过上传对应的脚本（php/aspx/jsp），然后全局代理进一步内网渗透。<br>4.ew可应用于多重网络。</p>
+<p>采用TCP连接的比较多，更高级的技术采用P2P连接（如区块链技术）。<br><strong>总结：</strong><br>1.windows 系列主机转发3389比较直接，lcx是首选可是会被查杀，可以套一个免杀的壳。重要的还是免杀。<br>2.Linux系列主机可以转发22，但是需求不如3389大（大多数还是Windows主机）。需要交互式shell的话可直接反弹shell，比如bash nc python等。有时候不需要转发22，只需要为metasploit打开通道就好了，因为一旦溢出会自动反弹shell。<br>3.Web代理的适用性比较强，reGeorg（可做全局代理）和ew（可做多层代理）都可以，速度和稳定性都OK，而且是命令行执行。挂全局代理（或局部）后，可以nmap/fenghuangscanner/POC-fuzz等，挂代理进行SSRF作用也可能会很大。（码，等待测试）<br>4.实测Tunna &amp; reDuh速度比较慢，但reDuh在RDP过程中比Tunna快。而且一定会被查杀的。<br>5.Proxifier操作稍繁琐但强大，挂代理后可远控内网db。<br>6.Sockscap64（win）&amp; proxychains（linux）局部代理，简便快速。<br>7.Htran支持全面的支持正反向代理和正反向端口转发，但实际渗透测试中web不会支持随意开端口，故正向端口转发略显鸡肋。<br>8.SSH转发、NC、bash等反弹方便快捷而且不用上传东西，但是基本会被查杀。9.Powershell直接写代理比较棒。<br><img src="/2019/11/05/代理与通道/%E5%B7%A5%E5%85%B7.jpg" alt="工具对比"><br>Porttunnel不会被查杀，随意拿下机器后直接装这个软件会更稳些。</p>
+<h2 id="Tunna"><a href="#Tunna" class="headerlink" title="Tunna"></a>Tunna</h2><p><img src="/2019/11/05/代理与通道/Tunna1.jpg" alt><br><img src="/2019/11/05/代理与通道/Tunna2.jpg" alt><br>攻击机是kali，目标机win2008在内网并且具有可以访问的公网ip。<br>kali里执行：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python proxy.py -u http://192.168.48.19/webshells/conn.aspx</span><br></pre></td></tr></table></figure>
 
 <p>将tunna里的木马文件上传到可访问的目录下，这是-u的参数，如这里是<a href="http://192.168.48.19/webshells/conn.aspx；" target="_blank" rel="noopener">http://192.168.48.19/webshells/conn.aspx；</a> -l为kali开放的监听端口，并将流量全部转发到192.168.48.19:3389（-r的参数为转发到内网的端口），即开启远程桌面连接。<br>这里由于3389被外网防火墙拦住，只开放80端口，故需要内网机器进行转发。</p>
@@ -376,19 +373,19 @@
 <h2 id="reGeorg和proxychains"><a href="#reGeorg和proxychains" class="headerlink" title="reGeorg和proxychains"></a>reGeorg和proxychains</h2><p>在kali里运行：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python reGeorgSocksProxy.py -l 0.0.0.0 -p 8080 -u http://192.168.48.19/tunnel.aspx</span><br></pre></td></tr></table></figure>
 
-<p>上传到服务器上，之后本地访问上传的文件，即可在本地与远程主机形成http回路。<br>-l 开启本机监听端口，<em>0.0.0.0即绑定本机所有地址</em>，（本机多个ip）即不管访问本机任何ip都可以（要是不写-l就默认是0.0.0.0）。-p为本机开放端口。-u为webshell地址。<br><strong>Windows下可用proxifier，linux下用proxychains</strong><br>proxychains配置：<br><code>nano /etc/proxychains.conf</code><br>底部添加：<br><code>socks5 192.168.48.34 8080</code><br><img src="/.com//reGeorg1.jpg" alt="nano /etc/proxychains.conf"><br><strong>使用方法</strong><br>（在需要代理的命令加上）</p>
+<p>上传到服务器上，之后本地访问上传的文件，即可在本地与远程主机形成http回路。<br>-l 开启本机监听端口，<em>0.0.0.0即绑定本机所有地址</em>，（本机多个ip）即不管访问本机任何ip都可以（要是不写-l就默认是0.0.0.0）。-p为本机开放端口。-u为webshell地址。<br><strong>Windows下可用proxifier，linux下用proxychains</strong><br>proxychains配置：<br><code>nano /etc/proxychains.conf</code><br>底部添加：<br><code>socks5 192.168.48.34 8080</code><br><img src="/2019/11/05/代理与通道/reGeorg1.jpg" alt="nano /etc/proxychains.conf"><br><strong>使用方法</strong><br>（在需要代理的命令加上）</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Proxychains -f /etc/proxychains.conf mysql -h 192.168.48.19 -u root -p 123456</span><br><span class="line">Proxychains nmap</span><br><span class="line">Proxychains sqlmap</span><br></pre></td></tr></table></figure>
 
-<p>Windows下挂上192.168.48.34:8080的全局代理：<br><img src="/.com//reGeorg2.jpg" alt><br><img src="/.com//reGeorg3.jpg" alt><br>全局代理好处在于，通过web可以访问任何端口，适合工具的正常使用。<br><img src="/.com//reGeorg4.jpg" alt><br>速度慢可能是因为中间一段通过http协议。</p>
+<p>Windows下挂上192.168.48.34:8080的全局代理：<br><img src="/2019/11/05/代理与通道/reGeorg2.jpg" alt><br><img src="/2019/11/05/代理与通道/reGeorg3.jpg" alt><br>全局代理好处在于，通过web可以访问任何端口，适合工具的正常使用。<br><img src="/2019/11/05/代理与通道/reGeorg4.jpg" alt><br>速度慢可能是因为中间一段通过http协议。</p>
 <h2 id="ABPTTS"><a href="#ABPTTS" class="headerlink" title="ABPTTS"></a>ABPTTS</h2><p>这是NCC Group在2016年blackhat推出的一款将TCP流量通过HTTP/HTTPS进行流量转发，在目前云主机的大环境中，发挥了比较重要的作用，可以通过脚本进行RDP、SSH、meterpreter的交互与连接，也意味着这样可以建立一个通过80端口的流量出站来逃避防火墙。与其他http隧道不同的是，ABPTTS全加密。</p>
 <p>每次生成的webshell的config是不一样的，然而它不支持php……但是支持jsp、war等。</p>
 <p>生成载荷：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python abpttsfactory.py -o webshell</span><br></pre></td></tr></table></figure>
 
-<p><img src="/.com//abptts1.jpg" alt><br>上传到目标机器，<strong>注意因为是加密的，所以必须和这次的攻击配对。</strong><br><img src="/.com//abptts2.jpg" alt="上传成功，可以访问。"><br>上传成功，可以访问。<br>使用：</p>
+<p><img src="/2019/11/05/代理与通道/abptts1.jpg" alt><br>上传到目标机器，<strong>注意因为是加密的，所以必须和这次的攻击配对。</strong><br><img src="/2019/11/05/代理与通道/abptts2.jpg" alt="上传成功，可以访问。"><br>上传成功，可以访问。<br>使用：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python abpttsclient.py -c webshell/config.txt -u 192.168.48.19/abptts.aspx -f 127.0.0.1:5555/192.168.48.19:3389</span><br></pre></td></tr></table></figure>
 
-<p>-c是加载配置文件（每次生成的都是不一样的）-f为forward，即把对方的3389端口映射到自己的5555端口。可添加多组，每添加一组就-f一次。<br><img src="/.com//abptts3.jpg" alt><br>Python2.7以上版本出错，未成功。</p>
+<p>-c是加载配置文件（每次生成的都是不一样的）-f为forward，即把对方的3389端口映射到自己的5555端口。可添加多组，每添加一组就-f一次。<br><img src="/2019/11/05/代理与通道/abptts3.jpg" alt><br>Python2.7以上版本出错，未成功。</p>
 <h2 id="earthworm"><a href="#earthworm" class="headerlink" title="earthworm"></a>earthworm</h2><p>使用参数：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">-l 指定本地监听端口（即作为服务器端接收数据用的）</span><br><span class="line">-d 指定要反弹到的机器的ip（内网主动伸手过来要连的主机）</span><br><span class="line">-e 指定要反弹到的机器的端口（和上面的-d配套，用于接收内网反弹）</span><br><span class="line">-f 指定要主动连接的机器的ip</span><br><span class="line">-g 指定要主动连接的机器的端口（即端口映射，和上面的-f配套）</span><br><span class="line">-t 指定超时时常，默认为1000（一般不动）</span><br></pre></td></tr></table></figure>
 
@@ -398,10 +395,10 @@
 <p><strong>ew正向转发和代理</strong><br>转发</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ew -s lcx_tran -l 1080 -f 192.168.48.19 -g 3389</span><br></pre></td></tr></table></figure>
 
-<p><img src="/.com//ew1.jpg" alt><br>代理</p>
+<p><img src="/2019/11/05/代理与通道/ew1.jpg" alt><br>代理</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ew -s ssocks -l 1024</span><br></pre></td></tr></table></figure>
 
-<p><img src="/.com//ew2.jpg" alt><br>在边界机上执行命令，在主机上打开Proxifier根据上面监听的端口建立正常的socks代理即可.<br><strong>ew反向转发和代理</strong><br>转发<br>攻击机执行：</p>
+<p><img src="/2019/11/05/代理与通道/ew2.jpg" alt><br>在边界机上执行命令，在主机上打开Proxifier根据上面监听的端口建立正常的socks代理即可.<br><strong>ew反向转发和代理</strong><br>转发<br>攻击机执行：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ew -s lcx_listen -l 1080 -e 8080</span><br></pre></td></tr></table></figure>
 
 <p>即开启1080监听端口接收来自8080转发的数据<br>目标机执行：</p>
