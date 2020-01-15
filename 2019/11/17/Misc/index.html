@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Linux,">
+  <meta name="keywords" content="Misc,CTF,">
 
 
 
@@ -79,21 +79,27 @@
 
 
 
-<meta name="description" content="关于Linux的指令和用法。">
-<meta name="keywords" content="Linux">
+<meta name="description" content="杂项记录。">
+<meta name="keywords" content="Misc,CTF">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Linux_Command">
-<meta property="og:url" content="http://yoursite.com/2019/11/05/Linux-Command/index.html">
+<meta property="og:title" content="Misc">
+<meta property="og:url" content="http://yoursite.com/2019/11/17/Misc/index.html">
 <meta property="og:site_name" content="pukr&#39;s BLOG">
-<meta property="og:description" content="关于Linux的指令和用法。">
+<meta property="og:description" content="杂项记录。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/2019/11/05/Linux-Command/strings2.png">
-<meta property="og:image" content="http://yoursite.com/2019/11/05/Linux-Command/strings.png">
-<meta property="og:updated_time" content="2019-11-17T03:45:29.677Z">
+<meta property="og:image" content="http://yoursite.com/2019/11/17/Misc/wifi_1_filter.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/17/Misc/crunch.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/17/Misc/aircrack-ng.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/17/Misc/zip_error.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/17/Misc/zip2.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/17/Misc/zip3.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/17/Misc/zip4.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/17/Misc/zip.png">
+<meta property="og:updated_time" content="2019-11-17T09:28:19.718Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Linux_Command">
-<meta name="twitter:description" content="关于Linux的指令和用法。">
-<meta name="twitter:image" content="http://yoursite.com/2019/11/05/Linux-Command/strings2.png">
+<meta name="twitter:title" content="Misc">
+<meta name="twitter:description" content="杂项记录。">
+<meta name="twitter:image" content="http://yoursite.com/2019/11/17/Misc/wifi_1_filter.png">
 
 
 
@@ -123,13 +129,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/11/05/Linux-Command/">
+  <link rel="canonical" href="http://yoursite.com/2019/11/17/Misc/">
 
 
 
 
 
-  <title>Linux_Command | pukr's BLOG</title>
+  <title>Misc | pukr's BLOG</title>
   
 
 
@@ -256,7 +262,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/05/Linux-Command/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/17/Misc/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="尘林">
@@ -273,7 +279,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Linux_Command</h1>
+          <h1 class="post-title" itemprop="name headline">Misc</h1>
         
 
         <div class="post-meta">
@@ -285,8 +291,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-05T17:37:37+08:00">
-                2019-11-05
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-17T09:16:37+08:00">
+                2019-11-17
               </time>
             
 
@@ -308,8 +314,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index">
-                    <span itemprop="name">Linux</span>
+                  <a href="/categories/CTF/" itemprop="url" rel="index">
+                    <span itemprop="name">CTF</span>
                   </a>
                 </span>
 
@@ -345,19 +351,109 @@
       
 
       
-        <p>关于Linux的指令和用法。</p>
+        <p>杂项记录。</p>
 <a id="more"></a>
-<h1 id="strings"><a href="#strings" class="headerlink" title="strings"></a>strings</h1><p>strings命令在对象文件或二进制文件中查找可打印的字符串。字符串是4个或更多可打印字符的任意序列，以换行符或空字符结束。 strings命令对识别随机对象文件很有用。</p>
-<h2 id="语法："><a href="#语法：" class="headerlink" title="语法："></a>语法：</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">strings [ -a ] [ - ] [ -o ] [ -t Format ] [ -n Number ] [ -Number ] [ file ... ]</span><br></pre></td></tr></table></figure>
+<h1 id="隐写术"><a href="#隐写术" class="headerlink" title="隐写术"></a>隐写术</h1><h2 id="图片隐写"><a href="#图片隐写" class="headerlink" title="图片隐写"></a>图片隐写</h2><h3 id><a href="#" class="headerlink" title=" "></a> </h3><h1 id="流量分析"><a href="#流量分析" class="headerlink" title="流量分析"></a>流量分析</h1><h2 id="wifi包"><a href="#wifi包" class="headerlink" title="wifi包"></a>wifi包</h2><p>数据包破解WiFi密码，基本上都是爆破了。<br>WiFi连接认证的重点在WPA的四次握手包，即eapol协议数据包。</p>
+<h3 id="想蹭网先揭开密码"><a href="#想蹭网先揭开密码" class="headerlink" title="想蹭网先揭开密码"></a>想蹭网先揭开密码</h3><p>题目来源：bugku<br>wireshark打开附件，过滤得到eapol协议数据包。<br><img src="/2019/11/17/Misc/wifi_1_filter.png" alt><br>刚好有四个包，接下来就是爆破密码的后四位了。<br>在kali里用crunch工具生成一个字典。<br>（注：crunch是kali自带密码生成字典工具。）<br><a href="https://www.freebuf.com/sectool/170817.html" target="_blank" rel="noopener">https://www.freebuf.com/sectool/170817.html</a> 本文讲解crunch使用。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">crunch 11 11 -t 1391040%%%% &gt;&gt;wifipawd.txt</span><br></pre></td></tr></table></figure>
 
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">-a --all：扫描整个文件而不是只扫描目标文件初始化和装载段</span><br><span class="line">-f –print-file-name：在显示字符串前先显示文件名</span><br><span class="line">-n –bytes=[number]：找到并且输出所有NUL终止符序列</span><br><span class="line">- ：设置显示的最少的字符数，默认是4个字符</span><br><span class="line">-t --radix=&#123;o,d,x&#125; ：输出字符的位置，基于八进制，十进制或者十六进制</span><br><span class="line">-o ：类似--radix=o</span><br><span class="line">-T --target= ：指定二进制文件格式</span><br><span class="line">-e --encoding=&#123;s,S,b,l,B,L&#125; ：选择字符大小和排列顺序:s = 7-bit, S = 8-bit, &#123;b,l&#125; = 16-bit, &#123;B,L&#125; = 32-bit</span><br><span class="line">@ ：读取中选项</span><br></pre></td></tr></table></figure>
+<p><img src="/2019/11/17/Misc/crunch.png" alt><br>aircrack-ng爆破密码（kali linux自带）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aircrack-ng -w wifipawd.txt wifi.cap</span><br></pre></td></tr></table></figure>
 
-<h2 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">srtings brave  //列出文件中的二进制文本</span><br></pre></td></tr></table></figure>
+<p><img src="/2019/11/17/Misc/aircrack-ng.png" alt></p>
+<h1 id="伪加密"><a href="#伪加密" class="headerlink" title="伪加密"></a>伪加密</h1><h2 id="zip伪加密"><a href="#zip伪加密" class="headerlink" title="zip伪加密"></a>zip伪加密</h2><p>源于一道许心痕师傅的misc题。其中一部分flag在一个压缩包中，挤压需要密码，然而没有任何关于密码的线索，所以尝试扔到ARCHPR中爆破。但是文件打开错误。<br><img src="/2019/11/17/Misc/zip_error.png" alt><br>原理：伪加密是在文件头的加密标志位做修改，进而被识别成加密压缩包。<br><em>注：不展开说明zip文件格式，仅就事论事。</em><br>详情请见：<br><a href="https://blog.csdn.net/a200710716/article/details/51644421" target="_blank" rel="noopener">https://blog.csdn.net/a200710716/article/details/51644421</a><br><a href="https://www.bugku.com/thread-182-1-1.html" target="_blank" rel="noopener">https://www.bugku.com/thread-182-1-1.html</a><br><a href="https://pkware.cachefly.net/webdocs/APPNOTE/APPNOTE-6.2.0.txt" target="_blank" rel="noopener">https://pkware.cachefly.net/webdocs/APPNOTE/APPNOTE-6.2.0.txt</a><br>通常用到的zip文件格式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[local file header + file data + data descriptor]&#123;1,n&#125; + central directory + end of central directory record</span><br><span class="line">即</span><br><span class="line">[文件头+文件数据+数据描述符]&#123;此处可重复n次&#125;+核心目录+目录结束标识</span><br><span class="line"></span><br><span class="line">当压缩包中有多个文件时，就会有多个[文件头+文件数据+数据描述符]</span><br></pre></td></tr></table></figure>
 
-<p><img src="/2019/11/05/Linux-Command/strings2.png" alt><br><strong>查找brave文件中包含KEY的字符串</strong>（没错这是一个misc题）</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">strings brave | grep KEY     //区分大小写</span><br><span class="line">strings brave | grep -i KEY  //不区分大小写</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2019/11/05/Linux-Command/strings.png" alt></p>
+<table>
+<thead>
+<tr>
+<th align="center">Offset</th>
+<th align="center">Bytes</th>
+<th align="center">Description</th>
+<th align="center">翻译</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">0</td>
+<td align="center">4</td>
+<td align="center">Local file header signature = 0x04034b50 (read as a little-endian number)</td>
+<td align="center">文件头标识，值固定(0x04034b50)</td>
+</tr>
+<tr>
+<td align="center">4</td>
+<td align="center">2</td>
+<td align="center">Version needed to extract (minimum)</td>
+<td align="center">解压文件所需 pkware最低版本</td>
+</tr>
+<tr>
+<td align="center">6</td>
+<td align="center">2</td>
+<td align="center">General purpose bit flag</td>
+<td align="center">通用比特标志位(置比特0位=加密)</td>
+</tr>
+<tr>
+<td align="center">8</td>
+<td align="center">2</td>
+<td align="center">Compression method</td>
+<td align="center">压缩方式（详情见后）</td>
+</tr>
+<tr>
+<td align="center">10</td>
+<td align="center">2</td>
+<td align="center">File last modification time</td>
+<td align="center">文件最后修改时间</td>
+</tr>
+<tr>
+<td align="center">12</td>
+<td align="center">2</td>
+<td align="center">File last modification date</td>
+<td align="center">文件最后修改日期</td>
+</tr>
+<tr>
+<td align="center">14</td>
+<td align="center">2</td>
+<td align="center">CRC-32</td>
+<td align="center">CRC-32校验码</td>
+</tr>
+<tr>
+<td align="center">18</td>
+<td align="center">4</td>
+<td align="center">Compressed size</td>
+<td align="center">压缩后的大小</td>
+</tr>
+<tr>
+<td align="center">22</td>
+<td align="center">4</td>
+<td align="center">Uncompressed size</td>
+<td align="center">未压缩的大小</td>
+</tr>
+<tr>
+<td align="center">26</td>
+<td align="center">2</td>
+<td align="center">File name length (n)</td>
+<td align="center">文件名长度</td>
+</tr>
+<tr>
+<td align="center">28</td>
+<td align="center">2</td>
+<td align="center">Extra field length (m)</td>
+<td align="center">扩展区长度</td>
+</tr>
+<tr>
+<td align="center">30</td>
+<td align="center">n</td>
+<td align="center">File name</td>
+<td align="center">文件名</td>
+</tr>
+<tr>
+<td align="center">30+n</td>
+<td align="center">m</td>
+<td align="center">Extra field</td>
+<td align="center">扩展区</td>
+</tr>
+</tbody></table>
+<p><img src="/2019/11/17/Misc/zip2.png" alt><br>这是我对同一个文件进行加密压缩和非加密压缩的对比。可以看见比较确实有差。<br>对于真正的加密压缩，如下图。在压缩源文件数据区和目录区的加密位都是09 00。<br><img src="/2019/11/17/Misc/zip3.png" alt><br>而对于非加密压缩，如下图。压缩源文件数据区和目录区的加密位都是00 00。而要是改成伪加密，需要将数据区的00 00改成01 00，若是将目录区的00 00改动则没有效果。<br><img src="/2019/11/17/Misc/zip4.png" alt><br><strong>这里说明一下：在某个文章中看到说是只要的偶数就是加密，例如00、02、04这样的，奇数就是有加密，例如01 03 09。</strong></p>
+<p>用010editor打开这个文件。<strong>注：一个字节=两个16进制位</strong><br><img src="/2019/11/17/Misc/zip.png" alt><br>发现加密位部分是01，是有加密的，改为00，可以成功打开压缩文件，不需要密码。</p>
 
       
     </div>
@@ -375,7 +471,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Linux/" rel="tag"># Linux</a>
+            <a href="/tags/Misc/" rel="tag"># Misc</a>
+          
+            <a href="/tags/CTF/" rel="tag"># CTF</a>
           
         </div>
       
@@ -388,8 +486,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/11/05/代理与通道/" rel="next" title="代理与通道">
-                <i class="fa fa-chevron-left"></i> 代理与通道
+              <a href="/2019/11/12/ms17-010复现/" rel="next" title="ms17_010复现">
+                <i class="fa fa-chevron-left"></i> ms17_010复现
               </a>
             
           </div>
@@ -398,8 +496,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/11/09/web_wp/" rel="prev" title="web_wp">
-                web_wp <i class="fa fa-chevron-right"></i>
+              <a href="/3019/09/21/record-rethink/" rel="prev" title="record&rethink">
+                record&rethink <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -534,7 +632,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#strings"><span class="nav-number">1.</span> <span class="nav-text">strings</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#语法："><span class="nav-number">1.1.</span> <span class="nav-text">语法：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实例"><span class="nav-number">1.2.</span> <span class="nav-text">实例</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#隐写术"><span class="nav-number">1.</span> <span class="nav-text">隐写术</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#图片隐写"><span class="nav-number">1.1.</span> <span class="nav-text">图片隐写</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#null"><span class="nav-number">1.1.1.</span> <span class="nav-text"> </span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#流量分析"><span class="nav-number">2.</span> <span class="nav-text">流量分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#wifi包"><span class="nav-number">2.1.</span> <span class="nav-text">wifi包</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#想蹭网先揭开密码"><span class="nav-number">2.1.1.</span> <span class="nav-text">想蹭网先揭开密码</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#伪加密"><span class="nav-number">3.</span> <span class="nav-text">伪加密</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#zip伪加密"><span class="nav-number">3.1.</span> <span class="nav-text">zip伪加密</span></a></li></ol></li></ol></div>
             
 
           </div>
