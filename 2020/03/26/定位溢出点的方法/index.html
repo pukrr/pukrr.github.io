@@ -79,13 +79,13 @@
 
 
 
-<meta name="description" content="gdb调试定位溢出点的三种方法。">
+<meta name="description" content="gdb调试定位溢出点的三种工具。原理都是寻找被覆盖的返回地址在字符串中的偏移。当然还可以直接看汇编在堆栈中分配了多少空间，再加上4（ebp的内存单元）就是总溢出点的偏移。">
 <meta name="keywords" content="pwn,gdb">
 <meta property="og:type" content="article">
 <meta property="og:title" content="定位溢出点、python加载的方法">
 <meta property="og:url" content="http://yoursite.com/2020/03/26/定位溢出点的方法/index.html">
 <meta property="og:site_name" content="pukr&#39;s BLOG">
-<meta property="og:description" content="gdb调试定位溢出点的三种方法。">
+<meta property="og:description" content="gdb调试定位溢出点的三种工具。原理都是寻找被覆盖的返回地址在字符串中的偏移。当然还可以直接看汇编在堆栈中分配了多少空间，再加上4（ebp的内存单元）就是总溢出点的偏移。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/2020/03/26/定位溢出点的方法/%E7%BC%96%E8%AF%91.png">
 <meta property="og:image" content="http://yoursite.com/2020/03/26/定位溢出点的方法/objdump1.png">
@@ -95,10 +95,10 @@
 <meta property="og:image" content="http://yoursite.com/2020/03/26/定位溢出点的方法/%E6%BA%A2%E5%87%BA%E7%82%B9.png">
 <meta property="og:image" content="http://yoursite.com/2020/03/26/定位溢出点的方法/offset1.png">
 <meta property="og:image" content="http://yoursite.com/2020/03/26/定位溢出点的方法/%E6%BA%A2%E5%87%BA%E7%82%B92.png">
-<meta property="og:updated_time" content="2020-03-26T10:07:07.829Z">
+<meta property="og:updated_time" content="2020-04-07T05:57:04.431Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="定位溢出点、python加载的方法">
-<meta name="twitter:description" content="gdb调试定位溢出点的三种方法。">
+<meta name="twitter:description" content="gdb调试定位溢出点的三种工具。原理都是寻找被覆盖的返回地址在字符串中的偏移。当然还可以直接看汇编在堆栈中分配了多少空间，再加上4（ebp的内存单元）就是总溢出点的偏移。">
 <meta name="twitter:image" content="http://yoursite.com/2020/03/26/定位溢出点的方法/%E7%BC%96%E8%AF%91.png">
 
 
@@ -314,8 +314,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/基础训练/" itemprop="url" rel="index">
-                    <span itemprop="name">基础训练</span>
+                  <a href="/categories/PWN入门/" itemprop="url" rel="index">
+                    <span itemprop="name">PWN入门</span>
                   </a>
                 </span>
 
@@ -351,9 +351,9 @@
       
 
       
-        <p>gdb调试定位溢出点的三种方法。</p>
+        <p>gdb调试定位溢出点的三种工具。原理都是寻找被覆盖的返回地址在字符串中的偏移。当然还可以直接看汇编在堆栈中分配了多少空间，再加上4（ebp的内存单元）就是总溢出点的偏移。</p>
 <a id="more"></a>
-<h1 id="0x01"><a href="#0x01" class="headerlink" title="0x01"></a>0x01</h1><p>C程序：</p>
+<p>#<br>C程序：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">void exploit()</span><br><span class="line">&#123;</span><br><span class="line">    system(&quot;/bin/sh&quot;);</span><br><span class="line">&#125;</span><br><span class="line">void func()</span><br><span class="line">&#123;</span><br><span class="line">	char str[20];</span><br><span class="line">	read(0,str,50);</span><br><span class="line">        printf(&quot;the str is:%s\n&quot;,str);</span><br><span class="line">&#125;</span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">	func();</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>编译命令：</p>
@@ -362,7 +362,7 @@
 <p><strong>-no-pie</strong>：关闭地址随机化<br><strong>-fno-stack-protector</strong>：禁用栈保护<br><strong>-z execstack</strong>：关闭堆栈不可执行</p>
 <p><img src="/2020/03/26/定位溢出点的方法/%E7%BC%96%E8%AF%91.png" alt></p>
 <p>寻找代码段中用了哪些函数</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">objdump -t .text 3.exe|grep read</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">objdump -j .text -t 3.exe|grep read</span><br><span class="line">objdump -j .text -t 3.exe</span><br></pre></td></tr></table></figure>
 
 <p><img src="/2020/03/26/定位溢出点的方法/objdump1.png" alt></p>
 <p>查看反汇编</p>
@@ -372,8 +372,8 @@
 <p>查找函数</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">objdump -D -M intel 3.exe|grep system</span><br></pre></td></tr></table></figure>
 
-<p><img src="/2020/03/26/定位溢出点的方法/objdump3.png" alt><br><img src="/2020/03/26/定位溢出点的方法/objdump4.png" alt><br>即system函数的入口是0x8049050，调用system函数的exploit函数入口是0x08049182。</p>
-<p>执行exploit可以返回shell</p>
+<p><img src="/2020/03/26/定位溢出点的方法/objdump3.png" alt><br><img src="/2020/03/26/定位溢出点的方法/objdump4.png" alt></p>
+<p>即system函数的入口是0x8049050，调用system函数的exploit函数入口是0x08049182。<br>当然这是在关闭地址随机化和存在<code>system(&quot;/bin/sh&quot;)</code>的条件下进行的，如果打开了随机化或者找不到<code>system</code>函数或者他的参数就是另一个故事了。</p>
 <h1 id="0x02-生成字符串"><a href="#0x02-生成字符串" class="headerlink" title="0x02 生成字符串"></a>0x02 生成字符串</h1><h2 id="msf-pattern-create"><a href="#msf-pattern-create" class="headerlink" title="msf-pattern_create"></a>msf-pattern_create</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">msf-pattern_create -l 100</span><br></pre></td></tr></table></figure>
 
 <p>peda里执行3.exe</p>
@@ -421,7 +421,7 @@
 
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -m32 -fno-stack-protector -no-pie -o test.exe 4.c</span><br></pre></td></tr></table></figure>
 
-<p>寻找system函数虚拟映射地址</p>
+<p>寻找exploit函数入口</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gdb-peda$ disass exploit</span><br></pre></td></tr></table></figure>
 
 <p>获得shell后返回地址就不重要了，可以随便写。参数可以是上面搜的”/bin/sh”任一地址</p>
@@ -475,8 +475,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2020/03/29/格式化字符串漏洞与canary保护/" rel="prev" title="格式化字符串漏洞与canary保护">
-                格式化字符串漏洞与canary保护 <i class="fa fa-chevron-right"></i>
+              <a href="/2020/03/29/格式化字符串漏洞与canary保护/" rel="prev" title="格式化字符串与canary保护">
+                格式化字符串与canary保护 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -556,7 +556,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-count">32</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -567,7 +567,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -578,7 +578,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">30</span>
+                  <span class="site-state-item-count">40</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -611,7 +611,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0x01"><span class="nav-number">1.</span> <span class="nav-text">0x01</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x02-生成字符串"><span class="nav-number">2.</span> <span class="nav-text">0x02 生成字符串</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#msf-pattern-create"><span class="nav-number">2.1.</span> <span class="nav-text">msf-pattern_create</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#peda"><span class="nav-number">2.2.</span> <span class="nav-text">peda</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pwngdb"><span class="nav-number">2.3.</span> <span class="nav-text">pwngdb</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#python加载"><span class="nav-number">3.</span> <span class="nav-text">python加载</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#定位到exploit函数"><span class="nav-number">3.1.</span> <span class="nav-text">定位到exploit函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#定位到system函数的物理地址"><span class="nav-number">3.2.</span> <span class="nav-text">定位到system函数的物理地址</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#定位到system函数在函数领空的虚拟内存地址"><span class="nav-number">3.3.</span> <span class="nav-text">定位到system函数在函数领空的虚拟内存地址</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0x02-生成字符串"><span class="nav-number">1.</span> <span class="nav-text">0x02 生成字符串</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#msf-pattern-create"><span class="nav-number">1.1.</span> <span class="nav-text">msf-pattern_create</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#peda"><span class="nav-number">1.2.</span> <span class="nav-text">peda</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pwngdb"><span class="nav-number">1.3.</span> <span class="nav-text">pwngdb</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#python加载"><span class="nav-number">2.</span> <span class="nav-text">python加载</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#定位到exploit函数"><span class="nav-number">2.1.</span> <span class="nav-text">定位到exploit函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#定位到system函数的物理地址"><span class="nav-number">2.2.</span> <span class="nav-text">定位到system函数的物理地址</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#定位到system函数在函数领空的虚拟内存地址"><span class="nav-number">2.3.</span> <span class="nav-text">定位到system函数在函数领空的虚拟内存地址</span></a></li></ol></li></ol></div>
             
 
           </div>
