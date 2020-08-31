@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="利用python进行网络连接及异常处理 windows xp：192.168.10.23，开启了漏洞程序FTP Utility，端口为22。 12345678910import socketsocket.setdefaulttimeout(2)s = socket.socket()try:	s.connect((&amp;quot;192.168.10.23&amp;quot;,22))except Except">
+<meta name="description" content="利用python进行网络连接及异常处理 windows xp：192.168.10.23，开启了漏洞程序FTP Utility，端口为22。">
 <meta name="keywords" content="python">
 <meta property="og:type" content="article">
 <meta property="og:title" content="python笔记">
 <meta property="og:url" content="http://yoursite.com/2020/07/05/python笔记/index.html">
 <meta property="og:site_name" content="pukr&#39;s BLOG">
-<meta property="og:description" content="利用python进行网络连接及异常处理 windows xp：192.168.10.23，开启了漏洞程序FTP Utility，端口为22。 12345678910import socketsocket.setdefaulttimeout(2)s = socket.socket()try:	s.connect((&amp;quot;192.168.10.23&amp;quot;,22))except Except">
+<meta property="og:description" content="利用python进行网络连接及异常处理 windows xp：192.168.10.23，开启了漏洞程序FTP Utility，端口为22。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-07-08T06:27:49.928Z">
+<meta property="og:updated_time" content="2020-08-31T08:48:16.359Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="python笔记">
-<meta name="twitter:description" content="利用python进行网络连接及异常处理 windows xp：192.168.10.23，开启了漏洞程序FTP Utility，端口为22。 12345678910import socketsocket.setdefaulttimeout(2)s = socket.socket()try:	s.connect((&amp;quot;192.168.10.23&amp;quot;,22))except Except">
+<meta name="twitter:description" content="利用python进行网络连接及异常处理 windows xp：192.168.10.23，开启了漏洞程序FTP Utility，端口为22。">
 
 
 
@@ -344,8 +344,11 @@
       
         <p>利用python进行网络连接及异常处理</p>
 <p>windows xp：192.168.10.23，开启了漏洞程序FTP Utility，端口为22。</p>
+<a id="more"></a>
+
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">import socket</span><br><span class="line">socket.setdefaulttimeout(2)</span><br><span class="line">s = socket.socket()</span><br><span class="line">try:</span><br><span class="line">	s.connect((&quot;192.168.10.23&quot;,22))</span><br><span class="line">except Exception as e:</span><br><span class="line">	print(&quot;[-] Error = &quot; + str(e))</span><br><span class="line">else:</span><br><span class="line">	ans = s.recv(1024)</span><br><span class="line">	print(ans)</span><br></pre></td></tr></table></figure>
 
+<!--more-->
 <p>输出信息：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@kali430:/home# python3 test.py</span><br><span class="line">b&apos;220 FTP Utility FTP server (Version 1.00) ready.\r\n&apos;</span><br></pre></td></tr></table></figure>
 
@@ -409,7 +412,7 @@
 <p>python中有强大的Nmap工具包可以使用。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">import nmap</span><br><span class="line">import optparse</span><br><span class="line"></span><br><span class="line">def nmapScan(tgtHost,tgtPort):</span><br><span class="line">    nmScan = nmap.PortScanner()</span><br><span class="line">    nmScan.scan(tgtHost,tgtPort)</span><br><span class="line">    state = nmScan[tgtHost][&apos;tcp&apos;][int(tgtPort)][&apos;state&apos;]</span><br><span class="line">    print(&quot;[*] &quot;+tgtHost+&quot; tcp/&quot;+tgtPort+&quot; &quot;+state)</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">def main():</span><br><span class="line">    parser = optparse.OptionParser(&apos;usage%prog &apos;+&apos;-H &lt;target host&gt; -p &lt;target port&gt;&apos;)</span><br><span class="line">    parser.add_option(&apos;-H&apos;,dest=&apos;tgtHost&apos;,type=&apos;string&apos;,help=&apos;specify target host&apos;)</span><br><span class="line">    parser.add_option(&apos;-p&apos;,dest=&apos;tgtPort&apos;,type=&apos;string&apos;,help=&apos;specify target port&apos;)</span><br><span class="line">    (options,args)=parser.parse_args()</span><br><span class="line">    tgtHost=options.tgtHost</span><br><span class="line">    tgtPorts=str(options.tgtPort).split(&apos;,&apos;)</span><br><span class="line">    if (tgtHost == None) | (tgtPorts[0] == None):</span><br><span class="line">        print(parser.usage)</span><br><span class="line">        exit(0)</span><br><span class="line">    for tgtPort in tgtPorts:</span><br><span class="line">        nmapScan(tgtHost,tgtPort)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">if __name__ == &apos;__main__&apos;:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
 
-<a id="more"></a>
+<!--more-->
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">root@kali430:/home/pythontest# python3 dksm.py -H 192.168.10.23 -p 21,22,80</span><br><span class="line">[*] 192.168.10.23 tcp/21 closed</span><br><span class="line">[*] 192.168.10.23 tcp/22 open</span><br><span class="line">[*] 192.168.10.23 tcp/80 closed</span><br></pre></td></tr></table></figure>
       
     </div>
@@ -522,7 +525,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">41</span>
+                  <span class="site-state-item-count">43</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -533,7 +536,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-count">13</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -544,7 +547,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">55</span>
+                  <span class="site-state-item-count">59</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
