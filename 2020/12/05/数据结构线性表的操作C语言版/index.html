@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="C语言,数据结构,线性表的顺序存储与链式存储,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="线性表的顺序存储实验要求：基本实验内容（顺序表）：建立顺序表，完成顺序表的基本操作：初始化、插入、删除、逆转、输出、销毁, 置空表、求表长、查找元素、判线性表是否为空；1．问题描述：利用顺序表,设计一组输入数据（假定为一组整数），能够对顺序表进行如下操作：. 创建一个新的顺序表，实现动态空间分配的初始化；. 根据顺序表结点的位置插入一个新结点(位置插入)，也可以根据给定的值进行插入(值插入)，形成">
+<meta name="keywords" content="C语言,数据结构,线性表的顺序存储与链式存储">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据结构线性表的操作C语言版">
+<meta property="og:url" content="http://yoursite.com/2020/12/05/数据结构线性表的操作C语言版/index.html">
+<meta property="og:site_name" content="pukr&#39;s BLOG">
+<meta property="og:description" content="线性表的顺序存储实验要求：基本实验内容（顺序表）：建立顺序表，完成顺序表的基本操作：初始化、插入、删除、逆转、输出、销毁, 置空表、求表长、查找元素、判线性表是否为空；1．问题描述：利用顺序表,设计一组输入数据（假定为一组整数），能够对顺序表进行如下操作：. 创建一个新的顺序表，实现动态空间分配的初始化；. 根据顺序表结点的位置插入一个新结点(位置插入)，也可以根据给定的值进行插入(值插入)，形成">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2020/12/05/数据结构线性表的操作C语言版/menu.png">
+<meta property="og:image" content="http://yoursite.com/2020/12/05/数据结构线性表的操作C语言版/建表.png">
+<meta property="og:updated_time" content="2020-12-05T02:57:55.498Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="数据结构线性表的操作C语言版">
+<meta name="twitter:description" content="线性表的顺序存储实验要求：基本实验内容（顺序表）：建立顺序表，完成顺序表的基本操作：初始化、插入、删除、逆转、输出、销毁, 置空表、求表长、查找元素、判线性表是否为空；1．问题描述：利用顺序表,设计一组输入数据（假定为一组整数），能够对顺序表进行如下操作：. 创建一个新的顺序表，实现动态空间分配的初始化；. 根据顺序表结点的位置插入一个新结点(位置插入)，也可以根据给定的值进行插入(值插入)，形成">
+<meta name="twitter:image" content="http://yoursite.com/2020/12/05/数据结构线性表的操作C语言版/menu.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/12/05/数据结构线性表的操作C语言版/">
+
+
+
+
+
+  <title>数据结构线性表的操作C语言版 | pukr's BLOG</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">pukr's BLOG</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">人类的悲欢并不相通</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/12/05/数据结构线性表的操作C语言版/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="尘林">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/zql.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="pukr's BLOG">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">数据结构线性表的操作C语言版</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-12-05T09:33:40+08:00">
+                2020-12-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/基础训练/" itemprop="url" rel="index">
+                    <span itemprop="name">基础训练</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="线性表的顺序存储"><a href="#线性表的顺序存储" class="headerlink" title="线性表的顺序存储"></a>线性表的顺序存储</h1><p>实验要求：<br>基本实验内容（顺序表）：<br>建立顺序表，完成顺序表的基本操作：初始化、插入、删除、逆转、输出、销毁, 置空表、求表长、查找元素、判线性表是否为空；<br>1．问题描述：利用顺序表,设计一组输入数据（假定为一组整数），能够对顺序表进行如下操作：<br>. 创建一个新的顺序表，实现动态空间分配的初始化；<br>. 根据顺序表结点的位置插入一个新结点(位置插入)，也可以根据给定的值进行插入(值插入)，形成有序顺序表；<br><a id="more"></a><br>. 根据顺序表结点的位置删除一个结点(位置删除)，也可以根据给定的值删除对应的第一个结点，或者删除指定值的所有结点(值删除)；<br>. 利用最少的空间实现顺序表元素的逆转；<br>. 实现顺序表的各个元素的输出；<br>. 彻底销毁顺序线性表，回收所分配的空间；<br>. 对顺序线性表的所有元素删除，置为空表；<br>. 返回其数据元素个数；<br>. 按序号查找，根据顺序表的特点，可以随机存取，直接可以定位于第i 个结点，查找该元素的值，对查找结果进行返回；<br>. 按值查找，根据给定数据元素的值，只能顺序比较，查找该元素的位置，对查找结果进行返回；<br>. 判断顺序表中是否有元素存在，对判断结果进行返回；<br>. 编写主程序，实现对各不同的算法调用。</p>
+<p>pubuse.h<br>后续所有算法几乎都要使用的常量定义（#define）和系统函数原型定义(#include)声明组合成一个文件，存储为一个头文件（取名为pubuse.h）<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;ctype.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;malloc.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;limits.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;io.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;math.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;process.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//#define LIST_INIT_SIZE 100</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> LISTINCREMENT 10</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAXSIZE 100</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> OK 1</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ERROR 0</span></span><br><span class="line"><span class="comment">//#define OVERFLOW -2</span></span><br></pre></td></tr></table></figure></p>
+<p>seqlistdef.h<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">int</span> Status;<span class="comment">//Status是函数的类型，其值是函数结果状态码</span></span><br><span class="line"><span class="comment">//顺序表存储元素类型</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span>&#123;</span></span><br><span class="line">	<span class="keyword">char</span> name[<span class="number">50</span>];</span><br><span class="line">	<span class="keyword">char</span> style[<span class="number">50</span>];</span><br><span class="line">	<span class="keyword">float</span> price;</span><br><span class="line">&#125;Restaurant;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> Restaurant ElemType;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span>&#123;</span></span><br><span class="line">	ElemType *elem;</span><br><span class="line">	<span class="keyword">int</span> length;</span><br><span class="line">&#125;SqList;</span><br></pre></td></tr></table></figure></p>
+<p>seqlistAlgo.h<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br><span class="line">355</span><br><span class="line">356</span><br><span class="line">357</span><br><span class="line">358</span><br><span class="line">359</span><br><span class="line">360</span><br><span class="line">361</span><br><span class="line">362</span><br><span class="line">363</span><br><span class="line">364</span><br><span class="line">365</span><br><span class="line">366</span><br><span class="line">367</span><br><span class="line">368</span><br><span class="line">369</span><br><span class="line">370</span><br><span class="line">371</span><br><span class="line">372</span><br><span class="line">373</span><br><span class="line">374</span><br><span class="line">375</span><br><span class="line">376</span><br><span class="line">377</span><br><span class="line">378</span><br><span class="line">379</span><br><span class="line">380</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">input</span><span class="params">(ElemType *e)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="comment">//ElemType *e;</span></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"输入菜名\n"</span>);</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%s"</span>,e-&gt;name);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"输入菜系\n"</span>);</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%s"</span>,e-&gt;style);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"输入价格\n"</span>);</span><br><span class="line">	<span class="keyword">if</span>(<span class="built_in">scanf</span>(<span class="string">"%f"</span>,&amp;e-&gt;price) != <span class="number">1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\n输入有误，请重新输入！\n"</span>);</span><br><span class="line">		fflush(<span class="built_in">stdin</span>);</span><br><span class="line">		input(e);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">output</span><span class="params">(Restaurant e)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"菜名: %-10s, 菜系: %-20s,  价格: %-10.2lf\n\n"</span>, e.name, e.style, e.price);</span><br><span class="line">		<span class="built_in">putchar</span>(<span class="string">'\n'</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Status <span class="title">InitList</span><span class="params">(SqList &amp;L)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="comment">//L.elem = new ElemType[MAXSIZE];</span></span><br><span class="line">	L.elem=(Restaurant *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(ElemType)*MAXSIZE);</span><br><span class="line">	<span class="keyword">if</span>(!L.elem)&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"初始化失败。\n"</span>);</span><br><span class="line">		<span class="built_in">exit</span>(OVERFLOW);</span><br><span class="line">	&#125;</span><br><span class="line">	L.length = <span class="number">0</span>;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"\n初始化成功！\n"</span>);</span><br><span class="line">	<span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">LocateElem</span><span class="params">(SqList &amp;L,Restaurant e)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line">	<span class="keyword">if</span>(L.length == <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\n线性表为空，暂无可以查询的数据！\n"</span>);</span><br><span class="line">		<span class="keyword">return</span> ERROR;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;L.length;i++)</span><br><span class="line">		<span class="keyword">if</span>(!<span class="built_in">strcmp</span>(L.elem[i].name,e.name))</span><br><span class="line">			<span class="keyword">return</span> i+<span class="number">1</span>;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Status <span class="title">LocatePlace</span><span class="params">(SqList &amp;L)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> id;</span><br><span class="line">	<span class="keyword">if</span>(L.length&lt;<span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\n未进行初始化，请先进行初始化。\n"</span>);</span><br><span class="line">		<span class="keyword">return</span> ERROR;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span>(L.length == <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\n线性表为空，暂无可以查询的数据！\n"</span>);</span><br><span class="line">		<span class="keyword">return</span> ERROR;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"请输入要查询的位置："</span>);</span><br><span class="line">		<span class="comment">//scanf("%d",&amp;id);</span></span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span>(<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;id) == <span class="number">0</span>)</span><br><span class="line">		&#123;	</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"\n请输入数字！\n"</span>);</span><br><span class="line">			<span class="keyword">return</span> ERROR;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>((id&lt;<span class="number">1</span>) || (id&gt;L.length+<span class="number">1</span>))</span><br><span class="line">		&#123;	</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"\n位置不合法！\n"</span>);</span><br><span class="line">			<span class="keyword">return</span> ERROR;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"菜名: %-10s, 菜系: %-20s,  价格: %-10.2lf\n\n"</span>, L.elem[id<span class="number">-1</span>].name, L.elem[id<span class="number">-1</span>].style, L.elem[id<span class="number">-1</span>].price);</span><br><span class="line">		&#125;	</span><br><span class="line">		<span class="keyword">return</span> OK;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Status <span class="title">LocateName</span><span class="params">(SqList &amp;L)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	Restaurant e;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span>(L.length&lt;<span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\n未进行初始化，请先进行初始化。\n"</span>);</span><br><span class="line">		<span class="keyword">return</span> ERROR;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span>(L.length == <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\n线性表为空，暂无可以查询的数据！\n"</span>);</span><br><span class="line">		<span class="keyword">return</span> ERROR;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"请输入需要查询的菜肴名称\n"</span>);</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%s"</span>,e.name);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">int</span> temp=LocateElem(L,e);</span><br><span class="line">		<span class="keyword">if</span>(temp!=<span class="number">0</span>)</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"菜名: %-10s, 菜系: %-20s,  价格: %-10.2lf\n\n"</span>, L.elem[temp<span class="number">-1</span>].name, L.elem[temp<span class="number">-1</span>].style, L.elem[temp<span class="number">-1</span>].price);</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"查询失败！没有此信息\n\n"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Status <span class="title">ListInsert</span><span class="params">(SqList &amp;L,<span class="keyword">int</span> i,Restaurant e)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> j;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span>(L.length&lt;<span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\n未进行初始化，请先进行初始化。\n"</span>);</span><br><span class="line">		<span class="keyword">return</span> ERROR;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span>((i&lt;<span class="number">1</span>) || (i&gt;L.length+<span class="number">1</span>))</span><br><span class="line">	&#123;	</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\n位置不合法！\n"</span>);</span><br><span class="line">		<span class="keyword">return</span> ERROR;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span>(L.length==MAXSIZE)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\n存储空间已满。\n"</span>);</span><br><span class="line">		<span class="keyword">return</span> ERROR;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span>(j=L.length<span class="number">-1</span>;j&gt;=i<span class="number">-1</span>;j--)</span><br><span class="line">		L.elem[j+<span class="number">1</span>] = L.elem[j];</span><br><span class="line">	L.elem[i<span class="number">-1</span>] = e;</span><br><span class="line">	++L.length;</span><br><span class="line">	<span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Status <span class="title">ListInsert_client</span><span class="params">(SqList &amp;L)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> id;</span><br><span class="line">	Restaurant r;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span>(L.length&lt;<span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\n未进行初始化，请先进行初始化。\n"</span>);</span><br><span class="line">		<span class="keyword">return</span> ERROR;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"请输入插入位置："</span>);</span><br><span class="line">	<span class="comment">//scanf("%d",&amp;id);</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span>(<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;id) == <span class="number">0</span>)</span><br><span class="line">	&#123;	</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\n请输入数字！\n"</span>);</span><br><span class="line">		<span class="keyword">return</span> ERROR;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span>((id&lt;<span class="number">1</span>) || (id&gt;L.length+<span class="number">1</span>))</span><br><span class="line">	&#123;	</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\n位置不合法！\n"</span>);</span><br><span class="line">		<span class="keyword">return</span> ERROR;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"请输入所要插入菜肴的信息:\n"</span>);</span><br><span class="line"></span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"请输入菜名：\n"</span>);</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%s"</span>,r.name);</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"请输入菜系：\n"</span>);</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%s"</span>,r.style);</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"请输入价格：\n"</span>);</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%f"</span>,&amp;r.price);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span>(ListInsert(L,id,r))</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"插入成功!\n\n"</span>);</span><br><span class="line">		<span class="keyword">return</span> OK;&#125;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"插入失败!\n\n"</span>);</span><br><span class="line">		<span class="keyword">return</span> ERROR;&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Status <span class="title">ListDelete</span><span class="params">(SqList &amp;L,<span class="keyword">int</span> i)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> j;</span><br><span class="line">	<span class="keyword">if</span>(L.length&lt;<span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\n未进行初始化，请先进行初始化。\n"</span>);</span><br><span class="line">		<span class="keyword">return</span> ERROR;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"\n删除元素的位置："</span>);</span><br><span class="line">	<span class="comment">//scanf("%d",&amp;i);</span></span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;i) == <span class="number">0</span>)</span><br><span class="line">	&#123;	</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\n请输入数字！\n"</span>);</span><br><span class="line">		<span class="keyword">return</span> ERROR;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span>((i&lt;<span class="number">1</span>) || (i&gt;L.length+<span class="number">1</span>))</span><br><span class="line">	&#123;	</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\n位置不合法！\n"</span>);</span><br><span class="line">		<span class="keyword">return</span> ERROR;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span>((i&lt;<span class="number">1</span>) || (i&gt;L.length))</span><br><span class="line">			<span class="keyword">return</span> ERROR;</span><br><span class="line">		<span class="keyword">for</span>(j=i;j&lt;=L.length<span class="number">-1</span>;j++)</span><br><span class="line">			L.elem[j<span class="number">-1</span>] = L.elem[j];</span><br><span class="line">		--L.length;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\n删除成功！\n"</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Status <span class="title">ModifyList</span><span class="params">(SqList &amp;L)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> flag=<span class="number">0</span>;</span><br><span class="line">	Restaurant e1;</span><br><span class="line">	Restaurant e2;</span><br><span class="line">	<span class="keyword">if</span>(L.length&lt;<span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\n未进行初始化，请先进行初始化。\n"</span>);</span><br><span class="line">		<span class="keyword">return</span> ERROR;</span><br><span class="line">	&#125;	</span><br><span class="line">	<span class="keyword">if</span>(L.length == <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\n线性表为空，暂无可以修改的数据！\n"</span>);</span><br><span class="line">		<span class="keyword">return</span> ERROR;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\n请输入要修改的菜肴名称："</span>);</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%s"</span>,e1.name);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">int</span> temp=LocateElem(L,e1);</span><br><span class="line">		<span class="keyword">if</span>(temp!=<span class="number">0</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			flag=<span class="number">1</span>;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"\n将元素%s的价格更改为："</span>,e1.name);</span><br><span class="line">			<span class="built_in">scanf</span>(<span class="string">"%f"</span>,&amp;e2.price);</span><br><span class="line">			L.elem[temp<span class="number">-1</span>].price = e2.price;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"\n修改成功"</span>);</span><br><span class="line">			<span class="comment">//break;</span></span><br><span class="line">			<span class="keyword">return</span> OK;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span>&#123;</span><br><span class="line">			<span class="keyword">if</span>(flag == <span class="number">0</span>)</span><br><span class="line">				<span class="built_in">printf</span>(<span class="string">"\n未找到该元素\n"</span>);</span><br><span class="line">			<span class="keyword">return</span> ERROR;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Status <span class="title">ReverseList</span><span class="params">(SqList &amp;L)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line">	Restaurant temp;</span><br><span class="line">	<span class="keyword">if</span>(L.length&lt;<span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\n未进行初始化，请先进行初始化。\n"</span>);</span><br><span class="line">		<span class="keyword">return</span> ERROR;</span><br><span class="line">	&#125;	</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;L.length/<span class="number">2</span>;i++)</span><br><span class="line">	&#123;</span><br><span class="line">		temp = L.elem[i];</span><br><span class="line">		L.elem[i] = L.elem[L.length-i<span class="number">-1</span>];</span><br><span class="line">		L.elem[L.length-i<span class="number">-1</span>] = temp;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Status <span class="title">CreateList</span><span class="params">(SqList &amp;L)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> i,count;</span><br><span class="line">	<span class="keyword">if</span>(L.length&lt;<span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\n未进行初始化，请先进行初始化。\n"</span>);</span><br><span class="line">		<span class="keyword">return</span> ERROR;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"\n请输入菜肴数量：(&lt;100)"</span>);</span><br><span class="line">	<span class="comment">//scanf("%d",&amp;count);</span></span><br><span class="line">	<span class="keyword">if</span>((<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;count)) == <span class="number">0</span>)</span><br><span class="line">	&#123;	</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\n请输入数字！\n"</span>);</span><br><span class="line">		<span class="keyword">return</span> ERROR;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(count&gt;<span class="number">100</span>)</span><br><span class="line">		&#123;	</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"\n数量过多！\n"</span>);</span><br><span class="line">			<span class="keyword">return</span> ERROR;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span>&#123;</span><br><span class="line">			<span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;count;i++)</span><br><span class="line">			&#123;  </span><br><span class="line">				<span class="built_in">printf</span>(<span class="string">"\n将输入%d道菜肴的信息"</span>,count);</span><br><span class="line">				<span class="built_in">printf</span>(<span class="string">"\n第%d道菜肴:\n"</span>,i+<span class="number">1</span>);</span><br><span class="line">				input(&amp;L.elem[i]);</span><br><span class="line">			&#125;</span><br><span class="line">			L.length=count;	</span><br><span class="line">			<span class="built_in">putchar</span>(<span class="string">'\n'</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">		<span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">ListLength</span><span class="params">(SqList L)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(L.length&lt;<span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\n未进行初始化，请先进行初始化。\n"</span>);</span><br><span class="line">		<span class="keyword">return</span> ERROR;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"菜肴的个数为：%d\n"</span>,L.length);</span><br><span class="line">	<span class="keyword">return</span> L.length;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Status <span class="title">ClearList</span><span class="params">(SqList &amp;L)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(L.length&lt;<span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\n未进行初始化，请先进行初始化。\n"</span>);</span><br><span class="line">		<span class="keyword">return</span> ERROR;</span><br><span class="line">	&#125;    </span><br><span class="line">	L.length = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">IsEmpty</span><span class="params">(SqList L)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(L.length&lt;<span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\n未进行初始化，请先进行初始化。\n"</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	&#125; </span><br><span class="line">	</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span>(L.length == <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\n线性表为空。\n"</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\n线性表非空。\n"</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Status <span class="title">DestroyList</span><span class="params">(SqList &amp;L)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(L.length&lt;<span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\n未进行初始化，请先进行初始化。\n"</span>);</span><br><span class="line">		<span class="keyword">return</span> ERROR;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (L.elem)</span><br><span class="line">   &#123;      </span><br><span class="line">	   <span class="built_in">free</span>(L.elem);</span><br><span class="line">	   <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">   &#125;</span><br><span class="line">    <span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>seqlistUse.cpp<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"pubuse.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"seqlistDef.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"seqlistAlgo.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Menu</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"\n*******************************菜\t单*************************\n"</span>);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"*\t\t\t1.初始化\t\t2.建表\t\t\t\t\t*\n"</span>);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"*\t\t\t3.插入数据\t\t4.删除数据\t\t\t\t*\n"</span>);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"*\t\t\t5.查看数据\t\t6.修改数据\t\t\t\t*\n"</span>);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"*\t\t\t7.逆转顺序表\t\t8.清空顺序表\t\t\t\t*\n"</span>);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"*\t\t\t9.销毁数据表（销毁之后程序结束）\t10.根据元素查找序号\t\t\t*\n"</span>);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"*\t\t\t11.查看是否为空表\t12.查看表长\t\t\t\t*\n"</span>);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"*\t\t\t13.根据序号查找元素\t14.退出\t\t\t\t\t*\n"</span>);	</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> i=<span class="number">0</span>,n,flag;</span><br><span class="line">	<span class="keyword">char</span> a;</span><br><span class="line"></span><br><span class="line">	</span><br><span class="line">	<span class="comment">//Restaurant e;</span></span><br><span class="line">	<span class="comment">//Restaurant e1;</span></span><br><span class="line">	<span class="comment">//Restaurant e2;</span></span><br><span class="line">	SqList L;</span><br><span class="line">start:</span><br><span class="line">	<span class="keyword">do</span></span><br><span class="line">	&#123;</span><br><span class="line">		Menu();</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\n请输入操作序号：\n"</span>);</span><br><span class="line">		fflush(<span class="built_in">stdin</span>);</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;n);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span>(n&gt;<span class="number">0</span> &amp;&amp; n&lt;=<span class="number">14</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			flag = <span class="number">1</span>;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			flag = <span class="number">0</span>;</span><br><span class="line">			system(<span class="string">"cls"</span>);</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"\n输入有误，请重新选择。\n"</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">while</span>(flag == <span class="number">0</span>);</span><br><span class="line">	<span class="keyword">while</span>(flag == <span class="number">1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">switch</span>(n)</span><br><span class="line">		&#123;</span><br><span class="line">		<span class="keyword">case</span> <span class="number">1</span>:InitList(L);<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> <span class="number">2</span>:CreateList(L);<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> <span class="number">3</span>:ListInsert_client(L);<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> <span class="number">4</span>:ListDelete(L,i);<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> <span class="number">5</span>:</span><br><span class="line">			<span class="keyword">if</span>(L.length&lt;<span class="number">0</span>)</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="built_in">printf</span>(<span class="string">"\n未初始化，请先进行初始化！\n"</span>);</span><br><span class="line">			&#125;	</span><br><span class="line">			<span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;L.length;i++)</span><br><span class="line">		    &#123;</span><br><span class="line">				output(L.elem[i]);</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">	</span><br><span class="line">		<span class="keyword">case</span> <span class="number">6</span>:ModifyList(L);<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> <span class="number">7</span>:ReverseList(L);<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> <span class="number">8</span>:ClearList(L);<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> <span class="number">9</span>:DestroyList(L);<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> <span class="number">10</span>:LocateName(L);<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> <span class="number">11</span>:IsEmpty(L);<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> <span class="number">12</span>:ListLength(L);<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> <span class="number">13</span>:LocatePlace(L);<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> <span class="number">14</span>:<span class="built_in">exit</span>(<span class="number">0</span>);<span class="comment">//break;</span></span><br><span class="line">		<span class="keyword">default</span>:system(<span class="string">"cls"</span>);<span class="keyword">goto</span> start;		</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\nY继续菜单操作，N退出程序(y or n)："</span>);</span><br><span class="line">		fflush(<span class="built_in">stdin</span>);</span><br><span class="line">		a = getchar();</span><br><span class="line">		<span class="keyword">if</span>(a == <span class="string">'y'</span> || a == <span class="string">'Y'</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			flag = <span class="number">1</span>;</span><br><span class="line">			system(<span class="string">"cls"</span>);</span><br><span class="line">			Menu();</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"\n请选择操作序号："</span>);</span><br><span class="line">			fflush(<span class="built_in">stdin</span>);</span><br><span class="line">			<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;n);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="comment">//free(L);</span></span><br><span class="line">			<span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>最终界面：<br><img src="/2020/12/05/数据结构线性表的操作C语言版/menu.png" alt><br><img src="/2020/12/05/数据结构线性表的操作C语言版/建表.png" alt><br>然后初始化、建表等操作如图。我们做成的是菜单模式，有输入是否为数字的判断、数字范围判断等。</p>
+<h1 id="线性表的链式存储"><a href="#线性表的链式存储" class="headerlink" title="线性表的链式存储"></a>线性表的链式存储</h1><p>实验要求：<br>建立单链表，完成链表（带表头结点）的基本操作：建立链表、插入、删除、查找、输出、求前驱、求后继、两个有序链表的合并操作。<br>其他基本操作还有销毁链表、将链表置为空表、求链表的长度、获取某位置结点的内容、搜索结点。<br>1． 问题描述：<br>利用线性表的链式存储结构,设计一组输入数据（假定为一组整数），能够对单链表进行如下操作：<br>. 初始化一个带表头结点的空链表；<br>. 创建一个单链表是从无到有地建立起一个链表，即一个一个地输入各结点数据，并建立起前后相互链接的关系。又分为逆位序(插在表头)输入n 个元素的值和正位序(插在表尾)输入n 个元素的值；<br>. 插入结点可以根据给定位置进行插入（位置插入），也可以根据结点的值插入到已知的链表中（值插入）， 且保持结点的数据按原来的递增次序排列，形成有序链表。<br>. 删除结点可以根据给定位置进行删除（位置删除），也可以把链表中查找结点的值为搜索对象的结点全部删除（值删除）；<br>. 输出单链表的内容是将链表中各结点的数据依次显示，直到链表尾结点；<br>. 编写主程序，实现对各不同的算法调用。<br>其它的操作算法描述略。<br>pubuse.h<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;ctype.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;malloc.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;limits.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;io.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;math.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;process.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;ctype.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> OK 1</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ERROR 0;</span></span><br></pre></td></tr></table></figure></p>
+<p>linklistDef.h<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">int</span> Status;</span><br><span class="line"><span class="comment">//typedef int ElemType;        //    定义数据类型,可根据需要进行其他类型定义</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span>&#123;</span></span><br><span class="line">	<span class="keyword">char</span> name[<span class="number">50</span>];</span><br><span class="line">	<span class="keyword">char</span> style[<span class="number">50</span>];</span><br><span class="line">	<span class="keyword">float</span> price;</span><br><span class="line">&#125;Restaurant;</span><br><span class="line">                                <span class="comment">//    链表节点的定义</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">LNode</span> &#123;</span></span><br><span class="line">    Restaurant  data;        <span class="comment">//    数据域，存放数据</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">LNode</span>* <span class="title">next</span>;</span>        <span class="comment">//    指向下一个链表节点</span></span><br><span class="line">&#125;LNode, *LinkList;</span><br></pre></td></tr></table></figure></p>
+<p>linklistAlgo.h<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br><span class="line">355</span><br><span class="line">356</span><br><span class="line">357</span><br><span class="line">358</span><br><span class="line">359</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//void PrintList(LinkList &amp;L);</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">input</span><span class="params">(Restaurant *e)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"\t输入菜名:"</span>);</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%s"</span>,&amp;e-&gt;name);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"\n\t输入菜系:"</span>);</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%s"</span>,&amp;e-&gt;style);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"\n\t输入价格:"</span>);</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%f"</span>,&amp;e-&gt;price);</span><br><span class="line">	<span class="comment">//i = scanf("%f",&amp;e-&gt;price);</span></span><br><span class="line"><span class="comment">//	return i;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//初始化</span></span><br><span class="line"><span class="function">Status <span class="title">InitList</span><span class="params">(LinkList &amp;L)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	L = <span class="keyword">new</span> LNode;</span><br><span class="line">	L-&gt;next = <span class="literal">NULL</span>;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"\n初始化成功！\n"</span>);</span><br><span class="line">	<span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//前插法创建单链表</span></span><br><span class="line"><span class="function">Status <span class="title">CreateList_H</span><span class="params">(LinkList &amp;L)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> i,count,j;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"\n请输入菜肴数量(&lt;100):"</span>);</span><br><span class="line">	j = <span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;count);</span><br><span class="line">	<span class="keyword">if</span>(j == <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\n请输入数字!\n"</span>);</span><br><span class="line">	    <span class="keyword">return</span> ERROR;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span>(count&gt;<span class="number">100</span>)</span><br><span class="line">		&#123;	</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"\n数量过多！\n"</span>);</span><br><span class="line">			<span class="keyword">return</span> ERROR;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"\n将输入%d道菜肴的信息"</span>,count);</span><br><span class="line">			<span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;count;i++)</span><br><span class="line">			&#123;  </span><br><span class="line">				LNode *p;</span><br><span class="line">	            p = <span class="keyword">new</span> LNode;</span><br><span class="line"></span><br><span class="line">				<span class="built_in">printf</span>(<span class="string">"\n第%d道菜肴:\n"</span>,i+<span class="number">1</span>);</span><br><span class="line">				input(&amp;p-&gt;data);</span><br><span class="line">				p-&gt;next = L-&gt;next;</span><br><span class="line">		        L-&gt;next = p;</span><br><span class="line">			&#125;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\n创建成功！\n"</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">		<span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//后插法创建单链表</span></span><br><span class="line"><span class="function">Status <span class="title">CreateList_R</span><span class="params">(LinkList &amp;L)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> i,count,j;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"\n请输入菜肴数量(&lt;100):"</span>);</span><br><span class="line">	j = <span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;count);</span><br><span class="line">	LinkList r;</span><br><span class="line">	LNode *p;</span><br><span class="line">	r = L;</span><br><span class="line">	<span class="keyword">if</span>(j == <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\n请输入数字!\n"</span>);</span><br><span class="line">	    <span class="keyword">return</span> ERROR;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">	    <span class="keyword">if</span>(count&gt;<span class="number">100</span>)</span><br><span class="line">		&#123;	</span><br><span class="line">	    	<span class="built_in">printf</span>(<span class="string">"\n数量过多！\n"</span>);</span><br><span class="line">	    	<span class="keyword">return</span> ERROR;</span><br><span class="line">		&#125;</span><br><span class="line">    	<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">	    	<span class="built_in">printf</span>(<span class="string">"\n将输入%d道菜肴的信息:\n"</span>,count);</span><br><span class="line">	    	<span class="keyword">for</span>(i = <span class="number">0</span>;i &lt; count;i++)</span><br><span class="line">			&#123;</span><br><span class="line">		    	p = <span class="keyword">new</span> LNode;</span><br><span class="line">		    	<span class="built_in">printf</span>(<span class="string">"\n\t第%d道菜肴:\n\n"</span>,i+<span class="number">1</span>);</span><br><span class="line">		    	<span class="comment">//scanf("%d",&amp;p-&gt;data);</span></span><br><span class="line">		    	input(&amp;p-&gt;data);</span><br><span class="line">		    	p-&gt;next = <span class="literal">NULL</span>;</span><br><span class="line">			    r-&gt;next = p;</span><br><span class="line">		        r = p;</span><br><span class="line">			&#125;</span><br><span class="line">	    	<span class="built_in">printf</span>(<span class="string">"\n创建成功！\n"</span>);</span><br><span class="line">	    	<span class="keyword">return</span> OK;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//输出线性表</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">PrintList</span><span class="params">(LinkList &amp;L)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	LinkList p;</span><br><span class="line">	p = L-&gt;next;</span><br><span class="line">	<span class="keyword">if</span>(p == <span class="literal">NULL</span>)</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\n不存在数据\n"</span>);</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\n\t\t菜名\t\t菜系\t\t价格\n"</span>);</span><br><span class="line">		<span class="keyword">while</span>(p != <span class="literal">NULL</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"\t\t%-16s%-16s%-16.2lf\n"</span>, p-&gt;data.name, p-&gt;data.style, p-&gt;data.price);</span><br><span class="line">			p = p-&gt;next;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\n"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//根据位置插入节点</span></span><br><span class="line"><span class="function">Status <span class="title">ListInsert</span><span class="params">(LinkList &amp;L)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> id,j;</span><br><span class="line">	Restaurant r;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"\n请输入插入位置："</span>);</span><br><span class="line">	j = <span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;id);</span><br><span class="line">	LNode *p;</span><br><span class="line">	p = <span class="keyword">new</span> LNode;</span><br><span class="line">	p = L;</span><br><span class="line">	<span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">if</span>(j == <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">	    <span class="built_in">printf</span>(<span class="string">"\n请输入数字！\n"</span>);</span><br><span class="line">		<span class="keyword">return</span> ERROR;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">	    <span class="keyword">while</span>(p &amp;&amp; (i &lt; id<span class="number">-1</span>))</span><br><span class="line">	    &#123;</span><br><span class="line">		    p = p-&gt;next;</span><br><span class="line">		    i++;</span><br><span class="line">	    &#125;</span><br><span class="line">	    <span class="keyword">if</span>(!p || i &gt; id<span class="number">-1</span>)</span><br><span class="line">	    &#123;</span><br><span class="line">		    <span class="built_in">printf</span>(<span class="string">"\n位置不合法！\n"</span>);</span><br><span class="line">		    <span class="keyword">return</span> ERROR;</span><br><span class="line">	    &#125;</span><br><span class="line">	    <span class="built_in">printf</span>(<span class="string">"\n请输入所要插入菜肴的信息:\n\n"</span>);</span><br><span class="line"></span><br><span class="line">	    <span class="built_in">printf</span>(<span class="string">"\t请输入菜名："</span>);</span><br><span class="line">	    <span class="built_in">scanf</span>(<span class="string">"%s"</span>,&amp;r.name);</span><br><span class="line">	    <span class="built_in">printf</span>(<span class="string">"\n\t请输入菜系："</span>);</span><br><span class="line">	    <span class="built_in">scanf</span>(<span class="string">"%s"</span>,&amp;r.style);</span><br><span class="line">	    <span class="built_in">printf</span>(<span class="string">"\n\t请输入价格："</span>);</span><br><span class="line">	    <span class="built_in">scanf</span>(<span class="string">"%f"</span>,&amp;r.price);</span><br><span class="line">	    LNode *s;</span><br><span class="line">	    s = <span class="keyword">new</span> LNode;</span><br><span class="line">	    s-&gt;data = r;</span><br><span class="line">	    s-&gt;next = p-&gt;next;</span><br><span class="line">	    p-&gt;next = s;</span><br><span class="line">	    <span class="built_in">printf</span>(<span class="string">"\n插入成功！\n"</span>);</span><br><span class="line">	    <span class="keyword">return</span> OK;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//根据位置删除节点</span></span><br><span class="line"><span class="function">Status <span class="title">ListDelete_locate</span><span class="params">(LinkList &amp;L)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> id,j;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"\n请输入删除菜肴位置:"</span>);</span><br><span class="line">	j = <span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;id);</span><br><span class="line">	LNode *p;</span><br><span class="line">	p = <span class="keyword">new</span> LNode;</span><br><span class="line">	p = L;</span><br><span class="line">	<span class="keyword">int</span> i=<span class="number">0</span>;</span><br><span class="line">	<span class="keyword">if</span>(j == <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">	    <span class="built_in">printf</span>(<span class="string">"\n请输入数字！\n"</span>);</span><br><span class="line">		<span class="keyword">return</span> ERROR;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">while</span>((p-&gt;next) &amp;&amp; (i &lt; id<span class="number">-1</span>))</span><br><span class="line">	    &#123;</span><br><span class="line">	    	p = p-&gt;next;</span><br><span class="line">		    ++i;</span><br><span class="line">    	&#125;</span><br><span class="line">	    <span class="keyword">if</span>(!(p-&gt;next) || (i &gt; id<span class="number">-1</span>))</span><br><span class="line">	    &#123;</span><br><span class="line">	    	<span class="built_in">printf</span>(<span class="string">"\n位置不合法!\n"</span>);</span><br><span class="line">		    <span class="keyword">return</span> ERROR;</span><br><span class="line">	    &#125;</span><br><span class="line">	    </span><br><span class="line">    	LNode *q;</span><br><span class="line">	    q = p-&gt;next;</span><br><span class="line">    	p-&gt;next = q-&gt;next;</span><br><span class="line">    	<span class="keyword">delete</span> q;</span><br><span class="line">    	<span class="built_in">printf</span>(<span class="string">"\n删除成功！\n"</span>);</span><br><span class="line">	    <span class="keyword">return</span> OK;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//根据结点值删除</span></span><br><span class="line"><span class="function">Status <span class="title">ListDelete_value</span><span class="params">(LinkList &amp;L)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	Restaurant r;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"\n请输入要删除的菜肴信息：\n\n"</span>);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"\t请输入菜名："</span>);</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%s"</span>,&amp;r.name);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"\t请输入菜系："</span>);</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%s"</span>,&amp;r.style);</span><br><span class="line">	LNode *p = L;</span><br><span class="line">	LNode *q = p;</span><br><span class="line">	<span class="keyword">while</span>(p &amp;&amp; <span class="built_in">strcmp</span>(p-&gt;data.name,r.name) || <span class="built_in">strcmp</span>(p-&gt;data.style,r.style))</span><br><span class="line">	&#123;</span><br><span class="line">		  q = p;</span><br><span class="line">		  p = p-&gt;next;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span>(p == <span class="literal">NULL</span>)</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\n并没有该道菜！\n"</span>);</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">		q-&gt;next = p-&gt;next;</span><br><span class="line">		<span class="keyword">delete</span> p;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\n删除成功!\n"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//查找元素</span></span><br><span class="line"><span class="function">LNode *<span class="title">LocateElem</span><span class="params">(LinkList L)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	Restaurant r;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"\n请输入需要查询的菜肴名称:"</span>);</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%s"</span>,r.name);</span><br><span class="line">	<span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">bool</span> b = <span class="literal">true</span>;</span><br><span class="line">	LinkList p = L-&gt;next;</span><br><span class="line">	<span class="keyword">while</span>(p &amp;&amp; <span class="built_in">strcmp</span>(p-&gt;data.name,r.name))</span><br><span class="line">	&#123;</span><br><span class="line">		p = p-&gt;next;</span><br><span class="line">		i++;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span>(p == <span class="literal">NULL</span>)</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\n该菜肴不存在！\n"</span>);</span><br><span class="line">	<span class="keyword">else</span> </span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\t\t菜名\t\t菜系\t\t价格\n"</span>);</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\t\t%-16s%-16s%-16.2lf\n"</span>, p-&gt;data.name, p-&gt;data.style, p-&gt;data.price);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> p;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//修改数据</span></span><br><span class="line"><span class="function">LNode *<span class="title">ModifyList</span><span class="params">(LinkList &amp;L)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	Restaurant r1,r2;</span><br><span class="line">	LinkList temp;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"\n请输入要修改的菜肴名称："</span>);</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%s"</span>,r1.name);</span><br><span class="line">	temp = L-&gt;next;</span><br><span class="line">	<span class="keyword">while</span>(temp &amp;&amp; <span class="built_in">strcmp</span>(temp-&gt;data.name,r1.name))</span><br><span class="line">	&#123;</span><br><span class="line">		temp = temp-&gt;next;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span>(temp == <span class="literal">NULL</span>)</span><br><span class="line">	    <span class="built_in">printf</span>(<span class="string">"\n该菜肴不存在！\n"</span>);</span><br><span class="line">	<span class="keyword">else</span> </span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\n将元素%s的价格更改为："</span>,r1.name);</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%f"</span>,&amp;r2.price);</span><br><span class="line">	    temp-&gt;data.price = r2.price;</span><br><span class="line">	    <span class="built_in">printf</span>(<span class="string">"\n修改成功!\n"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> temp;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//清空链表</span></span><br><span class="line"></span><br><span class="line"><span class="function">Status <span class="title">ClearList</span><span class="params">(LinkList L)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	LinkList p,q;</span><br><span class="line">	p = L-&gt;next;</span><br><span class="line">	<span class="keyword">while</span> (p)</span><br><span class="line">	&#123;</span><br><span class="line">		q = p-&gt;next;</span><br><span class="line">		<span class="keyword">delete</span> p;</span><br><span class="line">		p = q;</span><br><span class="line">	&#125;</span><br><span class="line">	L-&gt;next=<span class="literal">NULL</span>;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"\n清空成功!\n"</span>);</span><br><span class="line">	<span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//销毁链表</span></span><br><span class="line"><span class="function">Status <span class="title">DestoryList</span><span class="params">(LinkList &amp;L)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	LinkList p;</span><br><span class="line">	<span class="keyword">while</span>(L)</span><br><span class="line">	&#123;</span><br><span class="line">		p = L;</span><br><span class="line">		L = L-&gt;next;</span><br><span class="line">		<span class="keyword">delete</span> p;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"\n销毁成功！\n"</span>);</span><br><span class="line">	<span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//查看表长</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Length</span><span class="params">(LinkList L)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> len = <span class="number">0</span>;</span><br><span class="line">	LinkList p;</span><br><span class="line">	p = L-&gt;next;</span><br><span class="line">	<span class="keyword">while</span>(p)</span><br><span class="line">	&#123;</span><br><span class="line">		len++;</span><br><span class="line">		p = p-&gt;next;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span>(L-&gt;next)</span><br><span class="line">	&#123;</span><br><span class="line">	    <span class="built_in">printf</span>(<span class="string">"\n菜肴的个数为：%d\n"</span>,len);	</span><br><span class="line">	    <span class="keyword">return</span> len;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">	    <span class="built_in">printf</span>(<span class="string">"\n菜肴的个数为：%d\n"</span>,<span class="number">0</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//判断是否为空</span></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">IsEmpty</span><span class="params">(LinkList L)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(L-&gt;next)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\n该表不为空!\n"</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\n该表为空!\n"</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//是否继续进行</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Continue</span><span class="params">(<span class="keyword">char</span> a)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(a == <span class="string">'y'</span> || a == <span class="string">'Y'</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (a == <span class="string">'n'</span> || a == <span class="string">'N'</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="number">2</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="number">3</span>;</span><br><span class="line">		&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>linklistUse.cpp<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"pubuse.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"linklistDef.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"linklistAlgo.h"</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Menu</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"\n\t\t**************************************菜\t单*******************************\n"</span>);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"\t\t*\t\t\t1.初始化\t\t2.建表\t\t\t\t*\n"</span>);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"\t\t*\t\t\t3.插入菜肴\t\t4.删除菜肴\t\t\t*\n"</span>);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"\t\t*\t\t\t5.查看菜肴\t\t6.查找菜肴\t\t\t*\n"</span>);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"\t\t*\t\t\t7.修改菜肴\t\t8.清空链表\t\t\t*\n"</span>);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"\t\t*\t\t\t9.查看是否为空\t\t10.查看菜肴个数\t\t\t*\n"</span>);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"\t\t*\t\t\t11.销毁链表\t\t12.退出\t\t\t\t*\n"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	system(<span class="string">"color F9"</span>);</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">int</span> n,flag,c = <span class="number">0</span>,ct;</span><br><span class="line">	<span class="keyword">bool</span> d = <span class="literal">false</span>;</span><br><span class="line">	<span class="keyword">char</span> a,b;</span><br><span class="line">	LinkList L;</span><br><span class="line">start:</span><br><span class="line">	<span class="keyword">do</span></span><br><span class="line">	&#123;</span><br><span class="line">		Menu();</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\n请输入操作序号："</span>);</span><br><span class="line">		fflush(<span class="built_in">stdin</span>);</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;n);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span>(n&gt;<span class="number">0</span> &amp;&amp; n&lt;<span class="number">13</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			flag = <span class="number">1</span>;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			flag = <span class="number">0</span>;</span><br><span class="line">			system(<span class="string">"cls"</span>);</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"\n输入有误，请重新选择。\n"</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">while</span>(flag == <span class="number">0</span>);</span><br><span class="line">	<span class="keyword">while</span>(flag == <span class="number">1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">switch</span>(n)</span><br><span class="line">		&#123;</span><br><span class="line">		<span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">			c = InitList(L);</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">if</span>(c==<span class="number">1</span>)</span><br><span class="line">				&#123;</span><br><span class="line">					<span class="built_in">printf</span>(<span class="string">"\n\t选择正序(z)插入还是逆序(n)插入？(z or n):"</span>);</span><br><span class="line">					fflush(<span class="built_in">stdin</span>);</span><br><span class="line">		            b = getchar();</span><br><span class="line">					<span class="keyword">if</span>(b == <span class="string">'z'</span> || b == <span class="string">'Z'</span>)</span><br><span class="line">					&#123;</span><br><span class="line">						CreateList_R(L);</span><br><span class="line">						d = <span class="literal">true</span>;</span><br><span class="line">						<span class="keyword">break</span>;</span><br><span class="line">					&#125;</span><br><span class="line">					<span class="keyword">else</span> <span class="keyword">if</span>(b == <span class="string">'n'</span> || b == <span class="string">'N'</span>)</span><br><span class="line">					&#123;</span><br><span class="line">						CreateList_H(L);</span><br><span class="line">						d = <span class="literal">true</span>;</span><br><span class="line">						<span class="keyword">break</span>;</span><br><span class="line">					&#125;</span><br><span class="line">					<span class="keyword">else</span></span><br><span class="line">					&#123;</span><br><span class="line">						<span class="built_in">printf</span>(<span class="string">"\n输入错误！\n"</span>);</span><br><span class="line">						<span class="keyword">break</span>;</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">else</span> </span><br><span class="line">				&#123;</span><br><span class="line">					<span class="built_in">printf</span>(<span class="string">"\n请先初始化!\n"</span>);</span><br><span class="line">					<span class="keyword">break</span>;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		<span class="keyword">case</span> <span class="number">3</span>:</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">if</span>(d)</span><br><span class="line">					ListInsert(L);</span><br><span class="line">				<span class="keyword">else</span></span><br><span class="line">					<span class="built_in">printf</span>(<span class="string">"\n请先建表!\n"</span>);</span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		<span class="keyword">case</span> <span class="number">4</span>:</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">if</span>(d)</span><br><span class="line">				&#123;</span><br><span class="line">					<span class="built_in">printf</span>(<span class="string">"\n\t选择按位置(w)删除还是按值(z)删除？(w or z):"</span>);</span><br><span class="line">					fflush(<span class="built_in">stdin</span>);</span><br><span class="line">		            b = getchar();	</span><br><span class="line">					<span class="keyword">if</span>(b == <span class="string">'w'</span> || b == <span class="string">'W'</span>)</span><br><span class="line">					&#123;</span><br><span class="line">						ListDelete_locate(L);</span><br><span class="line">						<span class="keyword">break</span>;</span><br><span class="line">					&#125;</span><br><span class="line">					<span class="keyword">else</span> <span class="keyword">if</span>(b == <span class="string">'z'</span> || b == <span class="string">'Z'</span>)</span><br><span class="line">					&#123;</span><br><span class="line">						ListDelete_value(L);</span><br><span class="line">						<span class="keyword">break</span>;</span><br><span class="line">					&#125;</span><br><span class="line">					<span class="keyword">else</span></span><br><span class="line">						<span class="built_in">printf</span>(<span class="string">"\n输入错误！\n"</span>);</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">else</span></span><br><span class="line">					<span class="built_in">printf</span>(<span class="string">"\n请先建表!\n"</span>);</span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		<span class="keyword">case</span> <span class="number">5</span>:</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">if</span>(d)</span><br><span class="line">				    PrintList(L);</span><br><span class="line">		    	<span class="keyword">else</span> </span><br><span class="line">					<span class="built_in">printf</span>(<span class="string">"\n并无数据，请先建表!\n"</span>);</span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		<span class="keyword">case</span> <span class="number">6</span>:</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">if</span>(d)</span><br><span class="line">					LocateElem(L);</span><br><span class="line">				<span class="keyword">else</span></span><br><span class="line">					<span class="built_in">printf</span>(<span class="string">"\n并无数据，请先建表!\n"</span>);</span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		<span class="keyword">case</span> <span class="number">7</span>:</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">if</span>(d)</span><br><span class="line">					ModifyList(L);</span><br><span class="line">                <span class="keyword">else</span> </span><br><span class="line">					<span class="built_in">printf</span>(<span class="string">"\n并无数据，请先建表!\n"</span>);</span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		<span class="keyword">case</span> <span class="number">8</span>:</span><br><span class="line">			&#123;</span><br><span class="line">				ClearList(L);</span><br><span class="line">				d = <span class="literal">false</span>;</span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		<span class="keyword">case</span> <span class="number">9</span>:</span><br><span class="line">			<span class="keyword">if</span>(c!=<span class="number">1</span>)</span><br><span class="line">				<span class="built_in">printf</span>(<span class="string">"\n请先初始化。\n"</span>);</span><br><span class="line">			<span class="keyword">else</span></span><br><span class="line">			    IsEmpty(L);</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> <span class="number">10</span>:</span><br><span class="line">			<span class="keyword">if</span>(c!=<span class="number">1</span>)</span><br><span class="line">			    <span class="built_in">printf</span>(<span class="string">"\n请先初始化。\n"</span>);</span><br><span class="line">			<span class="keyword">else</span></span><br><span class="line">			    Length(L);</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> <span class="number">11</span>:</span><br><span class="line">			<span class="keyword">if</span>(c!=<span class="number">1</span>)</span><br><span class="line">			    <span class="built_in">printf</span>(<span class="string">"\n请先初始化。\n"</span>);</span><br><span class="line">			<span class="keyword">else</span></span><br><span class="line">				DestoryList(L);</span><br><span class="line">				d = <span class="literal">false</span>;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> <span class="number">12</span>:<span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">		<span class="keyword">default</span>:</span><br><span class="line">			system(<span class="string">"cls"</span>);</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"\n输入错误，请重新选择。\n"</span>);</span><br><span class="line">			<span class="keyword">goto</span> start;		</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\nY继续菜单操作，N退出程序(y or n)："</span>);</span><br><span class="line">		fflush(<span class="built_in">stdin</span>);</span><br><span class="line">		a = getchar();</span><br><span class="line">		ct=Continue(a);</span><br><span class="line">		<span class="keyword">while</span>(ct==<span class="number">3</span>)<span class="comment">//输入不合法</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"\n输入错误，请重新选择Y继续菜单操作，N退出程序(y or n)："</span>);</span><br><span class="line">				fflush(<span class="built_in">stdin</span>);</span><br><span class="line">				a = getchar();</span><br><span class="line">				ct=Continue(a);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(ct==<span class="number">1</span>)<span class="comment">//输入合法y</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">int</span> y;</span><br><span class="line">			<span class="comment">//flag = 1;</span></span><br><span class="line">			system(<span class="string">"cls"</span>);</span><br><span class="line">			Menu();</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"\n请选择操作序号："</span>);</span><br><span class="line">			fflush(<span class="built_in">stdin</span>);</span><br><span class="line">			y=<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;n);</span><br><span class="line">			<span class="keyword">if</span>(y==<span class="number">0</span>)</span><br><span class="line">			&#123;</span><br><span class="line">				system(<span class="string">"cls"</span>);</span><br><span class="line">				<span class="built_in">printf</span>(<span class="string">"\n输入有误，请重新选择。\n"</span>);</span><br><span class="line">				<span class="keyword">goto</span> start;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span><span class="comment">//输入合法n</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/C语言/" rel="tag"># C语言</a>
+          
+            <a href="/tags/数据结构/" rel="tag"># 数据结构</a>
+          
+            <a href="/tags/线性表的顺序存储与链式存储/" rel="tag"># 线性表的顺序存储与链式存储</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/11/08/thinkphp/" rel="next" title="thinkphp学习">
+                <i class="fa fa-chevron-left"></i> thinkphp学习
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/12/05/数据结构栈的操作C语言版/" rel="prev" title="数据结构栈的操作C语言版">
+                数据结构栈的操作C语言版 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/zql.jpg" alt="尘林">
+            
+              <p class="site-author-name" itemprop="name">尘林</p>
+              <p class="site-description motion-element" itemprop="description">势，只会裹挟随波逐流之人。一心既定，便不问大势所趋。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">52</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">66</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#线性表的顺序存储"><span class="nav-number">1.</span> <span class="nav-text">线性表的顺序存储</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#线性表的链式存储"><span class="nav-number">2.</span> <span class="nav-text">线性表的链式存储</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">尘林</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

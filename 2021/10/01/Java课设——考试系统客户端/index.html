@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="做的比较简陋，只能完成最基本的要求T-T。而且一点网络安全意识都没有涉及，防注入没来得及做，密码也没有加密存储&amp;gt;_&amp;lt;。 课设要求 可支持单选，多选和多行填空题，在一屏显示所有试题和解答控件，分左右两边显示，左边显示考试试题，右边显示解答控件。试题内容从数据库读取。交卷给出得分。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java课设——考试系统客户端">
+<meta property="og:url" content="http://yoursite.com/2021/10/01/Java课设——考试系统客户端/index.html">
+<meta property="og:site_name" content="pukr&#39;s BLOG">
+<meta property="og:description" content="做的比较简陋，只能完成最基本的要求T-T。而且一点网络安全意识都没有涉及，防注入没来得及做，密码也没有加密存储&amp;gt;_&amp;lt;。 课设要求 可支持单选，多选和多行填空题，在一屏显示所有试题和解答控件，分左右两边显示，左边显示考试试题，右边显示解答控件。试题内容从数据库读取。交卷给出得分。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2021/10/01/Java课设——考试系统客户端/要求界面.jpg">
+<meta property="og:image" content="http://yoursite.com/2021/10/01/Java课设——考试系统客户端/files.jpg">
+<meta property="og:image" content="http://yoursite.com/2021/10/01/Java课设——考试系统客户端/登录思路.jpg">
+<meta property="og:image" content="http://yoursite.com/2021/10/01/Java课设——考试系统客户端/显示试题.jpg">
+<meta property="og:image" content="http://yoursite.com/2021/10/01/Java课设——考试系统客户端/显示答案.jpg">
+<meta property="og:image" content="http://yoursite.com/2021/10/01/Java课设——考试系统客户端/做题模块.jpg">
+<meta property="og:image" content="http://yoursite.com/2021/10/01/Java课设——考试系统客户端/tables.jpg">
+<meta property="og:image" content="http://yoursite.com/2021/10/01/Java课设——考试系统客户端/singlechoice.jpg">
+<meta property="og:image" content="http://yoursite.com/2021/10/01/Java课设——考试系统客户端/multiplechoice.jpg">
+<meta property="og:image" content="http://yoursite.com/2021/10/01/Java课设——考试系统客户端/fillin.jpg">
+<meta property="og:image" content="http://yoursite.com/2021/10/01/Java课设——考试系统客户端/answer.jpg">
+<meta property="og:image" content="http://yoursite.com/2021/10/01/Java课设——考试系统客户端/login.jpg">
+<meta property="og:image" content="http://yoursite.com/2021/10/01/Java课设——考试系统客户端/答题.jpg">
+<meta property="og:image" content="http://yoursite.com/2021/10/01/Java课设——考试系统客户端/score.jpg">
+<meta property="og:updated_time" content="2021-10-15T01:25:09.545Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java课设——考试系统客户端">
+<meta name="twitter:description" content="做的比较简陋，只能完成最基本的要求T-T。而且一点网络安全意识都没有涉及，防注入没来得及做，密码也没有加密存储&amp;gt;_&amp;lt;。 课设要求 可支持单选，多选和多行填空题，在一屏显示所有试题和解答控件，分左右两边显示，左边显示考试试题，右边显示解答控件。试题内容从数据库读取。交卷给出得分。">
+<meta name="twitter:image" content="http://yoursite.com/2021/10/01/Java课设——考试系统客户端/要求界面.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2021/10/01/Java课设——考试系统客户端/">
+
+
+
+
+
+  <title>Java课设——考试系统客户端 | pukr's BLOG</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">pukr's BLOG</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">人类的悲欢并不相通</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/10/01/Java课设——考试系统客户端/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="尘林">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/zql.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="pukr's BLOG">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Java课设——考试系统客户端</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-10-01T20:02:25+08:00">
+                2021-10-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>做的比较简陋，只能完成最基本的要求T-T。而且一点网络安全意识都没有涉及，防注入没来得及做，密码也没有加密存储&gt;_&lt;。</p>
+<h1 id="课设要求"><a href="#课设要求" class="headerlink" title="课设要求"></a>课设要求</h1><blockquote>
+<p>可支持单选，多选和多行填空题，在一屏显示所有试题和解答控件，分左右两边显示，左边显示考试试题，右边显示解答控件。试题内容从数据库读取。交卷给出得分。<br><a id="more"></a></p>
+</blockquote>
+<p>感觉老师要求的界面是这样的：<br><img src="/2021/10/01/Java课设——考试系统客户端/要求界面.jpg" alt></p>
+<h1 id="设计思路"><a href="#设计思路" class="headerlink" title="设计思路"></a>设计思路</h1><p>我的文件们是这样排布的。（其实我也想知道一个正经客户端软件是怎么设计的，三天时间从0.01开始学java实在不够我浪的，只能自己瞎摸索……）</p>
+<p><img src="/2021/10/01/Java课设——考试系统客户端/files.jpg" alt></p>
+<h2 id="登录页面"><a href="#登录页面" class="headerlink" title="登录页面"></a>登录页面</h2><p><code>user.java</code>定义了<code>User</code>类来存储<code>username</code>和<code>password</code>两种数据类型。<code>GetUser</code>定义的类对从数据库中取到<code>username</code>和<code>password</code>转换成<code>User</code>类进行存储。<code>usercheck.java</code>将用户从<code>LoginFrame</code>输入的值与从数据库中读取到的进行对比，成功则进入系统，失败则重新输入。<br><img src="/2021/10/01/Java课设——考试系统客户端/登录思路.jpg" alt></p>
+<h2 id="试题读取与显示"><a href="#试题读取与显示" class="headerlink" title="试题读取与显示"></a>试题读取与显示</h2><p><code>Question.java</code>定义的<code>Question</code>类用来存储题干和选项。题目在数据库中用了三张表进行存储，多选题<code>multiplechoice</code>，多行填空<code>multiplefillin</code>和单选题<code>singlechoice</code>，所以也设计了三个java文件进行读取与转换格式，读取的数据存入<code>List&lt;Question&gt;</code>结果集当中。<code>getAllQuestion()</code>方法用于在考试界面MainFrame中输出试题。<br><img src="/2021/10/01/Java课设——考试系统客户端/显示试题.jpg" alt></p>
+<h2 id="答案显示"><a href="#答案显示" class="headerlink" title="答案显示"></a>答案显示</h2><p><code>Answers.java</code>和<code>Question.java</code>一样，只不过把<code>question</code>类换成了<code>answers</code>类。<br><img src="/2021/10/01/Java课设——考试系统客户端/显示答案.jpg" alt></p>
+<h2 id="做题模块"><a href="#做题模块" class="headerlink" title="做题模块"></a>做题模块</h2><p>添加了计时器功能。<br><img src="/2021/10/01/Java课设——考试系统客户端/做题模块.jpg" alt></p>
+<h2 id="数据库设计"><a href="#数据库设计" class="headerlink" title="数据库设计"></a>数据库设计</h2><p><img src="/2021/10/01/Java课设——考试系统客户端/tables.jpg" alt><br>单选题<br><img src="/2021/10/01/Java课设——考试系统客户端/singlechoice.jpg" alt><br>多选题<br><img src="/2021/10/01/Java课设——考试系统客户端/multiplechoice.jpg" alt><br>多行填空<br><img src="/2021/10/01/Java课设——考试系统客户端/fillin.jpg" alt><br>答案<br><img src="/2021/10/01/Java课设——考试系统客户端/answer.jpg" alt></p>
+<h1 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h1><h2 id="数据库连接模块"><a href="#数据库连接模块" class="headerlink" title="数据库连接模块"></a>数据库连接模块</h2><h3 id="SQLConnection-java"><a href="#SQLConnection-java" class="headerlink" title="SQLConnection.java"></a>SQLConnection.java</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//连接数据库</span></span><br><span class="line"><span class="keyword">package</span> examsystem;</span><br><span class="line"><span class="keyword">import</span> java.sql.*;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SQLConnectin</span></span>&#123;</span><br><span class="line"></span><br><span class="line">	String JDBC_DRIVER = <span class="string">"com.mysql.jdbc.Driver"</span>;</span><br><span class="line">	String DB_URL = <span class="string">"jdbc:mysql://localhost:3306/examsystem?serverTimezone=UTC"</span>;</span><br><span class="line">	Connection conn = <span class="keyword">null</span>;</span><br><span class="line">	Statement stmt = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">	String USER=<span class="string">"root"</span>;</span><br><span class="line">	String PASS=<span class="string">"root"</span>;</span><br><span class="line"></span><br><span class="line">	ResultSet rs;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">SQLConnectin</span><span class="params">()</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			Class.forName(JDBC_DRIVER);</span><br><span class="line">			conn = DriverManager.getConnection(DB_URL,USER,PASS);</span><br><span class="line">			stmt = conn.createStatement();</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">catch</span>(SQLException se) &#123;</span><br><span class="line">			se.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">		<span class="keyword">catch</span>(Exception e)&#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> ResultSet <span class="title">executeQuery</span><span class="params">(String sql)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">		rs = stmt.executeQuery(sql);</span><br><span class="line">		<span class="keyword">return</span> rs;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="用户登录模块"><a href="#用户登录模块" class="headerlink" title="用户登录模块"></a>用户登录模块</h2><h3 id="User-java"><a href="#User-java" class="headerlink" title="User.java"></a>User.java</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> examsystem;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span></span>&#123;</span><br><span class="line">	<span class="keyword">private</span> String username;</span><br><span class="line">	<span class="keyword">private</span> String passwd;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">User</span><span class="params">()</span></span>&#123;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">User</span><span class="params">(String username,String passwd)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.username = username;</span><br><span class="line">		<span class="keyword">this</span>.passwd = passwd;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">getusername</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> username;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">getpasswd</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> passwd;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="UserCheck-java"><a href="#UserCheck-java" class="headerlink" title="UserCheck.java"></a>UserCheck.java</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> examsystem;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserCheck</span></span>&#123;</span><br><span class="line">	<span class="keyword">private</span> GetUser getuser;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">login</span><span class="params">(String username,String passwd)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">		getuser = <span class="keyword">new</span> GetUser();</span><br><span class="line">		User user = getuser.singleuser(username);</span><br><span class="line">		<span class="keyword">if</span>(user != <span class="keyword">null</span>) &#123;</span><br><span class="line">			<span class="keyword">if</span>(user.getpasswd().equals(passwd))</span><br><span class="line">				<span class="keyword">return</span> <span class="string">"登录成功！"</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"登录失败！"</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="GetUser-java"><a href="#GetUser-java" class="headerlink" title="GetUser.java"></a>GetUser.java</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> examsystem;</span><br><span class="line"><span class="keyword">import</span> java.io.*;</span><br><span class="line"><span class="keyword">import</span> java.sql.*;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GetUser</span></span>&#123;</span><br><span class="line">	User user;</span><br><span class="line">	SQLConnectin conn;</span><br><span class="line">	ResultSet rs;</span><br><span class="line">	String name,passwd;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> User <span class="title">singleuser</span><span class="params">(String username)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">		user = <span class="keyword">null</span>;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			String sqlstring = <span class="string">"select username,passwd from user_info"</span>;</span><br><span class="line">			<span class="keyword">try</span> &#123;</span><br><span class="line">				conn = <span class="keyword">new</span> SQLConnectin();</span><br><span class="line">				rs = conn.executeQuery(sqlstring);</span><br><span class="line">				<span class="keyword">while</span>(rs.next())&#123;</span><br><span class="line">					name = rs.getString(<span class="string">"username"</span>);</span><br><span class="line">					passwd = rs.getString(<span class="string">"passwd"</span>);</span><br><span class="line">					<span class="keyword">if</span>(name.equals(username)) &#123;</span><br><span class="line">						user = <span class="keyword">new</span> User(name,passwd);</span><br><span class="line">						<span class="keyword">break</span>;</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">catch</span>(SQLException se) &#123;</span><br><span class="line">				se.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">		e.printStackTrace();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> user;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="LoginFrame-java"><a href="#LoginFrame-java" class="headerlink" title="LoginFrame.java"></a>LoginFrame.java</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> examsystem;</span><br><span class="line"><span class="keyword">import</span> java.awt.Color;</span><br><span class="line"><span class="keyword">import</span> java.awt.Font;</span><br><span class="line"><span class="keyword">import</span> java.awt.event.ActionEvent;</span><br><span class="line"><span class="keyword">import</span> java.awt.event.ActionListener;</span><br><span class="line"><span class="keyword">import</span> java.awt.event.MouseEvent;</span><br><span class="line"><span class="keyword">import</span> java.awt.event.MouseListener;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.swing.BorderFactory;</span><br><span class="line"><span class="keyword">import</span> javax.swing.JButton;</span><br><span class="line"><span class="keyword">import</span> javax.swing.JFrame;</span><br><span class="line"><span class="keyword">import</span> javax.swing.JLabel;</span><br><span class="line"><span class="keyword">import</span> javax.swing.JOptionPane;</span><br><span class="line"><span class="keyword">import</span> javax.swing.JPasswordField;</span><br><span class="line"><span class="keyword">import</span> javax.swing.JTextField;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LoginFrame</span> <span class="keyword">extends</span> <span class="title">JFrame</span> <span class="keyword">implements</span> <span class="title">ActionListener</span>,<span class="title">MouseListener</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = <span class="number">1L</span>;</span><br><span class="line"></span><br><span class="line">	String username;</span><br><span class="line">	<span class="keyword">private</span> JTextField usernameText;</span><br><span class="line">    <span class="keyword">private</span> JPasswordField passwordText;</span><br><span class="line">    <span class="keyword">private</span> JButton loginButton;</span><br><span class="line">    <span class="keyword">private</span> JButton cancelButton;</span><br><span class="line">    <span class="keyword">private</span> JLabel usernameLabel;</span><br><span class="line">    <span class="keyword">private</span> JLabel passwordLabel;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">LoginFrame</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">    	<span class="keyword">super</span>(name);</span><br><span class="line">    	<span class="keyword">this</span>.setSize(<span class="number">600</span>, <span class="number">400</span>);</span><br><span class="line">        <span class="keyword">this</span>.setUndecorated(<span class="keyword">true</span>);</span><br><span class="line">        <span class="keyword">this</span>.setLocationRelativeTo(<span class="keyword">null</span>);</span><br><span class="line"></span><br><span class="line">        usernameLabel = <span class="keyword">new</span> JLabel(<span class="string">"username"</span>);</span><br><span class="line">        usernameLabel.setBounds(<span class="number">10</span>, <span class="number">100</span>, <span class="number">90</span>, <span class="number">35</span>);</span><br><span class="line">        usernameLabel.setForeground(Color.white);</span><br><span class="line">        usernameLabel.setFont(<span class="keyword">new</span> Font(<span class="string">"微软雅黑"</span>, Font.PLAIN, <span class="number">18</span>));</span><br><span class="line">        <span class="keyword">this</span>.add(usernameLabel);</span><br><span class="line"></span><br><span class="line">        usernameText = <span class="keyword">new</span> JTextField();</span><br><span class="line">        usernameText.setBounds(<span class="number">120</span>, <span class="number">100</span>, <span class="number">150</span>, <span class="number">35</span>);</span><br><span class="line">        usernameText.setFont(<span class="keyword">new</span> Font(<span class="string">"微软雅黑"</span>,Font.PLAIN,<span class="number">16</span>));</span><br><span class="line">        usernameText.setForeground(Color.white);</span><br><span class="line">        usernameText.setOpaque(<span class="keyword">false</span>);</span><br><span class="line">        usernameText.setBorder(<span class="keyword">null</span>);</span><br><span class="line">        usernameText.addMouseListener(<span class="keyword">this</span>);</span><br><span class="line">        <span class="comment">//usernameText.setForeground(Color.white);</span></span><br><span class="line">        <span class="keyword">this</span>.add(usernameText);</span><br><span class="line"></span><br><span class="line">        passwordLabel = <span class="keyword">new</span> JLabel(<span class="string">"password"</span>);</span><br><span class="line">        passwordLabel.setBounds(<span class="number">10</span>, <span class="number">150</span>, <span class="number">90</span>, <span class="number">35</span>);</span><br><span class="line">        passwordLabel.setForeground(Color.white);</span><br><span class="line">        passwordLabel.setFont(<span class="keyword">new</span> Font(<span class="string">"微软雅黑"</span>, Font.PLAIN, <span class="number">18</span>));</span><br><span class="line">        <span class="keyword">this</span>.add(passwordLabel);</span><br><span class="line"></span><br><span class="line">        passwordText = <span class="keyword">new</span> JPasswordField();</span><br><span class="line">        passwordText.setBounds(<span class="number">120</span>, <span class="number">150</span>, <span class="number">150</span>, <span class="number">35</span>);</span><br><span class="line">        passwordText.setForeground(Color.white);</span><br><span class="line">        passwordText.setOpaque(<span class="keyword">false</span>);</span><br><span class="line">        passwordText.setBorder(<span class="keyword">null</span>);</span><br><span class="line">        passwordText.addMouseListener(<span class="keyword">this</span>);</span><br><span class="line">        <span class="comment">//usernameText.setForeground(Color.white);</span></span><br><span class="line">        <span class="keyword">this</span>.add(passwordText);</span><br><span class="line"></span><br><span class="line">        loginButton = <span class="keyword">new</span> JButton(<span class="string">"Login"</span>);</span><br><span class="line">        loginButton.setFont(<span class="keyword">new</span> Font(<span class="string">"微软雅黑"</span>,Font.PLAIN,<span class="number">18</span>));</span><br><span class="line">        loginButton.setBounds(<span class="number">20</span>, <span class="number">250</span>, <span class="number">100</span>, <span class="number">35</span>);</span><br><span class="line">        loginButton.setForeground(Color.white);</span><br><span class="line">        loginButton.setOpaque(<span class="keyword">false</span>);</span><br><span class="line">        loginButton.setContentAreaFilled(<span class="keyword">false</span>);</span><br><span class="line">        loginButton.addActionListener(<span class="keyword">this</span>);</span><br><span class="line">        <span class="keyword">this</span>.add(loginButton);</span><br><span class="line"></span><br><span class="line">        cancelButton = <span class="keyword">new</span> JButton(<span class="string">"Cancel"</span>);</span><br><span class="line">        cancelButton.setFont(<span class="keyword">new</span> Font(<span class="string">"微软雅黑"</span>,Font.PLAIN,<span class="number">18</span>));</span><br><span class="line">        cancelButton.setBounds(<span class="number">150</span>, <span class="number">250</span>, <span class="number">100</span>, <span class="number">35</span>);</span><br><span class="line">        cancelButton.setOpaque(<span class="keyword">false</span>);</span><br><span class="line">        cancelButton.setContentAreaFilled(<span class="keyword">false</span>);</span><br><span class="line">        cancelButton.setForeground(Color.white);</span><br><span class="line">        <span class="keyword">this</span>.add(cancelButton);</span><br><span class="line">        cancelButton.addActionListener(<span class="keyword">this</span>);</span><br><span class="line">        <span class="keyword">this</span>.add(<span class="keyword">new</span> LoginPanel());</span><br><span class="line">        <span class="keyword">this</span>.setVisible(<span class="keyword">true</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">actionPerformed</span><span class="params">(ActionEvent e)</span> </span>&#123;</span><br><span class="line">    	<span class="keyword">if</span>(e.getSource() == cancelButton) &#123;</span><br><span class="line">            JOptionPane.showMessageDialog(<span class="keyword">this</span>, <span class="string">"welcome again"</span>);</span><br><span class="line">            System.exit(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    	<span class="keyword">if</span>(e.getSource() == loginButton) &#123;</span><br><span class="line">    		username = usernameText.getText();</span><br><span class="line">    		String passwd = String.valueOf(passwordText.getPassword());</span><br><span class="line"></span><br><span class="line">    		UserCheck usercheck = <span class="keyword">new</span> UserCheck();</span><br><span class="line">    		String result;</span><br><span class="line">			<span class="keyword">try</span> &#123;</span><br><span class="line">				result = usercheck.login(username, passwd);</span><br><span class="line">				<span class="keyword">if</span>(result.equals(<span class="string">"登录成功！"</span>)) &#123;</span><br><span class="line">	    			setVisible(<span class="keyword">false</span>);</span><br><span class="line">	    			JOptionPane.showMessageDialog(<span class="keyword">null</span>, <span class="string">"登录成功"</span>, <span class="string">"用户提示"</span>, JOptionPane.WARNING_MESSAGE);</span><br><span class="line">	    			<span class="keyword">new</span> MainFrame(<span class="string">"考试界面"</span>);</span><br><span class="line">	    		&#125;</span><br><span class="line">	    		<span class="keyword">else</span> &#123;</span><br><span class="line">	    			JOptionPane.showMessageDialog(<span class="keyword">null</span>, <span class="string">"用户名或密码不正确"</span>, <span class="string">"用户提示"</span>, JOptionPane.WARNING_MESSAGE);</span><br><span class="line">	    			usernameText.setText(<span class="string">""</span>);</span><br><span class="line">	    			passwordText.setText(<span class="string">""</span>);</span><br><span class="line">	    		&#125;</span><br><span class="line">			&#125; <span class="keyword">catch</span> (Exception e1) &#123;</span><br><span class="line">				<span class="comment">// TODO 自动生成的 catch 块</span></span><br><span class="line">				e1.printStackTrace();</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">    	&#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">mouseClicked</span><span class="params">(MouseEvent e)</span> </span>&#123;</span><br><span class="line">		<span class="comment">// TODO 自动生成的方法存根</span></span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">mouseEntered</span><span class="params">(MouseEvent e)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(e.getSource()==usernameText)</span><br><span class="line">		&#123;</span><br><span class="line">		    usernameText.setBorder(BorderFactory.createLineBorder(<span class="keyword">new</span> Color(<span class="number">255</span>,<span class="number">255</span>,<span class="number">255</span>)));</span><br><span class="line">		&#125;<span class="keyword">else</span> <span class="keyword">if</span>(e.getSource()==passwordText)</span><br><span class="line">		&#123;</span><br><span class="line">		    passwordText.setBorder(BorderFactory.createLineBorder(<span class="keyword">new</span> Color(<span class="number">255</span>,<span class="number">255</span>,<span class="number">255</span>)));</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">mouseExited</span><span class="params">(MouseEvent e)</span> </span>&#123;</span><br><span class="line">		<span class="comment">// TODO 自动生成的方法存根</span></span><br><span class="line">	        <span class="keyword">if</span>(e.getSource()==usernameText)</span><br><span class="line">	        &#123;</span><br><span class="line">	            usernameText.setBorder(<span class="keyword">null</span>);</span><br><span class="line">	        &#125;<span class="keyword">else</span> <span class="keyword">if</span>(e.getSource()==passwordText)</span><br><span class="line">	        &#123;</span><br><span class="line">	            passwordText.setBorder(<span class="keyword">null</span>);</span><br><span class="line">	        &#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">mousePressed</span><span class="params">(MouseEvent e)</span> </span>&#123;</span><br><span class="line">		<span class="comment">// TODO 自动生成的方法存根</span></span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">mouseReleased</span><span class="params">(MouseEvent e)</span> </span>&#123;</span><br><span class="line">		<span class="comment">// TODO 自动生成的方法存根</span></span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="LoginPanel-java"><a href="#LoginPanel-java" class="headerlink" title="LoginPanel.java"></a>LoginPanel.java</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> examsystem;</span><br><span class="line"><span class="keyword">import</span> javax.imageio.ImageIO;</span><br><span class="line"><span class="keyword">import</span> javax.swing.*;</span><br><span class="line"><span class="keyword">import</span> java.awt.*;</span><br><span class="line"><span class="keyword">import</span> java.io.File;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LoginPanel</span>  <span class="keyword">extends</span> <span class="title">JPanel</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Image image;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">LoginPanel</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            image= ImageIO.read(<span class="keyword">new</span> File(<span class="string">"image/login1.png"</span>));</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">paint</span><span class="params">(Graphics g)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.paint(g);</span><br><span class="line">        g.drawImage(image,<span class="number">0</span>,<span class="number">0</span>,<span class="number">600</span>,<span class="number">400</span>,<span class="keyword">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="试题显示模块"><a href="#试题显示模块" class="headerlink" title="试题显示模块"></a>试题显示模块</h2><h3 id="Question-java"><a href="#Question-java" class="headerlink" title="Question.java"></a>Question.java</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> examsystem;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Question</span></span>&#123;</span><br><span class="line">	<span class="keyword">private</span> String QuestionStem;</span><br><span class="line">	<span class="keyword">private</span> String ChoiceA;</span><br><span class="line">	<span class="keyword">private</span> String ChoiceB;</span><br><span class="line">	<span class="keyword">private</span> String ChoiceC;</span><br><span class="line">	<span class="keyword">private</span> String ChoiceD;</span><br><span class="line">	<span class="comment">//private String answer; // 用来存储答案</span></span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">Question</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//咱所有题都没有图片，我没时间做数据库存图了。</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">Question</span><span class="params">(String QuestionStem, String ChoiceA,String ChoiceB,String ChoiceC,String ChoiceD)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.QuestionStem = QuestionStem;</span><br><span class="line">		<span class="keyword">this</span>.ChoiceA = ChoiceA;</span><br><span class="line">		<span class="keyword">this</span>.ChoiceB = ChoiceB;</span><br><span class="line">		<span class="keyword">this</span>.ChoiceC = ChoiceC;</span><br><span class="line">		<span class="keyword">this</span>.ChoiceD = ChoiceD;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">getStem</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> QuestionStem;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">getChoiceA</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> ChoiceA;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">getChoiceB</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> ChoiceB;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">getChoiceC</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> ChoiceC;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">getChoiceD</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> ChoiceD;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"Question&#123;"</span> +</span><br><span class="line">				<span class="string">"QuestionStem='"</span> + QuestionStem + <span class="string">'\''</span> +</span><br><span class="line">				<span class="string">", ChoiceA='"</span> + ChoiceA + <span class="string">'\''</span> +</span><br><span class="line">				<span class="string">", ChoiceB='"</span> + ChoiceB + <span class="string">'\''</span> +</span><br><span class="line">				<span class="string">", ChoiceC='"</span> + ChoiceC + <span class="string">'\''</span> +</span><br><span class="line">				<span class="string">", ChoiceD='"</span> + ChoiceD + <span class="string">'\''</span> +</span><br><span class="line">				<span class="string">'&#125;'</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Multichoice-java"><a href="#Multichoice-java" class="headerlink" title="Multichoice.java"></a>Multichoice.java</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> examsystem;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.*;</span><br><span class="line"><span class="keyword">import</span> java.util.*;</span><br><span class="line"><span class="keyword">import</span> java.sql.*;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Multichoice</span></span>&#123;</span><br><span class="line">	SQLConnectin conn;</span><br><span class="line">	ResultSet rs;</span><br><span class="line">	<span class="keyword">int</span> QuestionID;</span><br><span class="line">	String QuestionStem,ChoiceA,ChoiceB,ChoiceC,ChoiceD;</span><br><span class="line">	Question question;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> List&lt;Question&gt; <span class="title">getAllQuestion</span><span class="params">()</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">		List&lt;Question&gt; list = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">		question = <span class="keyword">null</span>;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			String sqlstring1 = <span class="string">"select * from multiplechoice"</span>;</span><br><span class="line">			<span class="keyword">try</span> &#123;</span><br><span class="line">				conn = <span class="keyword">new</span> SQLConnectin();</span><br><span class="line">				rs = conn.executeQuery(sqlstring1);</span><br><span class="line">				<span class="keyword">while</span>(rs.next()) &#123;</span><br><span class="line">					QuestionID = rs.getInt(<span class="string">"QuestionID"</span>);</span><br><span class="line">					QuestionStem = rs.getString(<span class="string">"QuestionStem"</span>);</span><br><span class="line">					ChoiceA = rs.getString(<span class="string">"ChoiceA"</span>);</span><br><span class="line">					ChoiceB = rs.getString(<span class="string">"ChoiceB"</span>);</span><br><span class="line">					ChoiceC = rs.getString(<span class="string">"ChoiceC"</span>);</span><br><span class="line">					ChoiceD = rs.getString(<span class="string">"ChoiceD"</span>);</span><br><span class="line"></span><br><span class="line">					question = <span class="keyword">new</span> Question(QuestionStem,ChoiceA,ChoiceB,ChoiceC,ChoiceD);</span><br><span class="line">					list.add(question);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">catch</span>(SQLException se) &#123;</span><br><span class="line">				se.printStackTrace();</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> list;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Singlechoice-java"><a href="#Singlechoice-java" class="headerlink" title="Singlechoice.java"></a>Singlechoice.java</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> examsystem;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.*;</span><br><span class="line"><span class="keyword">import</span> java.util.*;</span><br><span class="line"><span class="keyword">import</span> java.sql.*;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Singlechoice</span></span>&#123;</span><br><span class="line">	<span class="comment">//private HashSet&lt;Question&gt; questionBox = new HashSet&lt;&gt;();</span></span><br><span class="line">	SQLConnectin conn;</span><br><span class="line">	ResultSet rs;</span><br><span class="line">	<span class="keyword">int</span> QuestionID;</span><br><span class="line">	String QuestionStem,ChoiceA,ChoiceB,ChoiceC,ChoiceD;</span><br><span class="line">	Question question;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> List&lt;Question&gt; <span class="title">getAllQuestion</span><span class="params">()</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">		List&lt;Question&gt; list = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">		question = <span class="keyword">null</span>;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			String sqlstring1 = <span class="string">"select * from singlechoice"</span>;</span><br><span class="line">			<span class="keyword">try</span> &#123;</span><br><span class="line">				conn = <span class="keyword">new</span> SQLConnectin();</span><br><span class="line">				rs = conn.executeQuery(sqlstring1);</span><br><span class="line">				<span class="keyword">while</span>(rs.next()) &#123;</span><br><span class="line">					QuestionID = rs.getInt(<span class="string">"QuestionID"</span>);</span><br><span class="line">					QuestionStem = rs.getString(<span class="string">"QuestionStem"</span>);</span><br><span class="line">					ChoiceA = rs.getString(<span class="string">"ChoiceA"</span>);</span><br><span class="line">					ChoiceB = rs.getString(<span class="string">"ChoiceB"</span>);</span><br><span class="line">					ChoiceC = rs.getString(<span class="string">"ChoiceC"</span>);</span><br><span class="line">					ChoiceD = rs.getString(<span class="string">"ChoiceD"</span>);</span><br><span class="line"></span><br><span class="line">					question = <span class="keyword">new</span> Question(QuestionStem,ChoiceA,ChoiceB,ChoiceC,ChoiceD);</span><br><span class="line">					list.add(question);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">catch</span>(SQLException se) &#123;</span><br><span class="line">				se.printStackTrace();</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> list;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="multifillin-java"><a href="#multifillin-java" class="headerlink" title="multifillin.java"></a>multifillin.java</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> examsystem;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.*;</span><br><span class="line"><span class="keyword">import</span> java.util.*;</span><br><span class="line"><span class="keyword">import</span> java.sql.*;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Multifillin</span></span>&#123;</span><br><span class="line">	SQLConnectin conn;</span><br><span class="line">	ResultSet rs;</span><br><span class="line">	<span class="keyword">int</span> QuestionID;</span><br><span class="line">	String QuestionStem;</span><br><span class="line">	Question question;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> List&lt;Question&gt; <span class="title">getAllQuestion</span><span class="params">()</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">		List&lt;Question&gt; list = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">		question = <span class="keyword">null</span>;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			String sqlstring1 = <span class="string">"select * from multiplefillin"</span>;</span><br><span class="line">			<span class="keyword">try</span> &#123;</span><br><span class="line">				conn = <span class="keyword">new</span> SQLConnectin();</span><br><span class="line">				rs = conn.executeQuery(sqlstring1);</span><br><span class="line">				<span class="keyword">while</span>(rs.next()) &#123;</span><br><span class="line">					QuestionID = rs.getInt(<span class="string">"QuestionID"</span>);</span><br><span class="line">					QuestionStem = rs.getString(<span class="string">"QuestionStem"</span>);</span><br><span class="line"></span><br><span class="line">					question = <span class="keyword">new</span> Question(QuestionStem,<span class="keyword">null</span>,<span class="keyword">null</span>,<span class="keyword">null</span>,<span class="keyword">null</span>);</span><br><span class="line">					list.add(question);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">catch</span>(SQLException se) &#123;</span><br><span class="line">				se.printStackTrace();</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> list;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="答案显示-1"><a href="#答案显示-1" class="headerlink" title="答案显示"></a>答案显示</h2><h3 id="Answers-java"><a href="#Answers-java" class="headerlink" title="Answers.java"></a>Answers.java</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> examsystem;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Answers</span></span>&#123;</span><br><span class="line">	<span class="keyword">private</span> String answer;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">Answers</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">Answers</span><span class="params">(String answer)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.answer = answer;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">getAnswer</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> answer;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"Answer&#123;"</span> +</span><br><span class="line">				<span class="string">"answer='"</span> + answer + <span class="string">'\''</span> +</span><br><span class="line">				<span class="string">'&#125;'</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="GetAnswers-java"><a href="#GetAnswers-java" class="headerlink" title="GetAnswers.java"></a>GetAnswers.java</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> examsystem;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.*;</span><br><span class="line"><span class="keyword">import</span> java.util.*;</span><br><span class="line"><span class="keyword">import</span> java.sql.*;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GetAnswers</span></span>&#123;</span><br><span class="line">	SQLConnectin conn;</span><br><span class="line">	ResultSet rs;</span><br><span class="line">	String answer;</span><br><span class="line">	Answers answers;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> List&lt;Answers&gt; <span class="title">getAllAnswers</span><span class="params">()</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">		List&lt;Answers&gt; list = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">		answers = <span class="keyword">null</span>;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			String sqlstring1 = <span class="string">"select GROUP_CONCAT(answer) from answers GROUP BY QuestionID"</span>;</span><br><span class="line">			<span class="keyword">try</span> &#123;</span><br><span class="line">				conn = <span class="keyword">new</span> SQLConnectin();</span><br><span class="line">				rs = conn.executeQuery(sqlstring1);</span><br><span class="line">				<span class="keyword">while</span>(rs.next()) &#123;</span><br><span class="line">					answer = rs.getString(<span class="string">"GROUP_CONCAT(answer)"</span>);</span><br><span class="line">					answers = <span class="keyword">new</span> Answers(answer);</span><br><span class="line">					list.add(answers);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">catch</span>(SQLException se) &#123;</span><br><span class="line">				se.printStackTrace();</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> list;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="答题界面"><a href="#答题界面" class="headerlink" title="答题界面"></a>答题界面</h2><h3 id="MainFrame-java"><a href="#MainFrame-java" class="headerlink" title="MainFrame.java"></a>MainFrame.java</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br><span class="line">355</span><br><span class="line">356</span><br><span class="line">357</span><br><span class="line">358</span><br><span class="line">359</span><br><span class="line">360</span><br><span class="line">361</span><br><span class="line">362</span><br><span class="line">363</span><br><span class="line">364</span><br><span class="line">365</span><br><span class="line">366</span><br><span class="line">367</span><br><span class="line">368</span><br><span class="line">369</span><br><span class="line">370</span><br><span class="line">371</span><br><span class="line">372</span><br><span class="line">373</span><br><span class="line">374</span><br><span class="line">375</span><br><span class="line">376</span><br><span class="line">377</span><br><span class="line">378</span><br><span class="line">379</span><br><span class="line">380</span><br><span class="line">381</span><br><span class="line">382</span><br><span class="line">383</span><br><span class="line">384</span><br><span class="line">385</span><br><span class="line">386</span><br><span class="line">387</span><br><span class="line">388</span><br><span class="line">389</span><br><span class="line">390</span><br><span class="line">391</span><br><span class="line">392</span><br><span class="line">393</span><br><span class="line">394</span><br><span class="line">395</span><br><span class="line">396</span><br><span class="line">397</span><br><span class="line">398</span><br><span class="line">399</span><br><span class="line">400</span><br><span class="line">401</span><br><span class="line">402</span><br><span class="line">403</span><br><span class="line">404</span><br><span class="line">405</span><br><span class="line">406</span><br><span class="line">407</span><br><span class="line">408</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> examsystem;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.*;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"><span class="keyword">import</span> java.awt.*;</span><br><span class="line"><span class="keyword">import</span> java.awt.event.*;</span><br><span class="line"><span class="keyword">import</span> javax.swing.*;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainFrame</span> <span class="keyword">extends</span> <span class="title">JFrame</span> </span>&#123; <span class="comment">// 考试界面</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = <span class="number">1L</span>;</span><br><span class="line">	<span class="comment">//private int current = 0;//记录当前题号</span></span><br><span class="line">	<span class="keyword">private</span> String[] answers_singlechoice = <span class="keyword">new</span> String[<span class="number">4</span>];<span class="comment">//存储考生单选题答案的数组</span></span><br><span class="line">	<span class="keyword">private</span> String[] real_answers_singlechoice = <span class="keyword">new</span> String[<span class="number">4</span>];<span class="comment">//存储正确单选题答案的数组</span></span><br><span class="line">	</span><br><span class="line">	<span class="keyword">private</span> String[][] answers_multiplechoice = <span class="keyword">new</span> String[<span class="number">3</span>][<span class="number">4</span>];<span class="comment">//存储考生多选题答案的数组</span></span><br><span class="line">	<span class="keyword">private</span> String[] real_answers_multiplechoice = <span class="keyword">new</span> String[<span class="number">3</span>];<span class="comment">//存储正确多选题答案的数组</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> String[] real_answers_multifillin = <span class="keyword">new</span> String[<span class="number">3</span>];<span class="comment">//存储正确填空题的数组，用换行符分割，然后从数据库检查对比</span></span><br><span class="line">	</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span>[] flag = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">11</span>];<span class="comment">//判断题目是否被作答</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> JPanel ExamTextPanel = <span class="keyword">new</span> JPanel();</span><br><span class="line">	<span class="keyword">private</span> JPanel ChosePanel = <span class="keyword">new</span> JPanel();</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> JLabel timeLabel;</span><br><span class="line">	<span class="keyword">private</span> JLabel realTimeLabel = <span class="keyword">new</span> JLabel();</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">private</span> JScrollPane scrollPane1;</span><br><span class="line">	<span class="keyword">private</span> JTextArea examArea;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> JButton submitButton;</span><br><span class="line">	<span class="comment">//一共10道题的panel</span></span><br><span class="line">	<span class="keyword">private</span> JPanel[] jp = <span class="keyword">new</span> JPanel[<span class="number">10</span>];</span><br><span class="line">	<span class="comment">//4道单选题的组件。</span></span><br><span class="line">	<span class="keyword">private</span> JRadioButton[] asingleButton = <span class="keyword">new</span> JRadioButton[<span class="number">4</span>];</span><br><span class="line">	<span class="keyword">private</span> JRadioButton[] bsingleButton = <span class="keyword">new</span> JRadioButton[<span class="number">4</span>];</span><br><span class="line">	<span class="keyword">private</span> JRadioButton[] csingleButton = <span class="keyword">new</span> JRadioButton[<span class="number">4</span>];</span><br><span class="line">	<span class="keyword">private</span> JRadioButton[] dsingleButton = <span class="keyword">new</span> JRadioButton[<span class="number">4</span>];</span><br><span class="line">	<span class="comment">//3道多选题的组件。</span></span><br><span class="line">	<span class="keyword">private</span> JCheckBox[] amultiButton = <span class="keyword">new</span> JCheckBox[<span class="number">3</span>];</span><br><span class="line">	<span class="keyword">private</span> JCheckBox[] bmultiButton = <span class="keyword">new</span> JCheckBox[<span class="number">3</span>];</span><br><span class="line">	<span class="keyword">private</span> JCheckBox[] cmultiButton = <span class="keyword">new</span> JCheckBox[<span class="number">3</span>];</span><br><span class="line">	<span class="keyword">private</span> JCheckBox[] dmultiButton = <span class="keyword">new</span> JCheckBox[<span class="number">3</span>];</span><br><span class="line">	<span class="comment">//一道单选题的按钮组件</span></span><br><span class="line">	<span class="keyword">private</span> ButtonGroup[] buttongroup = <span class="keyword">new</span> ButtonGroup[<span class="number">7</span>];</span><br><span class="line">	<span class="comment">//3道多行填空的文本域组件，通过换行符分割每个空的答案</span></span><br><span class="line">	<span class="keyword">private</span> JTextArea[] multifillin_textarea = <span class="keyword">new</span> JTextArea[<span class="number">3</span>];</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span> i,j;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span> score = <span class="number">0</span>;</span><br><span class="line">	<span class="comment">//计时器</span></span><br><span class="line">	<span class="keyword">private</span> TimeControlThread timeControlThread = <span class="keyword">new</span> TimeControlThread();</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span> time = <span class="number">5</span>;</span><br><span class="line">	<span class="comment">//序号数组</span></span><br><span class="line">	<span class="keyword">private</span> Label[] jl = <span class="keyword">new</span> Label[<span class="number">10</span>];</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">MainFrame</span><span class="params">(String s)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">		<span class="comment">// 展示窗口内容</span></span><br><span class="line">		<span class="keyword">super</span>(s);</span><br><span class="line">		<span class="keyword">int</span> jp_x,jp_y,jp_width,jp_height;<span class="comment">//jp数组中的坐标</span></span><br><span class="line">		<span class="keyword">int</span> choice_x,choice_y,choice_width,choice_height;</span><br><span class="line">		<span class="keyword">int</span> blank_x,blank_y,blank_width,blank_height;</span><br><span class="line">		<span class="keyword">int</span> jl_x;</span><br><span class="line">		</span><br><span class="line">		setBounds(<span class="number">100</span>, <span class="number">100</span>, <span class="number">1100</span>, <span class="number">950</span>);</span><br><span class="line">		setResizable(<span class="keyword">false</span>);</span><br><span class="line">		setLayout(<span class="keyword">null</span>);</span><br><span class="line">		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);</span><br><span class="line">		setVisible(<span class="keyword">true</span>);</span><br><span class="line">		ExamTextPanel.setLayout(<span class="keyword">null</span>);</span><br><span class="line">		ExamTextPanel.setBounds(<span class="number">0</span>, <span class="number">0</span>, <span class="number">1100</span>, <span class="number">950</span>);</span><br><span class="line">		ExamTextPanel.setBackground(Color.LIGHT_GRAY);</span><br><span class="line">		timeControlThread.start();</span><br><span class="line"></span><br><span class="line">		examArea = <span class="keyword">new</span> JTextArea();</span><br><span class="line">		examArea.setEnabled(<span class="keyword">false</span>); <span class="comment">// 文本域不可编辑</span></span><br><span class="line">		examArea.setFont(<span class="keyword">new</span> Font(<span class="string">"黑体"</span>, Font.BOLD, <span class="number">18</span>));</span><br><span class="line">		scrollPane1 = <span class="keyword">new</span> JScrollPane(examArea);</span><br><span class="line">		scrollPane1.setBounds(<span class="number">16</span>, <span class="number">10</span>, <span class="number">700</span>, <span class="number">900</span>);</span><br><span class="line">		ExamTextPanel.add(scrollPane1);</span><br><span class="line">		add(ExamTextPanel);</span><br><span class="line"></span><br><span class="line">		<span class="comment">// 选择面板</span></span><br><span class="line">		ChosePanel.setBounds(<span class="number">750</span>, <span class="number">10</span>, <span class="number">300</span>, <span class="number">900</span>);</span><br><span class="line">		ChosePanel.setLayout(<span class="keyword">null</span>);</span><br><span class="line">		ChosePanel.setBorder(BorderFactory.createLineBorder(Color.black));</span><br><span class="line">		</span><br><span class="line">		<span class="comment">//一行组件的坐标</span></span><br><span class="line">		jp_x=<span class="number">1</span>;</span><br><span class="line">		jp_y=<span class="number">1</span>;</span><br><span class="line">		jp_width=<span class="number">298</span>;</span><br><span class="line">		jp_height=<span class="number">35</span>;</span><br><span class="line">		<span class="comment">//一个选项按钮的坐标</span></span><br><span class="line">		choice_x = <span class="number">40</span>;</span><br><span class="line">		choice_y = <span class="number">10</span>;</span><br><span class="line">		choice_width = <span class="number">50</span>;</span><br><span class="line">		choice_height = <span class="number">30</span>;</span><br><span class="line">		<span class="comment">//一道多行填空的坐标</span></span><br><span class="line">		blank_x=<span class="number">240</span>;</span><br><span class="line">		<span class="comment">//blank_y=;</span></span><br><span class="line">		blank_width=<span class="number">200</span>;</span><br><span class="line">		blank_height=<span class="number">150</span>;</span><br><span class="line">		</span><br><span class="line">		jl_x = <span class="number">20</span>;</span><br><span class="line">		<span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;jp.length;i++) &#123;</span><br><span class="line">			jp[i] = <span class="keyword">new</span> JPanel();</span><br><span class="line">			</span><br><span class="line">			<span class="keyword">if</span>(i&lt;<span class="number">7</span>) &#123;</span><br><span class="line">				buttongroup[i] = <span class="keyword">new</span> ButtonGroup();</span><br><span class="line">				jp[i].setBounds(jp_x,jp_y,jp_width,jp_height);</span><br><span class="line">				<span class="keyword">if</span>(i&lt;<span class="number">4</span>) &#123;</span><br><span class="line">					asingleButton[i] = <span class="keyword">new</span> JRadioButton(<span class="string">"A"</span>);</span><br><span class="line">					bsingleButton[i] = <span class="keyword">new</span> JRadioButton(<span class="string">"B"</span>);</span><br><span class="line">					csingleButton[i] = <span class="keyword">new</span> JRadioButton(<span class="string">"C"</span>);</span><br><span class="line">					dsingleButton[i] = <span class="keyword">new</span> JRadioButton(<span class="string">"D"</span>);</span><br><span class="line">					jl[i] = <span class="keyword">new</span> Label(String.valueOf(i+<span class="number">1</span>)+<span class="string">"、"</span>+<span class="string">" "</span>);</span><br><span class="line">					</span><br><span class="line">					asingleButton[i].setBounds(choice_x,choice_y,choice_width,choice_height);</span><br><span class="line">					bsingleButton[i].setBounds(choice_x+<span class="number">50</span>,choice_y,choice_width,choice_height);</span><br><span class="line">					csingleButton[i].setBounds(choice_x+<span class="number">100</span>,choice_y,choice_width,choice_height);</span><br><span class="line">					dsingleButton[i].setBounds(choice_x+<span class="number">150</span>,choice_y,choice_width,choice_height);</span><br><span class="line">					jl[i].setBounds(jl_x, choice_y, choice_width, choice_height);</span><br><span class="line">					</span><br><span class="line">					jp[i].add(asingleButton[i]);</span><br><span class="line">					jp[i].add(bsingleButton[i]);</span><br><span class="line">					jp[i].add(csingleButton[i]);</span><br><span class="line">					jp[i].add(dsingleButton[i]);</span><br><span class="line">					</span><br><span class="line">					buttongroup[i].add(asingleButton[i]);</span><br><span class="line">					buttongroup[i].add(bsingleButton[i]);</span><br><span class="line">				    buttongroup[i].add(csingleButton[i]);</span><br><span class="line">				    buttongroup[i].add(dsingleButton[i]);</span><br><span class="line">				    </span><br><span class="line">				    ChosePanel.add(jp[i]);</span><br><span class="line">					ChosePanel.add(asingleButton[i]);</span><br><span class="line">					ChosePanel.add(bsingleButton[i]);</span><br><span class="line">					ChosePanel.add(csingleButton[i]);</span><br><span class="line">					ChosePanel.add(dsingleButton[i]);</span><br><span class="line">					ChosePanel.add(jl[i]);</span><br><span class="line">					ExamTextPanel.add(ChosePanel);</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">else</span> <span class="keyword">if</span>(i&gt;=<span class="number">4</span>) &#123;</span><br><span class="line">					amultiButton[i-<span class="number">4</span>] = <span class="keyword">new</span> JCheckBox(<span class="string">"A"</span>);</span><br><span class="line">					bmultiButton[i-<span class="number">4</span>] = <span class="keyword">new</span> JCheckBox(<span class="string">"B"</span>);</span><br><span class="line">					cmultiButton[i-<span class="number">4</span>] = <span class="keyword">new</span> JCheckBox(<span class="string">"C"</span>);</span><br><span class="line">					dmultiButton[i-<span class="number">4</span>] = <span class="keyword">new</span> JCheckBox(<span class="string">"D"</span>);</span><br><span class="line">					</span><br><span class="line">					amultiButton[i-<span class="number">4</span>].setBounds(choice_x,choice_y,choice_width,choice_height);</span><br><span class="line">					bmultiButton[i-<span class="number">4</span>].setBounds(choice_x+<span class="number">50</span>,choice_y,choice_width,choice_height);</span><br><span class="line">					cmultiButton[i-<span class="number">4</span>].setBounds(choice_x+<span class="number">100</span>,choice_y,choice_width,choice_height);</span><br><span class="line">					dmultiButton[i-<span class="number">4</span>].setBounds(choice_x+<span class="number">150</span>,choice_y,choice_width,choice_height);</span><br><span class="line">					</span><br><span class="line">					jp[i].add(amultiButton[i-<span class="number">4</span>]);</span><br><span class="line">					jp[i].add(bmultiButton[i-<span class="number">4</span>]);</span><br><span class="line">					jp[i].add(cmultiButton[i-<span class="number">4</span>]);</span><br><span class="line">					jp[i].add(dmultiButton[i-<span class="number">4</span>]);</span><br><span class="line">				    </span><br><span class="line">					ChosePanel.add(jp[i]);</span><br><span class="line">					ChosePanel.add(amultiButton[i-<span class="number">4</span>]);</span><br><span class="line">					ChosePanel.add(bmultiButton[i-<span class="number">4</span>]);</span><br><span class="line">					ChosePanel.add(cmultiButton[i-<span class="number">4</span>]);</span><br><span class="line">					ChosePanel.add(dmultiButton[i-<span class="number">4</span>]);</span><br><span class="line">					ExamTextPanel.add(ChosePanel);</span><br><span class="line">					</span><br><span class="line">				&#125;</span><br><span class="line">				jp_y += <span class="number">30</span>;</span><br><span class="line">				choice_y += <span class="number">30</span>;</span><br><span class="line">				jl_x += <span class="number">30</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span> <span class="keyword">if</span>(i&gt;=<span class="number">7</span>) &#123;</span><br><span class="line">				jp[i].setBounds(jp_x,jp_y,blank_width,blank_height);</span><br><span class="line">				</span><br><span class="line">				multifillin_textarea[i-<span class="number">7</span>] = <span class="keyword">new</span> JTextArea(<span class="number">5</span>,<span class="number">10</span>);</span><br><span class="line">				multifillin_textarea[i-<span class="number">7</span>].setFont(<span class="keyword">new</span> Font(<span class="string">"黑体"</span>, Font.PLAIN, <span class="number">18</span>));</span><br><span class="line">				multifillin_textarea[i-<span class="number">7</span>].setBounds(choice_x,choice_y,blank_width,blank_height);</span><br><span class="line">				</span><br><span class="line">				ChosePanel.add(jp[i]);</span><br><span class="line">				ChosePanel.add(multifillin_textarea[i-<span class="number">7</span>]);</span><br><span class="line">				ExamTextPanel.add(ChosePanel);</span><br><span class="line">				</span><br><span class="line">				jp_y += <span class="number">160</span>;</span><br><span class="line">				choice_y += <span class="number">160</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		submitButton = <span class="keyword">new</span> JButton(<span class="string">"提交"</span>);</span><br><span class="line">		submitButton.setForeground(Color.black);		</span><br><span class="line">		submitButton.setBounds(<span class="number">90</span>, <span class="number">850</span>, <span class="number">100</span>, <span class="number">30</span>);	</span><br><span class="line">		ChosePanel.add(submitButton);</span><br><span class="line">		submitButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));<span class="comment">//鼠标放到提交按钮时指针变成小手</span></span><br><span class="line">		</span><br><span class="line">		timeLabel = <span class="keyword">new</span> JLabel(<span class="string">"距离考试结束："</span>);</span><br><span class="line">		timeLabel.setForeground(Color.BLUE);</span><br><span class="line">		realTimeLabel.setForeground(Color.BLUE);</span><br><span class="line">		timeLabel.setBounds(<span class="number">10</span>, <span class="number">720</span>, <span class="number">100</span>, <span class="number">30</span>);</span><br><span class="line">		realTimeLabel.setBounds(<span class="number">10</span>, <span class="number">740</span>, <span class="number">150</span>, <span class="number">30</span>);</span><br><span class="line">		ChosePanel.add(timeLabel);</span><br><span class="line">		ChosePanel.add(realTimeLabel);</span><br><span class="line">		</span><br><span class="line">		ExamTextPanel.add(ChosePanel);</span><br><span class="line">		</span><br><span class="line">		examArea.append(<span class="string">" 一、单项选择题"</span>+<span class="string">"\n"</span>);</span><br><span class="line">		ShowsinglechoiceQuestion();</span><br><span class="line">		examArea.append(<span class="string">" 二、多项选择题"</span>+<span class="string">"\n"</span>);</span><br><span class="line">		ShowmultiplechoiceQuestion();</span><br><span class="line">		examArea.append(<span class="string">" 三、多行填空题"</span>+<span class="string">"\n"</span>);</span><br><span class="line">		ShowmultifillinQuestion();</span><br><span class="line">		<span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;<span class="number">10</span>;i++) &#123;</span><br><span class="line">			<span class="keyword">if</span>(i&lt;<span class="number">4</span>)</span><br><span class="line">				addListener_singleradio(i);</span><br><span class="line">			<span class="keyword">if</span>(i&gt;=<span class="number">4</span> &amp;&amp; i&lt;<span class="number">7</span>)</span><br><span class="line">				addListener_checkbox(i);</span><br><span class="line">		&#125;</span><br><span class="line">		Answer();</span><br><span class="line">		addListener_submit();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//从数据库查询单选题</span></span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">ShowsinglechoiceQuestion</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">		Singlechoice Singlechoice = <span class="keyword">new</span> Singlechoice();</span><br><span class="line">	    List&lt;Question&gt; allQuestion = Singlechoice.getAllQuestion();</span><br><span class="line">	    <span class="keyword">for</span> (Question question : allQuestion) &#123;</span><br><span class="line">	    	String stem = question.getStem();</span><br><span class="line">	    	String ChoiceA = question.getChoiceA();</span><br><span class="line">	    	String ChoiceB = question.getChoiceB();</span><br><span class="line">	    	String ChoiceC = question.getChoiceC();</span><br><span class="line">	    	String ChoiceD = question.getChoiceD();</span><br><span class="line">	    	examArea.append(<span class="string">" "</span>+stem+<span class="string">"\n"</span>+<span class="string">" "</span>+ChoiceA+<span class="string">"\n"</span>+<span class="string">" "</span>+ChoiceB+<span class="string">"\n"</span>+<span class="string">" "</span>+ChoiceC+<span class="string">"\n"</span>+<span class="string">" "</span>+ChoiceD+<span class="string">"\n"</span>+<span class="string">"\n"</span>);</span><br><span class="line">	    &#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//从数据库查询多选题</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">ShowmultiplechoiceQuestion</span><span class="params">()</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">    	Multichoice Multichoice = <span class="keyword">new</span> Multichoice();</span><br><span class="line">    	List&lt;Question&gt; allQuestion = Multichoice.getAllQuestion();</span><br><span class="line">    	<span class="keyword">for</span>(Question question : allQuestion) &#123;</span><br><span class="line">    		String stem = question.getStem();</span><br><span class="line">        	String ChoiceA = question.getChoiceA();</span><br><span class="line">        	String ChoiceB = question.getChoiceB();</span><br><span class="line">        	String ChoiceC = question.getChoiceC();</span><br><span class="line">        	String ChoiceD = question.getChoiceD();</span><br><span class="line">        	examArea.append(<span class="string">" "</span>+stem+<span class="string">"\n"</span>+<span class="string">" "</span>+ChoiceA+<span class="string">"\n"</span>+<span class="string">" "</span>+ChoiceB+<span class="string">"\n"</span>+<span class="string">" "</span>+ChoiceC+<span class="string">"\n"</span>+<span class="string">" "</span>+ChoiceD+<span class="string">"\n"</span>+<span class="string">"\n"</span>);</span><br><span class="line">    	&#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//从数据库查询多行填空题</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">ShowmultifillinQuestion</span><span class="params">()</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">    	Multifillin Multifillin = <span class="keyword">new</span> Multifillin();</span><br><span class="line">    	List&lt;Question&gt; allQuestion = Multifillin.getAllQuestion();</span><br><span class="line">    	<span class="keyword">for</span>(Question question : allQuestion) &#123;</span><br><span class="line">    		String stem = question.getStem();</span><br><span class="line">    		examArea.append(<span class="string">" "</span>+stem+<span class="string">"\n"</span>+<span class="string">"\n"</span>);</span><br><span class="line">    	&#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//查询答案</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">Answer</span><span class="params">()</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">    	GetAnswers GetAnswers = <span class="keyword">new</span> GetAnswers();</span><br><span class="line">    	List&lt;Answers&gt; allAnswer = GetAnswers.getAllAnswers();</span><br><span class="line">    	i=<span class="number">0</span>;</span><br><span class="line">    	<span class="keyword">for</span>(Answers answer : allAnswer) &#123;	</span><br><span class="line">    			String answer1 = answer.getAnswer();</span><br><span class="line">    			<span class="keyword">if</span>(i&lt;<span class="number">4</span>)</span><br><span class="line">    				real_answers_singlechoice[i] = answer1;</span><br><span class="line">    			<span class="keyword">if</span>(i&gt;=<span class="number">4</span> &amp;&amp; i&lt;<span class="number">7</span>) </span><br><span class="line">    				real_answers_multiplechoice[i-<span class="number">4</span>] = answer1;</span><br><span class="line">    			<span class="keyword">if</span>(i&gt;=<span class="number">7</span> &amp;&amp; i&lt;<span class="number">10</span>)</span><br><span class="line">    				real_answers_multifillin[i-<span class="number">7</span>] = answer1;</span><br><span class="line">    			i++;</span><br><span class="line">    	&#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">TimeControlThread</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">			<span class="keyword">while</span> (time &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">				<span class="keyword">int</span> timeh = time / <span class="number">60</span> / <span class="number">60</span> % <span class="number">60</span>;</span><br><span class="line">				<span class="keyword">int</span> timem = time / <span class="number">60</span> % <span class="number">60</span>;</span><br><span class="line">				<span class="keyword">int</span> times = time % <span class="number">60</span>;</span><br><span class="line">				time--;</span><br><span class="line">				realTimeLabel.setText(<span class="string">"还剩"</span> + timeh + <span class="string">"小时"</span> + timem + <span class="string">"分钟"</span> + times + <span class="string">"秒"</span>);</span><br><span class="line">				<span class="keyword">try</span> &#123;</span><br><span class="line">					Thread.sleep(<span class="number">1000</span>);</span><br><span class="line">				&#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">					e.printStackTrace();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			submitButton.setEnabled(<span class="keyword">false</span>);</span><br><span class="line">			<span class="keyword">int</span> score = MainFrame.<span class="keyword">this</span>.Score();</span><br><span class="line">			examArea.setText(<span class="string">"考试已经结束\n您的最终成绩为："</span> + score);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//单选题监听器</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addListener_singleradio</span><span class="params">(<span class="keyword">int</span> current)</span> </span>&#123;</span><br><span class="line">    	ActionListener optionListner = <span class="keyword">new</span> ActionListener() &#123;</span><br><span class="line">    		<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">actionPerformed</span><span class="params">(ActionEvent e)</span> </span>&#123;</span><br><span class="line">    			JRadioButton radiobutton = (JRadioButton) e.getSource();</span><br><span class="line">    			System.out.print(current+<span class="string">" "</span>);</span><br><span class="line">    			answers_singlechoice[current] = radiobutton.getText();</span><br><span class="line">    			System.out.print(answers_singlechoice[current]+<span class="string">" "</span>);</span><br><span class="line">    			flag[current] = <span class="number">1</span>;</span><br><span class="line">    			System.out.print(flag[current]);</span><br><span class="line">    			System.out.println();</span><br><span class="line">    		&#125;</span><br><span class="line">    	&#125;;</span><br><span class="line">		asingleButton[current].addActionListener(optionListner);</span><br><span class="line">		bsingleButton[current].addActionListener(optionListner);</span><br><span class="line">		csingleButton[current].addActionListener(optionListner); </span><br><span class="line">		dsingleButton[current].addActionListener(optionListner);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//多选题监听器</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addListener_checkbox</span><span class="params">(<span class="keyword">int</span> current)</span> </span>&#123;</span><br><span class="line">    	ActionListener optionListner = <span class="keyword">new</span> ActionListener() &#123;</span><br><span class="line">    		<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">actionPerformed</span><span class="params">(ActionEvent e)</span> </span>&#123;</span><br><span class="line">    			System.out.print(current+<span class="string">" "</span>);</span><br><span class="line">    				<span class="keyword">if</span>(amultiButton[current-<span class="number">4</span>].isSelected()) &#123;</span><br><span class="line">    					answers_multiplechoice[current-<span class="number">4</span>][<span class="number">0</span>] = amultiButton[current-<span class="number">4</span>].getText();</span><br><span class="line">    					System.out.print(answers_multiplechoice[current-<span class="number">4</span>][<span class="number">0</span>]);</span><br><span class="line">    					flag[current] = <span class="number">1</span>;</span><br><span class="line">    				&#125;</span><br><span class="line">    				<span class="keyword">else</span> &#123;</span><br><span class="line">    					answers_multiplechoice[current-<span class="number">4</span>][<span class="number">0</span>] = <span class="keyword">null</span>;</span><br><span class="line">    				&#125;</span><br><span class="line">    				<span class="keyword">if</span>(bmultiButton[current-<span class="number">4</span>].isSelected()) &#123;</span><br><span class="line">    					answers_multiplechoice[current-<span class="number">4</span>][<span class="number">1</span>] = bmultiButton[current-<span class="number">4</span>].getText();</span><br><span class="line">    					System.out.print(answers_multiplechoice[current-<span class="number">4</span>][<span class="number">1</span>]);</span><br><span class="line">    					flag[current] = <span class="number">1</span>;</span><br><span class="line">    				&#125;</span><br><span class="line">    				<span class="keyword">else</span> &#123;</span><br><span class="line">    					answers_multiplechoice[current-<span class="number">4</span>][<span class="number">1</span>] = <span class="keyword">null</span>;</span><br><span class="line">    				&#125;</span><br><span class="line">    				<span class="keyword">if</span>(cmultiButton[current-<span class="number">4</span>].isSelected()) &#123;</span><br><span class="line">    					answers_multiplechoice[current-<span class="number">4</span>][<span class="number">2</span>] = cmultiButton[current-<span class="number">4</span>].getText();</span><br><span class="line">    					System.out.print(answers_multiplechoice[current-<span class="number">4</span>][<span class="number">2</span>]);</span><br><span class="line">    					flag[current] = <span class="number">1</span>;</span><br><span class="line">    				&#125;</span><br><span class="line">    				<span class="keyword">else</span> &#123;</span><br><span class="line">    					answers_multiplechoice[current-<span class="number">4</span>][<span class="number">2</span>] = <span class="keyword">null</span>;</span><br><span class="line">    				&#125;</span><br><span class="line">    				<span class="keyword">if</span>(dmultiButton[current-<span class="number">4</span>].isSelected()) &#123;</span><br><span class="line">    					answers_multiplechoice[current-<span class="number">4</span>][<span class="number">3</span>] = dmultiButton[current-<span class="number">4</span>].getText();</span><br><span class="line">    					System.out.print(answers_multiplechoice[current-<span class="number">4</span>][<span class="number">3</span>]);</span><br><span class="line">    					flag[current] = <span class="number">1</span>;</span><br><span class="line">    				&#125;</span><br><span class="line">    				<span class="keyword">else</span> &#123;</span><br><span class="line">    					answers_multiplechoice[current-<span class="number">4</span>][<span class="number">3</span>] = <span class="keyword">null</span>;</span><br><span class="line">    				&#125;</span><br><span class="line">    				</span><br><span class="line">    			<span class="comment">//&#125;</span></span><br><span class="line">    			System.out.print(answers_multiplechoice[current-<span class="number">4</span>][<span class="number">0</span>]+answers_multiplechoice[current-<span class="number">4</span>][<span class="number">1</span>]+answers_multiplechoice[current-<span class="number">4</span>][<span class="number">2</span>]+answers_multiplechoice[current-<span class="number">4</span>][<span class="number">3</span>]);	</span><br><span class="line">    			System.out.println();</span><br><span class="line">    		&#125;</span><br><span class="line">    	&#125;;</span><br><span class="line">    	amultiButton[current-<span class="number">4</span>].addActionListener(optionListner);</span><br><span class="line">    	bmultiButton[current-<span class="number">4</span>].addActionListener(optionListner);</span><br><span class="line">    	cmultiButton[current-<span class="number">4</span>].addActionListener(optionListner);</span><br><span class="line">    	dmultiButton[current-<span class="number">4</span>].addActionListener(optionListner);</span><br><span class="line">    	</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//提交按钮监听器</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addListener_submit</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    	submitButton.addActionListener(<span class="keyword">new</span> ActionListener() &#123;</span><br><span class="line">    		<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">actionPerformed</span><span class="params">(ActionEvent e)</span> </span>&#123;</span><br><span class="line">    			<span class="keyword">int</span> values = JOptionPane.showConfirmDialog(<span class="keyword">null</span>, <span class="string">"是否确认提交试卷？"</span>, <span class="string">"用户提示"</span>, JOptionPane.YES_NO_CANCEL_OPTION);</span><br><span class="line">    			<span class="keyword">if</span>(values == <span class="number">0</span>) &#123;</span><br><span class="line">    				<span class="keyword">int</span> score = MainFrame.<span class="keyword">this</span>.Score();</span><br><span class="line">    				examArea.setText(<span class="string">"考试已经结束\n您的最终成绩为："</span> + score);</span><br><span class="line">    			&#125;</span><br><span class="line">    		&#125;</span><br><span class="line">    	&#125;);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">Score</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    	score = <span class="number">0</span>;</span><br><span class="line">    	String multiplechoicegroup = <span class="string">""</span>;</span><br><span class="line">    	String real_multiplechoicegroup = <span class="string">""</span>;</span><br><span class="line">    	<span class="comment">//计算单选题</span></span><br><span class="line">    	<span class="keyword">int</span> m=<span class="number">0</span>;</span><br><span class="line">    	<span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;<span class="number">10</span>;i++) &#123;</span><br><span class="line">    		<span class="keyword">if</span>(i&lt;<span class="number">4</span>) &#123;</span><br><span class="line">    			<span class="keyword">if</span>(answers_singlechoice[i] != <span class="keyword">null</span>)</span><br><span class="line">    				<span class="keyword">if</span>(answers_singlechoice[i].equals(real_answers_singlechoice[i]))</span><br><span class="line">    					score += <span class="number">10</span>;</span><br><span class="line">    			<span class="keyword">else</span> <span class="keyword">if</span>(answers_singlechoice[i] == <span class="keyword">null</span>)</span><br><span class="line">    				score += <span class="number">0</span>;</span><br><span class="line">    		&#125;</span><br><span class="line">    		<span class="keyword">if</span>(i&gt;=<span class="number">4</span> &amp;&amp; i&lt;<span class="number">7</span>) &#123;</span><br><span class="line">    			multiplechoicegroup = <span class="string">""</span>;</span><br><span class="line">    			real_multiplechoicegroup = <span class="string">""</span>;</span><br><span class="line">    			<span class="keyword">for</span>(j=<span class="number">0</span>;j&lt;<span class="number">4</span>;j++) &#123;</span><br><span class="line">    				<span class="keyword">if</span>(answers_multiplechoice[i-<span class="number">4</span>][j] != <span class="keyword">null</span>)</span><br><span class="line">    					multiplechoicegroup += answers_multiplechoice[i-<span class="number">4</span>][j];</span><br><span class="line">    			&#125;</span><br><span class="line">    			String[] temp = real_answers_multiplechoice[i-<span class="number">4</span>].split(<span class="string">","</span>);</span><br><span class="line">    			<span class="keyword">for</span>(m=<span class="number">0</span>;m&lt;real_answers_multiplechoice[i-<span class="number">4</span>].split(<span class="string">","</span>).length;m++)</span><br><span class="line">    				real_multiplechoicegroup += real_answers_multiplechoice[i-<span class="number">4</span>].split(<span class="string">","</span>)[m];</span><br><span class="line">    			<span class="keyword">if</span>(multiplechoicegroup.equals(real_multiplechoicegroup))</span><br><span class="line">    				score +=<span class="number">10</span>;</span><br><span class="line">    		&#125;</span><br><span class="line">    		<span class="keyword">if</span>(i&gt;=<span class="number">7</span> &amp;&amp; i&lt;<span class="number">10</span>) &#123;</span><br><span class="line">    			String a = <span class="string">""</span>;</span><br><span class="line">    			<span class="keyword">for</span>(m=<span class="number">0</span>;m&lt;real_answers_multifillin[i-<span class="number">7</span>].split(<span class="string">","</span>).length;m++)</span><br><span class="line">    				a += real_answers_multifillin[i-<span class="number">7</span>].split(<span class="string">","</span>)[m];</span><br><span class="line">    			System.out.print(a);</span><br><span class="line">    			<span class="keyword">if</span>(Arrays.equals(multifillin_textarea[i-<span class="number">7</span>].getText().split(<span class="string">"\\r\\n|\\n|\\r"</span>), real_answers_multifillin[i-<span class="number">7</span>].split(<span class="string">","</span>)))</span><br><span class="line">    	    		score += <span class="number">10</span>;</span><br><span class="line">    		&#125;</span><br><span class="line">    	&#125;</span><br><span class="line">    	submitButton.setEnabled(<span class="keyword">false</span>);</span><br><span class="line">    	<span class="keyword">return</span> score;</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="入口"><a href="#入口" class="headerlink" title="入口"></a>入口</h2><h3 id="main-java"><a href="#main-java" class="headerlink" title="main.java"></a>main.java</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> examsystem;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">main</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">		<span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">		<span class="comment">//new MainFrame("考试界面");</span></span><br><span class="line">		<span class="keyword">new</span> LoginFrame(<span class="string">"登录界面"</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="效果图"><a href="#效果图" class="headerlink" title="效果图"></a>效果图</h1><p>登录界面<br><img src="/2021/10/01/Java课设——考试系统客户端/login.jpg" alt><br>答题界面<br><img src="/2021/10/01/Java课设——考试系统客户端/答题.jpg" alt><br>最终界面<br><img src="/2021/10/01/Java课设——考试系统客户端/score.jpg" alt></p>
+<h1 id="心得"><a href="#心得" class="headerlink" title="心得"></a>心得</h1><p>由于上课划水摸鱼严重，做课设的时候压根儿就是两眼一抹黑，完全不知道从哪里下手。从数据库中取题目的时候不知道怎么输出，时间又比较紧（还是平时没有提前准备），路上感觉要挂了，哭了好几次。。像我一样的普通大学生还是要平时好好学习。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/05/01/伍华聪web框架学习/" rel="next" title="伍华聪web框架学习">
+                <i class="fa fa-chevron-left"></i> 伍华聪web框架学习
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/10/02/CTF数论快速入门/" rel="prev" title="CTF数论快速入门（待更新）">
+                CTF数论快速入门（待更新） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/zql.jpg" alt="尘林">
+            
+              <p class="site-author-name" itemprop="name">尘林</p>
+              <p class="site-description motion-element" itemprop="description">势，只会裹挟随波逐流之人。一心既定，便不问大势所趋。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">52</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">66</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#课设要求"><span class="nav-number">1.</span> <span class="nav-text">课设要求</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#设计思路"><span class="nav-number">2.</span> <span class="nav-text">设计思路</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#登录页面"><span class="nav-number">2.1.</span> <span class="nav-text">登录页面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#试题读取与显示"><span class="nav-number">2.2.</span> <span class="nav-text">试题读取与显示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#答案显示"><span class="nav-number">2.3.</span> <span class="nav-text">答案显示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#做题模块"><span class="nav-number">2.4.</span> <span class="nav-text">做题模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据库设计"><span class="nav-number">2.5.</span> <span class="nav-text">数据库设计</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#代码"><span class="nav-number">3.</span> <span class="nav-text">代码</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#数据库连接模块"><span class="nav-number">3.1.</span> <span class="nav-text">数据库连接模块</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SQLConnection-java"><span class="nav-number">3.1.1.</span> <span class="nav-text">SQLConnection.java</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用户登录模块"><span class="nav-number">3.2.</span> <span class="nav-text">用户登录模块</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#User-java"><span class="nav-number">3.2.1.</span> <span class="nav-text">User.java</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#UserCheck-java"><span class="nav-number">3.2.2.</span> <span class="nav-text">UserCheck.java</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GetUser-java"><span class="nav-number">3.2.3.</span> <span class="nav-text">GetUser.java</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LoginFrame-java"><span class="nav-number">3.2.4.</span> <span class="nav-text">LoginFrame.java</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LoginPanel-java"><span class="nav-number">3.2.5.</span> <span class="nav-text">LoginPanel.java</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#试题显示模块"><span class="nav-number">3.3.</span> <span class="nav-text">试题显示模块</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Question-java"><span class="nav-number">3.3.1.</span> <span class="nav-text">Question.java</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Multichoice-java"><span class="nav-number">3.3.2.</span> <span class="nav-text">Multichoice.java</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Singlechoice-java"><span class="nav-number">3.3.3.</span> <span class="nav-text">Singlechoice.java</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#multifillin-java"><span class="nav-number">3.3.4.</span> <span class="nav-text">multifillin.java</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#答案显示-1"><span class="nav-number">3.4.</span> <span class="nav-text">答案显示</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Answers-java"><span class="nav-number">3.4.1.</span> <span class="nav-text">Answers.java</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GetAnswers-java"><span class="nav-number">3.4.2.</span> <span class="nav-text">GetAnswers.java</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#答题界面"><span class="nav-number">3.5.</span> <span class="nav-text">答题界面</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MainFrame-java"><span class="nav-number">3.5.1.</span> <span class="nav-text">MainFrame.java</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#入口"><span class="nav-number">3.6.</span> <span class="nav-text">入口</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#main-java"><span class="nav-number">3.6.1.</span> <span class="nav-text">main.java</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#效果图"><span class="nav-number">4.</span> <span class="nav-text">效果图</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#心得"><span class="nav-number">5.</span> <span class="nav-text">心得</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">尘林</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

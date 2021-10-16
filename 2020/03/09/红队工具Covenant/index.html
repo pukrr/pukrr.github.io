@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Covenant,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Covenant是一个.NET命令和控制框架，旨在突出.NET的攻击面，使进攻性.NET贸易工具的使用更加轻松，并充当红队成员的协作命令和控制平台。 Covenant是一个ASP.NET Core跨平台应用程序，其中包括基于Web的界面，该界面允许多用户协作。">
+<meta name="keywords" content="Covenant">
+<meta property="og:type" content="article">
+<meta property="og:title" content="红队工具Covenant">
+<meta property="og:url" content="http://yoursite.com/2020/03/09/红队工具Covenant/index.html">
+<meta property="og:site_name" content="pukr&#39;s BLOG">
+<meta property="og:description" content="Covenant是一个.NET命令和控制框架，旨在突出.NET的攻击面，使进攻性.NET贸易工具的使用更加轻松，并充当红队成员的协作命令和控制平台。 Covenant是一个ASP.NET Core跨平台应用程序，其中包括基于Web的界面，该界面允许多用户协作。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2020/03/09/红队工具Covenant/build报错.png">
+<meta property="og:image" content="http://yoursite.com/2020/03/09/红队工具Covenant/build成功.png">
+<meta property="og:image" content="http://yoursite.com/2020/03/09/红队工具Covenant/run.png">
+<meta property="og:image" content="http://yoursite.com/2020/03/09/红队工具Covenant/模块.png">
+<meta property="og:image" content="http://yoursite.com/2020/03/09/红队工具Covenant/dashboard.png">
+<meta property="og:image" content="http://yoursite.com/2020/03/09/红队工具Covenant/httplistener.png">
+<meta property="og:image" content="http://yoursite.com/2020/03/09/红队工具Covenant/launchers.png">
+<meta property="og:image" content="http://yoursite.com/2020/03/09/红队工具Covenant/binary.png">
+<meta property="og:image" content="http://yoursite.com/2020/03/09/红队工具Covenant/binary查杀.png">
+<meta property="og:image" content="http://yoursite.com/2020/03/09/红队工具Covenant/powerhost.png">
+<meta property="og:image" content="http://yoursite.com/2020/03/09/红队工具Covenant/powershell.png">
+<meta property="og:image" content="http://yoursite.com/2020/03/09/红队工具Covenant/msbuild.png">
+<meta property="og:image" content="http://yoursite.com/2020/03/09/红队工具Covenant/msbuild执行.png">
+<meta property="og:image" content="http://yoursite.com/2020/03/09/红队工具Covenant/xml查杀.png">
+<meta property="og:image" content="http://yoursite.com/2020/03/09/红队工具Covenant/installutil.png">
+<meta property="og:image" content="http://yoursite.com/2020/03/09/红队工具Covenant/installutil执行.png">
+<meta property="og:image" content="http://yoursite.com/2020/03/09/红队工具Covenant/installutil上线.png">
+<meta property="og:image" content="http://yoursite.com/2020/03/09/红队工具Covenant/installutil查杀.png">
+<meta property="og:image" content="http://yoursite.com/2020/03/09/红队工具Covenant/reg32.png">
+<meta property="og:image" content="http://yoursite.com/2020/03/09/红队工具Covenant/reg32出错.png">
+<meta property="og:image" content="http://yoursite.com/2020/03/09/红队工具Covenant/grunts.png">
+<meta property="og:image" content="http://yoursite.com/2020/03/09/红队工具Covenant/interact.png">
+<meta property="og:updated_time" content="2020-03-10T02:40:47.614Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="红队工具Covenant">
+<meta name="twitter:description" content="Covenant是一个.NET命令和控制框架，旨在突出.NET的攻击面，使进攻性.NET贸易工具的使用更加轻松，并充当红队成员的协作命令和控制平台。 Covenant是一个ASP.NET Core跨平台应用程序，其中包括基于Web的界面，该界面允许多用户协作。">
+<meta name="twitter:image" content="http://yoursite.com/2020/03/09/红队工具Covenant/build报错.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/03/09/红队工具Covenant/">
+
+
+
+
+
+  <title>红队工具Covenant | pukr's BLOG</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">pukr's BLOG</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">人类的悲欢并不相通</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/09/红队工具Covenant/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="尘林">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/zql.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="pukr's BLOG">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">红队工具Covenant</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-09T14:09:11+08:00">
+                2020-03-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/工具使用/" itemprop="url" rel="index">
+                    <span itemprop="name">工具使用</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Covenant是一个.NET命令和控制框架，旨在突出.NET的攻击面，使进攻性.NET贸易工具的使用更加轻松，并充当红队成员的协作命令和控制平台。</p>
+<p>Covenant是一个ASP.NET Core跨平台应用程序，其中包括基于Web的界面，该界面允许多用户协作。<br><a id="more"></a></p>
+<h1 id="0x00-安装"><a href="#0x00-安装" class="headerlink" title="0x00 安装"></a>0x00 安装</h1><p>这个安装由于我的一时脑残，花了很多时间，该踩的坑都踩了一个遍。</p>
+<p>项目主页：[<a href="https://github.com/cobbr/Covenant" target="_blank" rel="noopener">https://github.com/cobbr/Covenant</a>]<br>下载</p>
+<p>注意下载地址！<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone --recurse-submodules https://github.com/cobbr/Covenant</span><br></pre></td></tr></table></figure></p>
+<p>否则在后期启动的时候会报错：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">root@kali:~/桌面/root/etc/Covenant/Covenant# dotnet run</span><br><span class="line">Error: git submodules have not been initialized</span><br><span class="line">Covenant&apos;s submodules can be cloned with: git clone --recurse-submodules https://github.com/cobbr/Covenant</span><br><span class="line">Or initialized after cloning with: git submodule update --init --recursive</span><br></pre></td></tr></table></figure></p>
+<p>形如这样的报错需要按照要求执行：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git submodule update --init --recursive</span><br></pre></td></tr></table></figure></p>
+<p>然后进行dotnet的配置。我们还需要下载一个编译环境，确保安装dotnet核心版本2.2 SDK！Covenant尚不支持dotnet core 3.0，SDK是构建项目所必需的（不仅仅是运行时）。<br>首先下载：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget https://download.visualstudio.microsoft.com/download/pr/022d9abf-35f0-4fd5-8d1c-86056df76e89/477f1ebb70f314054129a9f51e9ec8ec/dotnet-sdk-2.2.207-linux-x64.tar.gz</span><br></pre></td></tr></table></figure></p>
+<p>或者下载地址：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://dotnet.microsoft.com/download/dotnet-core/thank-you/sdk-2.2.207-linux-x64-binaries</span><br></pre></td></tr></table></figure></p>
+<p>在<code>dotnet-sdk-2.2.207-linux-x64.tar.gz</code>的安装目录下执行配置语句：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p $HOME/dotnet &amp;&amp; tar zxf dotnet-sdk-2.2.207-linux-x64.tar.gz -C $HOME/dotnet</span><br><span class="line">export DOTNET_ROOT=$HOME/dotnet</span><br><span class="line">export PATH=$PATH:$HOME/dotnet</span><br></pre></td></tr></table></figure></p>
+<p>然后执行dotnet -h看是否配置成功。<br>注意，由于没有配置进环境变量，所以每次在新的终端用到<code>dotnet</code>命令的时候都需要执行：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export DOTNET_ROOT=$HOME/dotnet</span><br><span class="line">export PATH=$PATH:$HOME/dotnet</span><br></pre></td></tr></table></figure></p>
+<p>这里其实微软官网提醒过我们了。但由于没看懂英语也没带脑子，我配置的时候并不知道这一点。我查了很久很久<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bash: dotnet 未找到命令。</span><br></pre></td></tr></table></figure></p>
+<p>的原因。当然你可以选择一劳永逸，设置环境变量。</p>
+<p>接下来进行Covenant的启动。<br>进入Covenant/Covenant目录。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">export DOTNET_ROOT=$HOME/dotnet</span><br><span class="line">export PATH=$PATH:$HOME/dotnet</span><br><span class="line">dotnet build</span><br></pre></td></tr></table></figure></p>
+<p>执行dotnet build的时候，有可能会出现大片的报错。我又查了很久很久，没有收获。然后发现多次执行这条语句他就成功了。。。这是玄学问题吗。<br><img src="/2020/03/09/红队工具Covenant/build报错.png" alt><br><img src="/2020/03/09/红队工具Covenant/build成功.png" alt></p>
+<p>然后启动。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dotnet run</span><br></pre></td></tr></table></figure></p>
+<p>这里会显示一个网址<br><img src="/2020/03/09/红队工具Covenant/run.png" alt><br>本地访问。我在访问的时候，火狐浏览器说这是未配置签名的网站，这时点高级-&gt;允许例外，添加上这个网址的例外，再进行访问。</p>
+<p>然后就到了注册页面。</p>
+<h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><p>注册用户名和密码，你就成了管理员。其他用户的加入需要管理员来添加。</p>
+<p>各个模块的作用。<br><img src="/2020/03/09/红队工具Covenant/模块.png" alt><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Dashboard      #主页面。你可以很快地看到你得到的活跃的Grunts，当前活跃的监听器，以及一些最近分配给Grunts的任务。</span><br><span class="line">Listeners      #提供用于管理监听器和监听器配置文件的界面。</span><br><span class="line">Launchers      #提供用于创建，托管和下载启动器的界面，以用于启动新的Grunts。</span><br><span class="line">Grunts         #显示一个表格，以查看所有活动和不活动的Grunts，以及与Grunts进行交互并为其分配新任务。</span><br><span class="line">Templates      #植入模板 可自定义很多payload模板</span><br><span class="line">Tasks          #任务内置Mimikatz等很多模块执行多种任务，也可自行定制</span><br><span class="line">Taskings       #显示一个表格，以查看分配给Grunts的所有任务。</span><br><span class="line">Graph          #提供图形视图以可视化监听器，Grunts和对等图形。</span><br><span class="line">Data           #提供有关在操作过程中从Grunts 收集的数据的视图，例如凭据，指示器和下载的文件。</span><br><span class="line">Users          #提供用于用户管理和创建的界面。</span><br></pre></td></tr></table></figure></p>
+<h2 id="Dashboard-仪表盘"><a href="#Dashboard-仪表盘" class="headerlink" title="Dashboard 仪表盘"></a>Dashboard 仪表盘</h2><p><img src="/2020/03/09/红队工具Covenant/dashboard.png" alt></p>
+<h2 id="Listeners-监听器"><a href="#Listeners-监听器" class="headerlink" title="Listeners 监听器"></a>Listeners 监听器</h2><p>和CS、msf一样，在这里选择监听端口之类的。Covenant提供两种监听器，一种是HTTP，一种是TCP。当前，Covenant支持的唯一内置本机侦听器是HttpListener。</p>
+<p>点Creat进入配置。<br><img src="httplistener.png" alt></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Name					#监听器名称</span><br><span class="line">BindAddress				#监听器绑定的本地地址，一般选择0.0.0.0</span><br><span class="line">BindPort				#监听器绑定的本地端口</span><br><span class="line">ConnectPort				#Grunts直接连接的回调端口，也是URL的端口</span><br><span class="line">ConnectAddress				#回调地址，代表Url的主机名部分。必须至少指定一个ConnectAddress，也可以指定任意多个防止故障。Grunts将尝试连接到每个ConnectAddress，并将使用成功的第一个。如果使用重定向器，则应为指向外部重定向器的url。</span><br><span class="line">Url					#根据ConnectPort和ConnectAddress生成</span><br><span class="line">UseSSL					#确定监听器器应使用HTTPS还是HTTP协议。如果UseSSL值为true，则需要提供SSLCertificate。</span><br><span class="line">SSLCertificate				#如果UseSSL为true，则SSLCertificate是侦听器使用的证书。该证书应为PFX格式。</span><br><span class="line">SSLCertificatePassword			#用于保护SSLCertificate的密码。</span><br><span class="line">HttpProfile-HttpProfile确定Grunt和Listener通信的行为。</span><br></pre></td></tr></table></figure>
+<p>这里生成一个默认HTTP监听器。使用HTTP协议同C2 server进行通信。执行后反弹连接至C2 server。</p>
+<p>tcp监听器和HTTP监听器设置过程没有什么区别。</p>
+<p>GruntSMB</p>
+<p>使用命名管道，不直接同C2 server进行通信，而是在各个Grunts之间进行通信。执行后在本机创建命名管道，可通过其他的Grunt进行远程连接。</p>
+<p>这里多了一个配置参数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SMBPipeName</span><br></pre></td></tr></table></figure></p>
+<p>使用示例：</p>
+<p>GruntSMB为内网使用，可通过其他的Grunt进行激活，激活方式：</p>
+<p>Grunt:<id>-&gt;Task-&gt;Connect</id></p>
+<h1 id="Launchers-启动器"><a href="#Launchers-启动器" class="headerlink" title="Launchers 启动器"></a>Launchers 启动器</h1><p>有九种启动方式。<br><img src="/2020/03/09/红队工具Covenant/launchers.png" alt></p>
+<h2 id="Binary-二进制文件"><a href="#Binary-二进制文件" class="headerlink" title="Binary 二进制文件"></a>Binary 二进制文件</h2><p>这是当前唯一不依赖系统二进制文件的启动器。<br>默认操作即可。<br>选择监听器，然后选择通信模板，官方提供了三个，如果监听器选择的是走http的，那么模板也选择HTTP的，如果是TCP的那么就选GruntBridge的，模板选择不同下面选项的配置也有所不同，但是也就是多了个SSL证书的选项是否打开，一般来说看个人需求，没啥需求默认就好了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">Listener      #为监听器</span><br><span class="line">Template     #为通讯模板</span><br><span class="line">Delay        #为延迟 </span><br><span class="line">JitterPercent  #为抖动时间     </span><br><span class="line">ConnectAttempts #为尝试连接时间</span><br><span class="line">KillDate      #为杀死进程时间</span><br><span class="line">DotNetFrameworkVersion   #为.net的版本</span><br></pre></td></tr></table></figure>
+<p>.net版本为4.0，要和目标主机一致。<br>先点击generate再下载，或者托管到自己的网址，点击Host并输入网址。<br><img src="/2020/03/09/红队工具Covenant/binary.png" alt></p>
+<p>还可以查看源码，点击code。</p>
+<p>而且火绒、360均未查杀。查杀率为38/72.<br><img src="/2020/03/09/红队工具Covenant/binary查杀.png" alt></p>
+<h2 id="powershell"><a href="#powershell" class="headerlink" title="powershell"></a>powershell</h2><p>PowerShell启动器用于生成PowerShell代码和/或使用powershell.exe启动Grunt的PowerShell单行代码。</p>
+<p>将.NET程序集保存在数组，通过Assembly.Load()在内存进行加载</p>
+<p>代码示例：</p>
+<p>和Binary的配置差不多，点击generate会生成powershell单行代码。分为加密和未加密两个版本。生成好之后点击host输入文件名（例如a.ps1）<br><img src="/2020/03/09/红队工具Covenant/powerhost.png" alt><br><img src="/2020/03/09/红队工具Covenant/powershell.png" alt><br>会自动跳转到生成页面，现在我们的url和路径就会自动加载了。打开目标机powershell执行上线。</p>
+<h2 id="MSbuild"><a href="#MSbuild" class="headerlink" title="MSbuild"></a>MSbuild</h2><p>MSBuild启动器用于生成MSBuild XML文件，该文件使用msbuild.exe启动Grunt。</p>
+<p>生成操作都类似。然后generate并下载。<br><img src="/2020/03/09/红队工具Covenant/msbuild.png" alt><br>在<code>C:\Windows\Microsoft.NET\Framework\v4.0.30319</code>目录下执行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MSBuild.exe GruntStager.xml</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2020/03/09/红队工具Covenant/msbuild执行.png" alt></p>
+<p>将.NET程序集保存在数组，通过Assembly.Load()在内存进行加载。<br>代码示例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">System.Reflection.Assembly.Load(oms.ToArray()).EntryPoint.Invoke(0, new object[] &#123; new string[]&#123; &#125; &#125;);</span><br></pre></td></tr></table></figure></p>
+<p>火绒、360均未报毒。virustotal查杀率6/59。<br><img src="/2020/03/09/红队工具Covenant/xml查杀.png" alt></p>
+<h2 id="InstallUtil"><a href="#InstallUtil" class="headerlink" title="InstallUtil"></a>InstallUtil</h2><p>InstallUtil启动器用于生成InstallUtil dll文件，该文件使用installutil.exe启动Grunt。</p>
+<p>生成操作都类似。然后generate并下载。<br><img src="/2020/03/09/红队工具Covenant/installutil.png" alt><br>生成了dll文件，可通过<code>C:\Windows\Microsoft.NET\Framework\v4.0.30319</code>目录下的InstallUtil.exe执行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">InstallUtil.exe /logfile= /LogToConsole=false /U GruntStager.dll</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2020/03/09/红队工具Covenant/installutil执行.png" alt><br><img src="/2020/03/09/红队工具Covenant/installutil上线.png" alt></p>
+<p>火绒、360均未报毒。virustotal查杀率9/71。<br><img src="/2020/03/09/红队工具Covenant/installutil查杀.png" alt></p>
+<blockquote><p>Please keep in mind that any of the launchers that rely on DotNetToJScript may not work on some of the latest versions of Windows 10 and Windows Server 2016 and/or may be signatured by some AMSI providers.<br>任何依赖DotNetToJScript的启动器可能无法在Windows 10和Windows Server 2016的某些最新版本上运行，并且/或者可能由某些AMSI提供程序签名。</p>
+</blockquote>
+<p>从这里开始我再也没有成功过。</p>
+<h2 id="Wmic"><a href="#Wmic" class="headerlink" title="Wmic"></a>Wmic</h2><p>Wmic启动器用于生成xsl文件和/或wmic单行程序，后者使用依赖于DotNetToJScript的wmic.exe启动Grunt。</p>
+<p>Covenant在此处提示这个方法也许无法在Windows 10和Windows Server 2016下使用。</p>
+<p>将.NET程序集保存在数组，通过DotNetToJScript的方法在内存进行加载。<br>代码示例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">var o = delegate.DynamicInvoke(array.ToArray()).CreateInstance(&apos;Grunt.GruntStager&apos;);</span><br></pre></td></tr></table></figure></p>
+<p>参考文章：<a href="https://3gstudent.github.io/3gstudent.github.io/%E5%88%A9%E7%94%A8wmic%E8%B0%83%E7%94%A8xsl%E6%96%87%E4%BB%B6%E7%9A%84%E5%88%86%E6%9E%90%E4%B8%8E%E5%88%A9%E7%94%A8/" target="_blank" rel="noopener">利用wmic调用xsl文件的分析与利用</a></p>
+<h2 id="Regsvr32"><a href="#Regsvr32" class="headerlink" title="Regsvr32"></a>Regsvr32</h2><p>Regsvr32启动器用于生成SCT文件和/或regsvr32单行程序，后者使用依赖于DotNetToJScript的regsvr32.exe启动Grunt。</p>
+<p>Covenant在此处提示这个方法也许无法在Windows 10和Windows Server 2016下使用。<br>将.NET程序集保存在数组，通过DotNetToJScript的方法在内存进行加载。</p>
+<p>奇怪我在win2008和xp上都没有成功。<br><img src="/2020/03/09/红队工具Covenant/reg32.png" alt><br><img src="/2020/03/09/红队工具Covenant/reg32出错.png" alt></p>
+<h2 id="mshta"><a href="#mshta" class="headerlink" title="mshta"></a>mshta</h2><p>Covenant在此处提示这个方法也许无法在Windows 10和Windows Server 2016下使用。</p>
+<p>将.NET程序集保存在数组，通过DotNetToJScript的方法在内存进行加载。</p>
+<h2 id="cscript"><a href="#cscript" class="headerlink" title="cscript"></a>cscript</h2><p>cscript file.js<br>这里借助了DotNetToJScript，其他内容同上。</p>
+<h2 id="wscript"><a href="#wscript" class="headerlink" title="wscript"></a>wscript</h2><p>wscript file.js<br>这里借助了DotNetToJScript，其他内容同上。</p>
+<h1 id="Grunts"><a href="#Grunts" class="headerlink" title="Grunts"></a>Grunts</h1><p>上线主机列表。<br><img src="/2020/03/09/红队工具Covenant/grunts.png" alt></p>
+<p>info        记录上线主机信息<br>interact    与上线主机进行交互。Covenant内置了多种命令和工具都可以在此处与主机进行交互（详情见Tasks）<br>task         Grunt支持的功能，给上线主机下发任务，内置了多个开源工具<br>tasking        正在进行的任务<br><img src="/2020/03/09/红队工具Covenant/interact.png" alt><br>这里怎么发挥就是另一篇文章了。关于后渗透测试、内网等。</p>
+<h1 id="Templates"><a href="#Templates" class="headerlink" title="Templates"></a>Templates</h1><p>在Templates里会显示现已有的Grunt通讯模板，可以进行添加修改。</p>
+<h1 id="Tasks"><a href="#Tasks" class="headerlink" title="Tasks"></a>Tasks</h1><p>已有的任务，如mimikatz，portscan等，还有描述，可以谷歌翻译一下。<br>可以进行插件的添加。</p>
+<h1 id="Taskings"><a href="#Taskings" class="headerlink" title="Taskings"></a>Taskings</h1><p>所有主机任务情况。</p>
+<h1 id="Graph"><a href="#Graph" class="headerlink" title="Graph"></a>Graph</h1><p>图形化界面显示上线主机和监听器间的关系。</p>
+<h1 id="Data"><a href="#Data" class="headerlink" title="Data"></a>Data</h1><p>显示凭证、指标、下载、截图等<br>Credentials为已经在目标主机里获取到的账号密码、Hash、票据信息<br>Indicators为目标指标、网络指标、文件指标<br>Downloads为已从目标主机上下载的文件<br>Screenshost为已截取的目标主机桌面图</p>
+<h1 id="User"><a href="#User" class="headerlink" title="User"></a>User</h1><p>在User里可以添加和管理Covenant账户</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Covenant/" rel="tag"># Covenant</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/03/08/汇编语言——结构/" rel="next" title="汇编语言——结构">
+                <i class="fa fa-chevron-left"></i> 汇编语言——结构
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/03/16/C语言笔记（二）——函数与程序结构/" rel="prev" title="C语言笔记（二）——函数与程序结构">
+                C语言笔记（二）——函数与程序结构 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/zql.jpg" alt="尘林">
+            
+              <p class="site-author-name" itemprop="name">尘林</p>
+              <p class="site-description motion-element" itemprop="description">势，只会裹挟随波逐流之人。一心既定，便不问大势所趋。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">52</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">66</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0x00-安装"><span class="nav-number">1.</span> <span class="nav-text">0x00 安装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用"><span class="nav-number">2.</span> <span class="nav-text">使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Dashboard-仪表盘"><span class="nav-number">2.1.</span> <span class="nav-text">Dashboard 仪表盘</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Listeners-监听器"><span class="nav-number">2.2.</span> <span class="nav-text">Listeners 监听器</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Launchers-启动器"><span class="nav-number">3.</span> <span class="nav-text">Launchers 启动器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Binary-二进制文件"><span class="nav-number">3.1.</span> <span class="nav-text">Binary 二进制文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#powershell"><span class="nav-number">3.2.</span> <span class="nav-text">powershell</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MSbuild"><span class="nav-number">3.3.</span> <span class="nav-text">MSbuild</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#InstallUtil"><span class="nav-number">3.4.</span> <span class="nav-text">InstallUtil</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Wmic"><span class="nav-number">3.5.</span> <span class="nav-text">Wmic</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Regsvr32"><span class="nav-number">3.6.</span> <span class="nav-text">Regsvr32</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mshta"><span class="nav-number">3.7.</span> <span class="nav-text">mshta</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cscript"><span class="nav-number">3.8.</span> <span class="nav-text">cscript</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#wscript"><span class="nav-number">3.9.</span> <span class="nav-text">wscript</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Grunts"><span class="nav-number">4.</span> <span class="nav-text">Grunts</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Templates"><span class="nav-number">5.</span> <span class="nav-text">Templates</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Tasks"><span class="nav-number">6.</span> <span class="nav-text">Tasks</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Taskings"><span class="nav-number">7.</span> <span class="nav-text">Taskings</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Graph"><span class="nav-number">8.</span> <span class="nav-text">Graph</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Data"><span class="nav-number">9.</span> <span class="nav-text">Data</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#User"><span class="nav-number">10.</span> <span class="nav-text">User</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">尘林</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

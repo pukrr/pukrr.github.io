@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="nmap,nse,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="NES是nmap的脚本，在nmap/scripts文件夹下，语言为lua。这篇只记录我如何初识nse scripts，目前程序基础没跟上，后续还会再次学习，深入编写。">
+<meta name="keywords" content="nmap,nse">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NSE脚本编写">
+<meta property="og:url" content="http://yoursite.com/2020/07/22/NSE脚本编写/index.html">
+<meta property="og:site_name" content="pukr&#39;s BLOG">
+<meta property="og:description" content="NES是nmap的脚本，在nmap/scripts文件夹下，语言为lua。这篇只记录我如何初识nse scripts，目前程序基础没跟上，后续还会再次学习，深入编写。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2020/07/22/NSE脚本编写/目录.jpg">
+<meta property="og:image" content="http://yoursite.com/2020/07/22/NSE脚本编写/scan.jpg">
+<meta property="og:image" content="http://yoursite.com/2020/07/22/NSE脚本编写/nselib.jpg">
+<meta property="og:image" content="http://yoursite.com/2020/07/22/NSE脚本编写/scan-2.jpg">
+<meta property="og:image" content="http://yoursite.com/2020/07/22/NSE脚本编写/defcon.jpg">
+<meta property="og:updated_time" content="2020-07-28T08:55:59.679Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="NSE脚本编写">
+<meta name="twitter:description" content="NES是nmap的脚本，在nmap/scripts文件夹下，语言为lua。这篇只记录我如何初识nse scripts，目前程序基础没跟上，后续还会再次学习，深入编写。">
+<meta name="twitter:image" content="http://yoursite.com/2020/07/22/NSE脚本编写/目录.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/07/22/NSE脚本编写/">
+
+
+
+
+
+  <title>NSE脚本编写 | pukr's BLOG</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">pukr's BLOG</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">人类的悲欢并不相通</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/07/22/NSE脚本编写/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="尘林">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/zql.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="pukr's BLOG">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">NSE脚本编写</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-07-22T20:26:54+08:00">
+                2020-07-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/基础训练/" itemprop="url" rel="index">
+                    <span itemprop="name">基础训练</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>NES是nmap的脚本，在nmap/scripts文件夹下，语言为lua。这篇只记录我如何初识nse scripts，目前程序基础没跟上，后续还会再次学习，深入编写。<br><img src="/2020/07/22/NSE脚本编写/目录.jpg" alt><br><a id="more"></a><br>点开一个看看结构：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br></pre></td><td class="code"><pre><span class="line">local brute = require &quot;brute&quot;</span><br><span class="line">local creds = require &quot;creds&quot;</span><br><span class="line">local shortport = require &quot;shortport&quot;</span><br><span class="line">local stdnse = require &quot;stdnse&quot;</span><br><span class="line">local ftp = require &quot;ftp&quot;</span><br><span class="line"></span><br><span class="line">description = [[</span><br><span class="line">Performs brute force password auditing against FTP servers.</span><br><span class="line"></span><br><span class="line">Based on old ftp-brute.nse script by Diman Todorov, Vlatko Kosturjak and Ron Bowes.</span><br><span class="line">]]</span><br><span class="line"></span><br><span class="line">---</span><br><span class="line">-- @see ftp-anon.nse</span><br><span class="line">--</span><br><span class="line">-- @usage</span><br><span class="line">-- nmap --script ftp-brute -p 21 &lt;host&gt;</span><br><span class="line">--</span><br><span class="line">-- This script uses brute library to perform password</span><br><span class="line">-- guessing.</span><br><span class="line">--</span><br><span class="line">-- @output</span><br><span class="line">-- PORT   STATE SERVICE</span><br><span class="line">-- 21/tcp open  ftp</span><br><span class="line">-- | ftp-brute:</span><br><span class="line">-- |   Accounts</span><br><span class="line">-- |     root:root - Valid credentials</span><br><span class="line">-- |   Statistics</span><br><span class="line">-- |_    Performed 510 guesses in 610 seconds, average tps: 0</span><br><span class="line">--</span><br><span class="line">-- @args ftp-brute.timeout the amount of time to wait for a response on the socket.</span><br><span class="line">--       Lowering this value may result in a higher throughput for servers</span><br><span class="line">--       having a delayed response on incorrect login attempts. (default: 5s)</span><br><span class="line"></span><br><span class="line">-- 06.08.16 - Modified by Sergey Khegay to support new brute.lua adaptability mechanism.</span><br><span class="line">author = &quot;Aleksandar Nikolic&quot;</span><br><span class="line">license = &quot;Same as Nmap--See https://nmap.org/book/man-legal.html&quot;</span><br><span class="line">categories = &#123;&quot;intrusive&quot;, &quot;brute&quot;&#125;</span><br><span class="line"></span><br><span class="line">portrule = shortport.port_or_service(21, &quot;ftp&quot;)</span><br><span class="line"></span><br><span class="line">local arg_timeout = stdnse.parse_timespec(stdnse.get_script_args(SCRIPT_NAME .. &quot;.timeout&quot;))</span><br><span class="line">arg_timeout = (arg_timeout or 5) * 1000</span><br><span class="line"></span><br><span class="line">Driver = &#123;</span><br><span class="line"></span><br><span class="line">  new = function(self, host, port)</span><br><span class="line">    local o = &#123;&#125;</span><br><span class="line">    setmetatable(o, self)</span><br><span class="line">    self.__index = self</span><br><span class="line">    o.host = host</span><br><span class="line">    o.port = port</span><br><span class="line">    return o</span><br><span class="line">  end,</span><br><span class="line"></span><br><span class="line">  connect = function( self )</span><br><span class="line">    self.socket = brute.new_socket()</span><br><span class="line">    -- discard buffer, we&apos;ll create a new one over the BruteSocket later</span><br><span class="line">    local realsocket, code, message, buffer = ftp.connect(self.host, self.port, &#123;request_timeout=arg_timeout&#125;)</span><br><span class="line">    if not realsocket then</span><br><span class="line">      return false, brute.Error:new( &quot;Couldn&apos;t connect to host: &quot; .. (code or message) )</span><br><span class="line">    end</span><br><span class="line">    self.socket.socket = realsocket</span><br><span class="line">    return true</span><br><span class="line">  end,</span><br><span class="line"></span><br><span class="line">  login = function (self, user, pass)</span><br><span class="line">    local buffer = stdnse.make_buffer(self.socket, &quot;\r?\n&quot;)</span><br><span class="line">    local status, code, message = ftp.auth(self.socket, buffer, user, pass)</span><br><span class="line"></span><br><span class="line">    if not status then</span><br><span class="line">      if not code then</span><br><span class="line">        return false, brute.Error:new(&quot;socket error during login: &quot; .. message)</span><br><span class="line">      elseif code == 530 then</span><br><span class="line">        return false, brute.Error:new( &quot;Incorrect password&quot; )</span><br><span class="line">      elseif code == 421 then</span><br><span class="line">        local err = brute.Error:new(&quot;Too many connections&quot;)</span><br><span class="line">        err:setReduce(true)</span><br><span class="line">        return false, err</span><br><span class="line">      else</span><br><span class="line">        stdnse.debug1(&quot;WARNING: Unhandled response: %d %s&quot;, code, message)</span><br><span class="line">        local err = brute.Error:new(&quot;Unhandled response&quot;)</span><br><span class="line">        err:setRetry(true)</span><br><span class="line">        return false, err</span><br><span class="line">      end</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    stdnse.debug1(&quot;Successful login: %s/%s&quot;, user, pass)</span><br><span class="line">    return true, creds.Account:new( user, pass, creds.State.VALID)</span><br><span class="line">  end,</span><br><span class="line"></span><br><span class="line">  disconnect = function( self )</span><br><span class="line">    ftp.close(self.socket)</span><br><span class="line">    return true</span><br><span class="line">  end</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">action = function( host, port )</span><br><span class="line">  local status, result</span><br><span class="line">  local engine = brute.Engine:new(Driver, host, port)</span><br><span class="line">  engine.options.script_name = SCRIPT_NAME</span><br><span class="line"></span><br><span class="line">  status, result = engine:start()</span><br><span class="line">  return result</span><br><span class="line">end</span><br></pre></td></tr></table></figure></p>
+<p>接下来去看一看文档，指路：<a href="https://nmap.org/book/nse.html" target="_blank" rel="noopener">文档指路</a></p>
+<h1 id="脚本分类"><a href="#脚本分类" class="headerlink" title="脚本分类"></a>脚本分类</h1><p>nmap脚本大概分为下列类别：<br><blockquote><p>NSE scripts define a list of categories they belong to. Currently defined categories are auth, broadcast, brute, default. discovery, dos, exploit, external, fuzzer, intrusive, malware, safe, version, and vuln. Category names are not case sensitive. The following list describes each category.<br>NSE脚本定义了它们所属的类别的列表。当前定义的类别 auth， broadcast， brute， default。 discovery， dos， exploit， external， fuzzer， intrusive， malware， safe， version，和 vuln。类别名称不区分大小写。以下列表描述了每个类别。</p>
+</blockquote></p>
+<p><strong>Auth</strong>：负责处理鉴权证书（绕过鉴权）<br><strong>Broadcast</strong>：在局域网内探测更多服务的开启情况，如DHCP/DNS/SQLServer等。<br><strong>Brute</strong>：针对常见的应用提供暴力破解方式，如HTTP/SMTP等。<br><strong>Default</strong>：使用-sC或者-A选项扫描时默认的脚本，提供基本的脚本扫描能力。<br><strong>Discovery</strong>：对网络进行更多信息的搜集，如SMB枚举，SNMP查询等。<br><strong>DOS</strong>：用于拒绝服务攻击。<br><strong>Exploit</strong>：利用已知的漏洞入侵系统。<br><strong>External</strong>：利用第三方的数据库或者资源，如进行whois解析。<br><strong>Fuzzer</strong>：模糊测试脚本，发送异常的包到目标机，探测潜在漏洞。<br><strong>Intrusive</strong>：入侵性脚本，此类脚本可能引起对方IDS/IPS的记录或者屏蔽。<br><strong>Malware</strong>：探测目标机是否感染了病毒、开启后门等信息。<br><strong>Safe</strong>：与Intrusive相反，属于安全性脚本。<br><strong>Version</strong>：负责增强服务与版本扫描功能。<br><strong>Vuln</strong>：负责检测目标机是否有常见漏洞。</p>
+<h1 id="运行规则"><a href="#运行规则" class="headerlink" title="运行规则"></a>运行规则</h1><p>脚本运行在nmap扫描中的哪一阶段<br><strong>Prerule scripts</strong>：包含一个<code>prerule()</code>函数，且<code>prerule()</code>函数不接受参数。<br>在扫描开始前，<code>prerule()</code>函数执行一次，并且整个流程只执行一次。<br><blockquote><p>These scripts run before any of Nmap’s scan phases, so Nmap has not collected any information about its targets yet. They can be useful for tasks which don’t depend on specific scan targets, such as performing network broadcast requests to query DHCP and DNS SD servers. Some of these scripts can generate new targets for Nmap to scan (only if you specify the newtargets NSE argument). For example, dns-zone-transfer can obtain a list of IPs in a domain using a zone transfer request and then automatically add them to Nmap’s scan target list.<br>它们对于不依赖于特定扫描目标的任务很有用，例如执行网络广播请求以查询DHCP和DNS SD服务器。其中一些脚本可以为Nmap生成新目标进行扫描（仅当您指定newtargets NSE参数时）。例如，dns-zone-transfer 可以使用区域传输请求获取域中IP的列表，然后将其自动添加到Nmap的扫描目标列表中。</p>
+</blockquote><br><strong>Host scripts</strong>：包含一个<code>hostrule(host)</code>函数。扫描完一个host目标执行一次，N个host执行N次。<br><blockquote><p>Scripts in this phase run during Nmap’s normal scanning process after Nmap has performed host discovery, port scanning, version detection, and OS detection against the target host. This type of script is invoked once against each target host which matches its hostrule function. Examples are whois-ip, which looks up ownership information for a target IP, and path-mtu which tries to determine the maximum IP packet size which can reach the target without requiring fragmentation.<br>在此阶段的脚本在Nmap对目标主机执行了主机发现，端口扫描，版本检测和OS检测之后，在Nmap的正常扫描过程中运行。对与它的hostrule功能匹配的每个目标主机调用一次这种脚本。例子有whois-ip，它查找目标IP的所有权信息，而path-mtu 试图确定无需分段即可达到目标的最大IP数据包大小。</p>
+</blockquote><br><strong>Service scripts</strong>:包含一个<code>portrule(host, port)</code>函数，扫描完一个主机的一个端口后执行一次，N个端口执行N次。<br><blockquote><p>These scripts run against specific services listening on a target host. For example, Nmap includes more than 15 http service scripts to run against web servers. If a host has web servers running on multiple ports, those scripts may run multiple times (one for each port). These are the most commong Nmap script type, and they are distinguished by containing a portrule function for deciding which detected services a script should run against.<br>这些脚本针对在目标主机上侦听的特定服务运行。例如，Nmap包含超过15种针对Web服务器运行的http服务脚本。如果主机的Web服务器在多个端口上运行，则这些脚本可能会运行多次（每个端口一个）。这些是最常见的Nmap脚本类型，它们的区别在于包含portrule用于确定脚本应针对哪些检测到的服务运行的函数。</p>
+</blockquote><br><strong>Postrule</strong>：包含一个<code>postrule()</code>函数，且<code>postrule()</code>函数不接受参数。全部扫描完之后运行一次，整个流程只执行一次。<br><blockquote><p>These scripts run after Nmap has scanned all of its targets. They can be useful for formatting and presenting Nmap output. For example, ssh-hostkey is best known for its service (portrule) script which connects to SSH servers, discovers their public keys, and prints them. But it also includes a postrule which checks for duplicate keys amongst all of the hosts scanned, then prints any that are found. Another potential use for a postrule script is printing a reverse-index of the Nmap output—showing which hosts run a particular service rather than just listing the services on each host.<br>这些脚本在Nmap扫描完所有目标之后运行。它们对于格式化和显示Nmap输出很有用。例如，ssh- hostkey脚本连接到SSH服务器，发现其公共密钥并输出它们。但是它还包括一个规则，该规则检查所有扫描的主机中是否有重复的密钥，然后打印找到的所有密钥。postrule的另一个潜在用途是Nmap输出的反向索引-显示哪些主机在运行特定服务，而不仅仅是在每个主机上列出服务。</p>
+</blockquote></p>
+<h1 id="脚本格式"><a href="#脚本格式" class="headerlink" title="脚本格式"></a>脚本格式</h1><p><strong>description</strong>：描述了脚本要测试的内容以及用户应注意的任何重要说明。根据脚本的复杂程度，描述的长度可能从几句话到几段不等。<br><strong>categories</strong>：定义了脚本所属的一个或多个类别，见上面<code>脚本分类</code>。类别不区分大小写，可以按任何顺序指定，以数组形式列出。<br><strong>author</strong>：作者信息。<br><strong>license</strong>：许可信息。一般格式为：<br><code>license = &quot;Same as Nmap--See https://nmap.org/book/man-legal.html</code><br><code>license = &quot;Simplified (2-clause) BSD license--See https://nmap.org/svn/docs/licenses/BSD-simplified</code><br><strong>dependencies</strong>：元素是脚本名的数组，内部元素在这个脚本之前执行。如果省略该字段，则NSE将假定脚本没有依赖性。<br><strong>rules</strong>：见上面的规则。<br><strong>action</strong>：规则执行时的指令。Lua函数，它接受与规则相同的参数。<br><strong>Environment Variables</strong>：</p>
+<h1 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">local shortport = require &quot;shortport&quot;</span><br><span class="line">description = [[a http server detected test demo]]</span><br><span class="line"></span><br><span class="line">author = &quot;reborn&quot;</span><br><span class="line">license = &quot;Same as Nmap--See https://nmap.org/book/man-legal.html&quot;</span><br><span class="line">categories = &#123;&quot;default&quot;&#125;</span><br><span class="line">portrule = function(host,port)</span><br><span class="line">	return port.protocol == &quot;tcp&quot; and port.number == 80 and port.service == &quot;http&quot; and port.state == &quot;open&quot;</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">action = function(host,port)</span><br><span class="line">return &quot;this is a web server&quot;</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+<p>放到<code>/usr/share/nmap/scripts/nselib</code>下，更新一下脚本库。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nmap --script-updatedb</span><br></pre></td></tr></table></figure></p>
+<p>执行：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nmap --script sample.nse  192.168.10.179</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2020/07/22/NSE脚本编写/scan.jpg" alt></p>
+<h1 id="类库"><a href="#类库" class="headerlink" title="类库"></a>类库</h1><p><img src="/2020/07/22/NSE脚本编写/nselib.jpg" alt><br>脚本通过包含类库，起到python类似import的作用。</p>
+<p>试写一个库：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">function PortTest(port)</span><br><span class="line">	return string.format(&quot;Port &apos;%s&apos; is open&quot;,port)</span><br><span class="line">end</span><br></pre></td></tr></table></figure></p>
+<p>在脚本中调用自己写的库<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">local shortport = require &quot;shortport&quot;</span><br><span class="line">local test = require &quot;test&quot;</span><br><span class="line"></span><br><span class="line">description = [[test]]</span><br><span class="line">author = &quot;reborn&quot;</span><br><span class="line">license = &quot;Same as Nmap--See https://nmap.org/book/man-legal.html&quot;</span><br><span class="line">categories = &#123;&quot;default&quot;&#125;</span><br><span class="line"></span><br><span class="line">portrule = function(host,port)</span><br><span class="line">	return true</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">action = function(host,port)</span><br><span class="line">	return PortTest(port.number)</span><br><span class="line">end</span><br></pre></td></tr></table></figure></p>
+<p>更新执行：<br><img src="/2020/07/22/NSE脚本编写/scan-2.jpg" alt></p>
+<p>defcon2018上开发小哥写的探测动态ip摄像头的脚本：<br><img src="/2020/07/22/NSE脚本编写/defcon.jpg" alt><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">description = [[</span><br><span class="line">finds a webcam.</span><br><span class="line">]]</span><br><span class="line"></span><br><span class="line">categories = &#123;&quot;safe&quot;, &quot;discovery&quot;&#125;</span><br><span class="line"></span><br><span class="line">require(&quot;http&quot;)</span><br><span class="line"></span><br><span class="line">function portrule(host,port)</span><br><span class="line">	return port.number == 80</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">function action(host,port)</span><br><span class="line">	local response</span><br><span class="line">	</span><br><span class="line">	response = http.get(host,port,&quot;/cam.jpg&quot;)</span><br><span class="line">	if response.status and response.status ~= 404 and response.header[&quot;server&quot;] and string.match(response.header[&quot;server&quot;],&quot;^thttpd&quot;) then</span><br><span class="line">		return &quot;webcam founnd.&quot;</span><br><span class="line">	end</span><br><span class="line">end</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nmap -n -Pn -p 80 --open --script http-webcam 66.7.171.- -oN webcam.nmap -d</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/nmap/" rel="tag"># nmap</a>
+          
+            <a href="/tags/nse/" rel="tag"># nse</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/07/05/python笔记/" rel="next" title="python笔记">
+                <i class="fa fa-chevron-left"></i> python笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/07/28/SQL-Server存储过程排序算法/" rel="prev" title="SQL Server存储过程排序算法">
+                SQL Server存储过程排序算法 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/zql.jpg" alt="尘林">
+            
+              <p class="site-author-name" itemprop="name">尘林</p>
+              <p class="site-description motion-element" itemprop="description">势，只会裹挟随波逐流之人。一心既定，便不问大势所趋。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">52</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">66</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#脚本分类"><span class="nav-number">1.</span> <span class="nav-text">脚本分类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#运行规则"><span class="nav-number">2.</span> <span class="nav-text">运行规则</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#脚本格式"><span class="nav-number">3.</span> <span class="nav-text">脚本格式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#示例"><span class="nav-number">4.</span> <span class="nav-text">示例</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#类库"><span class="nav-number">5.</span> <span class="nav-text">类库</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">尘林</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

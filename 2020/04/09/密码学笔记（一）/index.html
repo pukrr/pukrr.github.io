@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="密码学,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="对称加密密码：加密密钥与解密密钥相同。如分组密码，流密码。 非对称加密密码：加密密钥与解密密钥不同。如公钥加密，数字签名。">
+<meta name="keywords" content="密码学">
+<meta property="og:type" content="article">
+<meta property="og:title" content="密码学笔记（一）">
+<meta property="og:url" content="http://yoursite.com/2020/04/09/密码学笔记（一）/index.html">
+<meta property="og:site_name" content="pukr&#39;s BLOG">
+<meta property="og:description" content="对称加密密码：加密密钥与解密密钥相同。如分组密码，流密码。 非对称加密密码：加密密钥与解密密钥不同。如公钥加密，数字签名。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2021-10-15T01:20:35.148Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="密码学笔记（一）">
+<meta name="twitter:description" content="对称加密密码：加密密钥与解密密钥相同。如分组密码，流密码。 非对称加密密码：加密密钥与解密密钥不同。如公钥加密，数字签名。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/04/09/密码学笔记（一）/">
+
+
+
+
+
+  <title>密码学笔记（一） | pukr's BLOG</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">pukr's BLOG</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">人类的悲欢并不相通</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/09/密码学笔记（一）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="尘林">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/zql.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="pukr's BLOG">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">密码学笔记（一）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-09T17:34:55+08:00">
+                2020-04-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/密码学入门/" itemprop="url" rel="index">
+                    <span itemprop="name">密码学入门</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>对称加密密码：加密密钥与解密密钥相同。如分组密码，流密码。</p>
+<p>非对称加密密码：加密密钥与解密密钥不同。如公钥加密，数字签名。<br><a id="more"></a></p>
+<h1 id="Yusa的日常生活—美国大选"><a href="#Yusa的日常生活—美国大选" class="headerlink" title="Yusa的日常生活—美国大选"></a>Yusa的日常生活—美国大选</h1><p>先放源码：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> Crypto.Util.number <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> secret <span class="keyword">import</span> p,q</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">gcd</span><span class="params">(a, b)</span>:</span></span><br><span class="line">    <span class="keyword">while</span> b:</span><br><span class="line">        a, b = b, a%b</span><br><span class="line">    <span class="keyword">return</span> a</span><br><span class="line">   </span><br><span class="line">flag=<span class="string">'DASCTF&#123;********************************&#125;'</span></span><br><span class="line">e=<span class="number">3</span></span><br><span class="line">phi = (p<span class="number">-1</span>)*(q<span class="number">-1</span>)</span><br><span class="line"><span class="keyword">assert</span> gcd(e,phi)==<span class="number">1</span></span><br><span class="line"></span><br><span class="line">d = inverse(e,phi)</span><br><span class="line"><span class="keyword">print</span> <span class="string">r"Form of vote:&#123;voter&#125;:&#123;votee&#125;! eg: "</span></span><br><span class="line"><span class="keyword">print</span> <span class="string">"Yusa:Trump!"</span></span><br><span class="line">vote = pow(bytes_to_long(<span class="string">"Yusa:Trump!"</span>),d,p*q)</span><br><span class="line"><span class="keyword">print</span> <span class="string">"vote:"</span>,vote</span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    yusa = int(raw_input(<span class="string">"Your vote: "</span>))</span><br><span class="line">    vote = long_to_bytes(pow(yusa,e,p*q)).split(<span class="string">":"</span>)</span><br><span class="line">    <span class="keyword">print</span> vote</span><br><span class="line">    <span class="keyword">if</span> vote[<span class="number">-1</span>] == <span class="string">"Trump!"</span>:</span><br><span class="line">        <span class="keyword">print</span> flag[:<span class="number">10</span>]</span><br><span class="line">    <span class="keyword">elif</span> vote[<span class="number">-1</span>] == <span class="string">"Biden!"</span>:</span><br><span class="line">        <span class="keyword">print</span> flag[<span class="number">10</span>:]</span><br><span class="line"><span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">    <span class="keyword">print</span> str(e)</span><br><span class="line">    exit()</span><br></pre></td></tr></table></figure></p>
+<p>分析源码可以知道，这道题用私钥d进行签名，公钥e进行解签，是一道RSA签名题。前半段flag发送题目给出的信息就得到了，重点是后半段flag。分析可知，发送一段以”:Biden!”结尾的字节流密文让他解密，就得到了后半段flag。<br>即找出$signiture^{3}\equiv “:Biden!”(modn)$，并且n未知。<br>但是由于e很小，所以$signiture^{e}$也远小于n，就可以伪造一个假的签名$f^{3}$的低位等于”:Biden!”就可以了。即找到$f^{3}\equiv m(mod2^{56})$，其中m=bytes_to_long(b”:Biden!”)。转换成了一个基本的RSA问题，$e=3$，$n=2^{56}$。<br>$\varphi (2^{56})=2^{56}-2^{55}=2^{55}$得到phi，d=invert(e,phi)，c=pow(m,d,n)。就出来了。</p>
+<h1 id="Yusa的密码学课堂—CBC第二课"><a href="#Yusa的密码学课堂—CBC第二课" class="headerlink" title="Yusa的密码学课堂—CBC第二课"></a>Yusa的密码学课堂—CBC第二课</h1><p><strong>什么是CBC</strong></p>
+<blockquote>
+<p>在CBC模式中，每个明文块先与前一个密文块进行异或后，再进行加密。在这种方法中，每个密文块都依赖于它前面的所有明文块。同时，为了保证每条消息的唯一性，在第一个块中需要使用初始化向量。</p>
+</blockquote>
+<p>题目文件：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> Crypto.Cipher <span class="keyword">import</span> AES</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line">flag=<span class="string">'DASCTF&#123;********************************&#125;'</span></span><br><span class="line">BLOCKSIZE = <span class="number">16</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">pad</span><span class="params">(data)</span>:</span></span><br><span class="line">	pad_len = BLOCKSIZE - (len(data) % BLOCKSIZE) <span class="keyword">if</span>  len(data) % BLOCKSIZE != <span class="number">0</span> <span class="keyword">else</span> <span class="number">0</span></span><br><span class="line">	<span class="keyword">return</span> data + chr(pad_len) * pad_len</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">unpad</span><span class="params">(data)</span>:</span></span><br><span class="line">	num = ord(data[<span class="number">-1</span>])</span><br><span class="line">	<span class="keyword">return</span> data[:-num]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_enc</span><span class="params">(data,key,iv)</span>:</span></span><br><span class="line">	cipher = AES.new(key,AES.MODE_CBC,iv)</span><br><span class="line">	encrypt = cipher.encrypt(pad(data))</span><br><span class="line">	<span class="keyword">return</span> encrypt</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">enc</span><span class="params">(data,key)</span>:</span></span><br><span class="line">	<span class="keyword">try</span>:</span><br><span class="line">	iv = raw_input(<span class="string">"Your iv: "</span>).decode(<span class="string">'hex'</span>)</span><br><span class="line">	cipher = AES.new(key,AES.MODE_CBC,iv)</span><br><span class="line">	encrypt = cipher.encrypt(pad(data))</span><br><span class="line">	<span class="keyword">return</span> encrypt</span><br><span class="line">	<span class="keyword">except</span>:</span><br><span class="line">		exit()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dec</span><span class="params">(data,key,iv)</span>:</span></span><br><span class="line">	<span class="keyword">try</span>:</span><br><span class="line">		cipher = AES.new(key,AES.MODE_CBC,iv)</span><br><span class="line">		encrypt = cipher.decrypt(data)</span><br><span class="line">		<span class="keyword">return</span> unpad(encrypt)</span><br><span class="line">	<span class="keyword">except</span>:</span><br><span class="line">		exit()</span><br><span class="line">	    </span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">task</span><span class="params">()</span>:</span></span><br><span class="line">	<span class="keyword">try</span>:</span><br><span class="line">		key = os.urandom(<span class="number">16</span>)</span><br><span class="line">		iv = os.urandom(<span class="number">16</span>)</span><br><span class="line">		cipher = _enc(flag,key,iv).encode(<span class="string">'hex'</span>)</span><br><span class="line">		<span class="keyword">print</span> cipher</span><br><span class="line">		paintext = raw_input(<span class="string">"Amazing function: "</span>).decode(<span class="string">'hex'</span>)</span><br><span class="line">		<span class="keyword">print</span> enc(paintext,key).encode(<span class="string">'hex'</span>)</span><br><span class="line"></span><br><span class="line">		backdoor = raw_input(<span class="string">"Another amazing function: "</span>)</span><br><span class="line">		<span class="keyword">assert</span> backdoor != cipher </span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> dec(backdoor.decode(<span class="string">'hex'</span>),key,iv) == flag:</span><br><span class="line">			<span class="keyword">print</span> flag</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			<span class="keyword">print</span> <span class="string">"Wow, amazing results."</span></span><br><span class="line">			</span><br><span class="line">	<span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">		<span class="keyword">print</span> str(e)</span><br><span class="line">		exit()</span><br><span class="line">		</span><br><span class="line">		</span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">	task()</span><br></pre></td></tr></table></figure></p>
+<p>主要代码如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">task</span><span class="params">()</span>:</span></span><br><span class="line">	<span class="keyword">try</span>:</span><br><span class="line">		key = os.urandom(<span class="number">16</span>)</span><br><span class="line">		iv = os.urandom(<span class="number">16</span>)</span><br><span class="line">		cipher = _enc(flag,key,iv).encode(<span class="string">'hex'</span>)</span><br><span class="line">		<span class="keyword">print</span> cipher</span><br><span class="line">		paintext = raw_input(<span class="string">"Amazing function: "</span>).decode(<span class="string">'hex'</span>)</span><br><span class="line">		<span class="keyword">print</span> enc(paintext,key).encode(<span class="string">'hex'</span>)</span><br><span class="line"></span><br><span class="line">		backdoor = raw_input(<span class="string">"Another amazing function: "</span>)</span><br><span class="line">		<span class="keyword">assert</span> backdoor != cipher </span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> dec(backdoor.decode(<span class="string">'hex'</span>),key,iv) == flag:</span><br><span class="line">			<span class="keyword">print</span> flag</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			<span class="keyword">print</span> <span class="string">"Wow, amazing results."</span></span><br></pre></td></tr></table></figure></p>
+<p>首先加密他的flag，将密文输出。我们输入自己的<code>iv</code>和<code>paintext</code>进行加密，得到。然后输入我们的密文<code>backdoor</code>进行解密，并且输入的密文不能等于题干加密后的密文<code>cipher</code>。但是<code>backdoor</code>解密出来的明文要等于flag。</p>
+<p>为什么不同的密文可以解密出相同的明文？关键在于<code>pad</code>和<code>unpad</code>函数。由于是分块传输，所以需要规定每块的长度。<code>pad</code>函数就是用于规范长度的，定义了blocksize为16。如最后一块的长度不足16，则进行填充。<code>unpad</code>则会将填充位减去。</p>
+<p><code>os.urandom</code>函数用来获取一个指定长度的随机bytes对象，即用于加密的</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/密码学/" rel="tag"># 密码学</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/04/08/ret2libc/" rel="next" title="ret2libc">
+                <i class="fa fa-chevron-left"></i> ret2libc
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/04/14/树莓派开发（一）——HC-SR04传感器/" rel="prev" title="树莓派开发（一）——HC-SR04传感器">
+                树莓派开发（一）——HC-SR04传感器 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/zql.jpg" alt="尘林">
+            
+              <p class="site-author-name" itemprop="name">尘林</p>
+              <p class="site-description motion-element" itemprop="description">势，只会裹挟随波逐流之人。一心既定，便不问大势所趋。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">52</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">66</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Yusa的日常生活—美国大选"><span class="nav-number">1.</span> <span class="nav-text">Yusa的日常生活—美国大选</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Yusa的密码学课堂—CBC第二课"><span class="nav-number">2.</span> <span class="nav-text">Yusa的密码学课堂—CBC第二课</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">尘林</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

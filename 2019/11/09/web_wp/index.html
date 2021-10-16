@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="CTF,WEB,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="各种web题。">
+<meta name="keywords" content="CTF,WEB">
+<meta property="og:type" content="article">
+<meta property="og:title" content="web_wp">
+<meta property="og:url" content="http://yoursite.com/2019/11/09/web_wp/index.html">
+<meta property="og:site_name" content="pukr&#39;s BLOG">
+<meta property="og:description" content="各种web题。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2019/11/09/web_wp/ascii.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/09/web_wp/XFF.png">
+<meta property="og:updated_time" content="2020-12-05T02:47:41.143Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="web_wp">
+<meta name="twitter:description" content="各种web题。">
+<meta name="twitter:image" content="http://yoursite.com/2019/11/09/web_wp/ascii.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/11/09/web_wp/">
+
+
+
+
+
+  <title>web_wp | pukr's BLOG</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">pukr's BLOG</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">人类的悲欢并不相通</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/09/web_wp/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="尘林">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/zql.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="pukr's BLOG">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">web_wp</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-09T16:15:03+08:00">
+                2019-11-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF/" itemprop="url" rel="index">
+                    <span itemprop="name">CTF</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>各种web题。<br><a id="more"></a></p>
+<h1 id="solveme-Array2String"><a href="#solveme-Array2String" class="headerlink" title="solveme_Array2String"></a>solveme_Array2String</h1><p>首先访问页面直接得到源码：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    error_reporting(<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">require</span> <span class="keyword">__DIR__</span>.<span class="string">'/flag.php'</span>;</span><br><span class="line"></span><br><span class="line">    $value = $_GET[<span class="string">'value'</span>];</span><br><span class="line">    $username = $_GET[<span class="string">'username'</span>];</span><br><span class="line">    $password = $_GET[<span class="string">'password'</span>];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> ($i = <span class="number">0</span>; $i &lt; count($value); ++$i) &#123;</span><br><span class="line">        <span class="keyword">if</span> ($_GET[<span class="string">'username'</span>]) <span class="keyword">unset</span>($username);</span><br><span class="line">        <span class="keyword">if</span> ($value[$i] &gt; <span class="number">32</span> &amp;&amp; $value[$i] &lt; <span class="number">127</span>) <span class="keyword">unset</span>($value);</span><br><span class="line">        <span class="keyword">else</span> $username .= chr($value[$i]);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> ($username == <span class="string">'15th_HackingCamp'</span> &amp;&amp; md5($password) == md5(file_get_contents(<span class="string">'./secret.passwd'</span>))) &#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">'Hello '</span>.$username.<span class="string">'!'</span>, <span class="string">'&lt;br&gt;'</span>, PHP_EOL;</span><br><span class="line">            <span class="keyword">echo</span> $flag, <span class="string">'&lt;hr&gt;'</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    highlight_file(<span class="keyword">__FILE__</span>);</span><br></pre></td></tr></table></figure></p>
+<p>发现一个文件”./secret.passwd”，访问得到密码：simple_passw0rd<br>第11行发现，不能直接传入username参数，但是最后username的值需要value经过chr()后是15th_HackingCamp；<br>第12行发现，value的值不能在ASCII的可见值范围内……what？<br><img src="/2019/11/09/web_wp/ascii.png" alt><br>首先做个尝试：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$i = <span class="number">12.3</span>;</span><br><span class="line"><span class="keyword">echo</span> $i;</span><br><span class="line"><span class="keyword">echo</span><span class="string">"&lt;br&gt;"</span>;</span><br><span class="line">$test = $i.<span class="string">"e1"</span>;</span><br><span class="line"><span class="keyword">echo</span> chr($test);</span><br><span class="line"><span class="keyword">echo</span><span class="string">"&lt;br&gt;"</span>;</span><br><span class="line"><span class="keyword">echo</span> ord(chr($test));</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<p>运行结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">12.3</span><br><span class="line">&#123;</span><br><span class="line">123</span><br></pre></td></tr></table></figure></p>
+<p>可见，构造字符串”12.3e1”可以尝试绕过对数值123的限制。<br>然而，php中的chr()函数会对大于256的数取mod 256，即模256。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Note that if the number is higher than 256, it will return the number mod 256.</span><br><span class="line">For example :</span><br><span class="line">chr(321)=A because A=65(256)</span><br></pre></td></tr></table></figure></p>
+<p>对照ASCII表，构造更加简单的15th_HackingCamp的绕过：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">index.php?value[]=305&amp;value[]=309&amp;value[]=372&amp;value[]=360&amp;value[]=351&amp;value[]=328&amp;value[]=353&amp;value[]=355&amp;value[]=363&amp;value[]=361&amp;value[]=366&amp;value[]=359&amp;value[]=323&amp;value[]=353&amp;value[]=365&amp;value[]=368&amp;password=simple_passw0rd</span><br></pre></td></tr></table></figure></p>
+<p>得到结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Hello 15th_HackingCamp!</span><br><span class="line">flag&#123;91b966596782c89bc6eb4daa75f459d7&#125;</span><br></pre></td></tr></table></figure></p>
+<p>核心在于提交Hello 15th_HackingCamp!对应的ASCII值。</p>
+<h1 id="PHP弱类型"><a href="#PHP弱类型" class="headerlink" title="PHP弱类型"></a>PHP弱类型</h1><h2 id="0x01前提"><a href="#0x01前提" class="headerlink" title="0x01前提"></a>0x01前提</h2><p>php弱类型比较的原因在于两种符号：==和===<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">==  在进行比较的时候，会先将字符串转化成相同类型，再比较。</span><br><span class="line">=== 在进行比较的时候，会先判断两个字符串的类型是否相同，再比较。</span><br></pre></td></tr></table></figure></p>
+<p><strong>数值和字符串进行比较的时候，会将字符串转化成数值</strong><br>测试1：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">var_dump(<span class="string">"abc"</span> == <span class="number">0</span>);</span><br><span class="line">var_dump(<span class="string">"1abc"</span> == <span class="number">1</span>);</span><br><span class="line">var_dump(<span class="string">"abc1"</span> == <span class="number">1</span>);</span><br><span class="line">var_dump(<span class="string">"*abc"</span> == <span class="number">0</span>);</span><br><span class="line">var_dump(<span class="string">"abc"</span> == <span class="number">0</span>);</span><br><span class="line">var_dump(<span class="string">"0eabc"</span> == <span class="number">0</span>);</span><br><span class="line">var_dump(<span class="string">"0eabc"</span> == <span class="string">"0e123"</span>);</span><br><span class="line">var_dump(<span class="string">"0eabc"</span> == <span class="string">"0edef"</span>);</span><br><span class="line">var_dump(<span class="string">"0e456"</span> == <span class="string">"0e123"</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">bool(true)</span><br><span class="line">bool(true)</span><br><span class="line">bool(false)</span><br><span class="line">bool(true)</span><br><span class="line">bool(true)</span><br><span class="line">bool(true)</span><br><span class="line">bool(false)</span><br><span class="line">bool(false)</span><br><span class="line">bool(true)</span><br></pre></td></tr></table></figure></p>
+<p>可见：<br><strong>1.字符串被强制转化成数值，所以结果是0，什么时候都会和0相等。</strong><br><strong>2.”1abc”进行转化的时候结果和1相等，原因是<em>如果该字符串没有包含’.’,’e’,’E’并且其数值值在整形的范围之内该字符串被当作int来取值，其他所有情况下都被作为float来取值，该字符串的开始部分决定了它的值，如果该字符串以合法的数值开始，则使用该数值，否则其值为0</em></strong><br><strong>3.”0e123”==”0e456”相互比较的时候，会将0e这类字符串识别为科学技术法的数字，0的无论多少次方都是零，所以相等。并且，PHP处理哈希字符串时，会利用！=和==来对哈希值进行比较，它把每一个以0e开头的哈希值都解释为0，所以如果两个不同的密码经过哈希以后，其哈希值都是以0e开头的，那么PHP将认为他们相同，都是0。当hash以”0exxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx”之类的形式出现时，与”0”相等。可以利用这一漏洞，通过输入一个经过哈希后，以0E开头的字符串，即会被PHP解释为0，如果数据库中存在这种哈希值以0E开头的密码的话，他就可以以这个用户的身份登录进去，尽管并没有真正的密码。</strong><br>测试2：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$test=<span class="number">1</span> + <span class="string">"1.5"</span>; <span class="comment">// $test=2.5(float)</span></span><br><span class="line">$test=<span class="number">1</span>+<span class="string">"-1.3e3"</span>; <span class="comment">//$test=-1299(float)</span></span><br><span class="line">$test=<span class="number">1</span>+<span class="string">"bob-1.3e3"</span>;<span class="comment">//$test=1(int)</span></span><br><span class="line">$test=<span class="number">1</span>+<span class="string">"2admin"</span>;<span class="comment">//$test=3(int)</span></span><br><span class="line">$test=<span class="number">1</span>+<span class="string">"admin2"</span>;<span class="comment">//$test=1(int)</span></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="0x02-赛题代码"><a href="#0x02-赛题代码" class="headerlink" title="0x02 赛题代码"></a>0x02 赛题代码</h2><h3 id="hash-0e"><a href="#hash-0e" class="headerlink" title="hash(0e)"></a>hash(0e)</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">&lt;?php</span></span><br><span class="line"> $a = @$_POST[<span class="string">'a'</span>];</span><br><span class="line"> $b = @$_POST[<span class="string">'b'</span>];</span><br><span class="line"> setcookie(<span class="string">"door"</span>,<span class="number">0</span>, time()+<span class="number">3600</span>*<span class="number">24</span>);</span><br><span class="line"> <span class="keyword">if</span> (!(<span class="keyword">isset</span>($a)) &amp;&amp; !(<span class="keyword">isset</span>($b)))&#123;</span><br><span class="line">     <span class="keyword">echo</span> <span class="string">"You have no value"</span>;</span><br><span class="line">     <span class="keyword">die</span>();</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> <span class="keyword">if</span> (strlen($a) &gt; <span class="number">11</span>)&#123;</span><br><span class="line">     <span class="keyword">echo</span> <span class="string">"to long"</span>;</span><br><span class="line">     <span class="keyword">die</span>();</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> $hack = @$_GET[<span class="string">'hack'</span>];</span><br><span class="line"> $rep = @$_GET[<span class="string">'rep'</span>];</span><br><span class="line"></span><br><span class="line"> <span class="keyword">if</span> ((strlen($hack) &gt;=<span class="number">6</span>) || (strlen($rep) &gt;=<span class="number">6</span> ))&#123;</span><br><span class="line">     <span class="keyword">echo</span> <span class="string">"h OR r No,worng!&lt;br /&gt;"</span>;</span><br><span class="line">     <span class="keyword">die</span>();</span><br><span class="line"> &#125;</span><br><span class="line"> $str1 = hash(<span class="string">'md5'</span>,$a,<span class="keyword">false</span>);</span><br><span class="line"></span><br><span class="line"> $str2 = strstr(hash(<span class="string">'md5'</span>,$b,<span class="keyword">false</span>),$hack,$rep);</span><br><span class="line"></span><br><span class="line"> <span class="keyword">echo</span> <span class="string">"str1:"</span>.$str1;</span><br><span class="line"></span><br><span class="line"> <span class="keyword">echo</span> <span class="string">'&lt;br /&gt;'</span>;</span><br><span class="line"></span><br><span class="line"> <span class="keyword">echo</span> <span class="string">"str2:"</span>.$str2;</span><br><span class="line"></span><br><span class="line"> <span class="keyword">echo</span> <span class="string">'&lt;br /&gt;'</span>;</span><br><span class="line"></span><br><span class="line"> <span class="keyword">if</span> (($str1 == $str2) &amp;&amp; !($a == $b) ) &#123;</span><br><span class="line">     <span class="keyword">include</span>(<span class="string">'qwe.php'</span>);</span><br><span class="line">     <span class="keyword">echo</span> <span class="string">"flag:"</span>.$flag;</span><br><span class="line"> &#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<p>wp：<br>大体方向还是php处理0e，然后$a是做了长度限制，我们找了两个字符都是0e开头的字符串。<br>然后$a传入QNKCDZO，$b传入没有长度限制的s878926199a。<br>接着就是strstr函数哪里，我们只要知道md5($b)的值，然后给$hack传入20，也就是md5($b)的最后2位。<br>再把$rep改成true，就是返回20前面的字符串。这样就会和我们传入$a的值一样了。把$rep改成true，就是返回20前面的字符串。这样就会和我们传入$a的值一样了。</p>
+<h3 id="弱类型"><a href="#弱类型" class="headerlink" title="== 弱类型"></a>== 弱类型</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">show_source(<span class="keyword">__FILE__</span>);</span><br><span class="line"><span class="keyword">include</span>(<span class="string">"config.php"</span>);</span><br><span class="line">$a=@$_GET[<span class="string">'a'</span>];</span><br><span class="line">$b=@$_GET[<span class="string">'b'</span>];</span><br><span class="line"><span class="keyword">if</span>($a==<span class="number">0</span> <span class="keyword">and</span> $a)&#123;</span><br><span class="line">    <span class="keyword">echo</span> $flag1;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span>(is_numeric($b))&#123;</span><br><span class="line">    <span class="keyword">exit</span>();</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span>($b&gt;<span class="number">1234</span>)&#123;</span><br><span class="line">    <span class="keyword">echo</span> $flag2;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<p>wp：<br>1.打开页面，进行代码审计，发现同时满足 $a==0 和 $a 时，显示flag1。<br>2.php中的弱类型比较会使’abc’ == 0为真，所以输入a=abc时，可得到flag1，如图所示。（abc可换成任意字符）。<br>3.is_numeric() 函数会判断如果是数字和数字字符串则返回 TRUE，否则返回 FALSE,且php中弱类型比较时，会使(‘1234a’ == 1234)为真，所以当输入a=abc&amp;b=1235a，可得到flag2，如图所示。</p>
+<h1 id="请在2秒内解答"><a href="#请在2秒内解答" class="headerlink" title="请在2秒内解答"></a>请在2秒内解答</h1><p>需要python脚本跑一跑。</p>
+<h2 id="秋名山老司机"><a href="#秋名山老司机" class="headerlink" title="秋名山老司机"></a>秋名山老司机</h2><p>题目：bugku_web_秋名山老司机<br>python脚本：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line">url = <span class="string">"http://123.206.87.240:8002/qiumingshan/"</span></span><br><span class="line">s = requests.Session()</span><br><span class="line">response = s.get(url)</span><br><span class="line">reg = re.compile(<span class="string">r'[0-9+\-*]&#123;3,&#125;[0-9]'</span>)</span><br><span class="line">obj = reg.findall(response.text)</span><br><span class="line">data = &#123;<span class="string">'value'</span>: eval(obj[<span class="number">0</span>])&#125;</span><br><span class="line">reps = s.post(url, data=data)</span><br><span class="line">print(reps.content.decode(<span class="string">'utf-8'</span>))</span><br></pre></td></tr></table></figure></p>
+<p>脚本都是类似的。</p>
+<h1 id="IP禁止访问"><a href="#IP禁止访问" class="headerlink" title="IP禁止访问"></a>IP禁止访问</h1><p><em>X-Forwarded-For（XFF）是用来识别通过HTTP代理或负载均衡方式连接到Web服务器的客户端最原始的IP地址的HTTP请求头字段。（摘自wiki）</em><br>Burpsuite抓包在请求头中添加X-Forwarded-For: 127.0.0.1伪装成本地登录，即不会被ban ip。<br><img src="/2019/11/09/web_wp/XFF.png" alt></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/CTF/" rel="tag"># CTF</a>
+          
+            <a href="/tags/WEB/" rel="tag"># WEB</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/11/05/Linux-Command/" rel="next" title="Linux_Command">
+                <i class="fa fa-chevron-left"></i> Linux_Command
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/11/12/ms17-010复现/" rel="prev" title="ms17_010复现">
+                ms17_010复现 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/zql.jpg" alt="尘林">
+            
+              <p class="site-author-name" itemprop="name">尘林</p>
+              <p class="site-description motion-element" itemprop="description">势，只会裹挟随波逐流之人。一心既定，便不问大势所趋。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">52</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">66</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#solveme-Array2String"><span class="nav-number">1.</span> <span class="nav-text">solveme_Array2String</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#PHP弱类型"><span class="nav-number">2.</span> <span class="nav-text">PHP弱类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01前提"><span class="nav-number">2.1.</span> <span class="nav-text">0x01前提</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-赛题代码"><span class="nav-number">2.2.</span> <span class="nav-text">0x02 赛题代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#hash-0e"><span class="nav-number">2.2.1.</span> <span class="nav-text">hash(0e)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#弱类型"><span class="nav-number">2.2.2.</span> <span class="nav-text">== 弱类型</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#请在2秒内解答"><span class="nav-number">3.</span> <span class="nav-text">请在2秒内解答</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#秋名山老司机"><span class="nav-number">3.1.</span> <span class="nav-text">秋名山老司机</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#IP禁止访问"><span class="nav-number">4.</span> <span class="nav-text">IP禁止访问</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">尘林</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

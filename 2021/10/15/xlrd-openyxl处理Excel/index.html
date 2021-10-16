@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="帮助学长学姐处理研究生建模题时学习的python简单处理Excel读写数据等。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="xlrd+openyxl处理Excel">
+<meta property="og:url" content="http://yoursite.com/2021/10/15/xlrd-openyxl处理Excel/index.html">
+<meta property="og:site_name" content="pukr&#39;s BLOG">
+<meta property="og:description" content="帮助学长学姐处理研究生建模题时学习的python简单处理Excel读写数据等。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2021/10/15/xlrd-openyxl处理Excel/less.jpg">
+<meta property="og:image" content="http://yoursite.com/2021/10/15/xlrd-openyxl处理Excel/more.jpg">
+<meta property="og:image" content="http://yoursite.com/2021/10/15/xlrd-openyxl处理Excel/转置.png">
+<meta property="og:image" content="http://yoursite.com/2021/10/15/xlrd-openyxl处理Excel/era.jpg">
+<meta property="og:image" content="http://yoursite.com/2021/10/15/xlrd-openyxl处理Excel/admet.jpg">
+<meta property="og:updated_time" content="2021-10-16T04:56:39.260Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="xlrd+openyxl处理Excel">
+<meta name="twitter:description" content="帮助学长学姐处理研究生建模题时学习的python简单处理Excel读写数据等。">
+<meta name="twitter:image" content="http://yoursite.com/2021/10/15/xlrd-openyxl处理Excel/less.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2021/10/15/xlrd-openyxl处理Excel/">
+
+
+
+
+
+  <title>xlrd+openyxl处理Excel | pukr's BLOG</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">pukr's BLOG</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">人类的悲欢并不相通</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/10/15/xlrd-openyxl处理Excel/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="尘林">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/zql.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="pukr's BLOG">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">xlrd+openyxl处理Excel</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-10-15T09:18:28+08:00">
+                2021-10-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>帮助学长学姐处理研究生建模题时学习的python简单处理Excel读写数据等。<br><a id="more"></a></p>
+<h1 id="从两张表中读数据进行对比并将结果写入新表"><a href="#从两张表中读数据进行对比并将结果写入新表" class="headerlink" title="从两张表中读数据进行对比并将结果写入新表"></a>从两张表中读数据进行对比并将结果写入新表</h1><p>以下是两张表的表头：<br>less.xlsx<br><img src="/2021/10/15/xlrd-openyxl处理Excel/less.jpg" alt><br>more.xlsx<br><img src="/2021/10/15/xlrd-openyxl处理Excel/more.jpg" alt></p>
+<p>less.xlsx的表头包含于more.xlsx的表头。要做的是取出more.xlsx表头中包含less.xlsx的那一列数据。<br>代码如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> xlrd</span><br><span class="line"><span class="keyword">import</span> xlwt</span><br><span class="line"><span class="keyword">from</span> openpyxl <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">file1 = <span class="string">"./less.xlsx"</span></span><br><span class="line">file2 = <span class="string">"./more.xlsx"</span></span><br><span class="line"></span><br><span class="line">workbook1 = xlrd.open_workbook(filename=file1)</span><br><span class="line">sheet1 = workbook1.sheet_by_index(<span class="number">0</span>)</span><br><span class="line">col_name_1 = []</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, sheet1.ncols):</span><br><span class="line">    col_name_1.append(sheet1.col_values(i)[<span class="number">0</span>])</span><br><span class="line"><span class="comment"># print(col_name)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">workbook2 = xlrd.open_workbook(filename=file2)</span><br><span class="line">sheet2 = workbook2.sheet_by_index(<span class="number">0</span>)</span><br><span class="line">col_name_2 = []</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>, sheet2.ncols):</span><br><span class="line">    cols = sheet2.col_values(i)</span><br><span class="line">    <span class="keyword">if</span> cols[<span class="number">0</span>] <span class="keyword">in</span> col_name_1:</span><br><span class="line">       col_name_2.append(cols)</span><br><span class="line"></span><br><span class="line"><span class="comment"># print(col_name_2)</span></span><br><span class="line">file3 = <span class="string">'./new.xlsx'</span></span><br><span class="line">wb = load_workbook(file3)</span><br><span class="line">ws = wb.active</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(len(col_name_2)):</span><br><span class="line">    ws.append(col_name_2[i])</span><br><span class="line">wb.save(file3)</span><br></pre></td></tr></table></figure></p>
+<p>取出来的数据写入之后是行数据而不是列。。这时候用excel的转置粘贴功能= =。行向量就转置成了列向量。<br><img src="/2021/10/15/xlrd-openyxl处理Excel/转置.png" alt></p>
+<p>另外，有可能会报错xlrd不支持xlsx格式，需要下载对应的xlrd版本。<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pip uninstall xlrd </span><br><span class="line">pip install xlrd==1.2.0</span><br></pre></td></tr></table></figure></p>
+<p>我是在pycharm中操作的，下载的时候<code>specify version</code>即可。</p>
+<h1 id="选择数据并画正态分布图"><a href="#选择数据并画正态分布图" class="headerlink" title="选择数据并画正态分布图"></a>选择数据并画正态分布图</h1><p>用到了<code>matplotlib</code>库来画图。<br>安装：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip insatll matplotlib</span><br></pre></td></tr></table></figure></p>
+<p>在pycharm中有可能会引用报错。例如<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">AttributeError: module &apos;socket&apos; has no attribute &apos;_GLOBAL_DEFAULT_TIMEOUT&apos;</span><br><span class="line">implement_array_function method already has a docstring</span><br></pre></td></tr></table></figure></p>
+<p>百度一个方法报一个新错误。。</p>
+<p>后来查找到一般是由于<code>numpy</code>和<code>matplotlib</code>版本不对应引起的（因为<code>matplotlib</code>基于<code>numpy</code>开发）。写的时候在命令行可以成功引用，但是pycharm中报错，查找了半天错误之后发现更新了numpy版本，卸载干净<code>matplotlib</code>再重装新版本就解决了。我的版本：</p>
+<blockquote>
+<p>python 3.7.2<br>numpy 1.21.2<br>matplotlib 3.4.3</p>
+</blockquote>
+<p>可以正常使用。<br>有两张表：<br>ERα_activity.xlsx<br><img src="/2021/10/15/xlrd-openyxl处理Excel/era.jpg" alt><br>ADMET.xlsx<br><img src="/2021/10/15/xlrd-openyxl处理Excel/admet.jpg" alt></p>
+<p>要做的是取出ADMET.xlsx中五个指标加起来大于等于3的分子式，并且这些分子式在ERα_activity.xlsx表中的pIC50值要尽量大。<br>其中ADMET.xlsx表中<code>hERG</code>和<code>MN</code>两个值要取反后再相加。</p>
+<p>代码：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> xlrd</span><br><span class="line"><span class="keyword">import</span> xlwt</span><br><span class="line"><span class="keyword">from</span> openpyxl <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">file1 = <span class="string">"./ERα_activity.xlsx"</span></span><br><span class="line">file2 = <span class="string">"./ADMET.xlsx"</span></span><br><span class="line"></span><br><span class="line">workbook1 = xlrd.open_workbook(filename=file1)</span><br><span class="line">sheet1 = workbook1.sheet_by_index(<span class="number">0</span>)</span><br><span class="line">pIC50_dict = &#123;&#125;</span><br><span class="line"><span class="comment"># 取出ERα_activity.xlsx表中的第一列分子式</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, sheet1.nrows):</span><br><span class="line">    pIC50_dict[sheet1.col_values(<span class="number">0</span>)[i]] = sheet1.col_values(<span class="number">2</span>)[i]</span><br><span class="line"><span class="comment"># print(list(pIC50_dict.values()))</span></span><br><span class="line">pIC50_value_list = list(pIC50_dict.values())</span><br><span class="line"><span class="comment"># 中位数</span></span><br><span class="line">median_a = np.median(pIC50_value_list)</span><br><span class="line"><span class="comment"># 期望</span></span><br><span class="line">mean = np.mean(pIC50_value_list)</span><br><span class="line"><span class="comment"># 方差</span></span><br><span class="line">var = np.var(pIC50_value_list)</span><br><span class="line"><span class="comment"># 标准差</span></span><br><span class="line">std = np.std(pIC50_value_list)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 画出正态分布</span></span><br><span class="line">x = np.arange(min(pIC50_value_list), max(pIC50_value_list), <span class="number">0.1</span>)</span><br><span class="line">y = np.exp(-((x - mean) ** <span class="number">2</span>) / (<span class="number">2</span> * std ** <span class="number">2</span>)) / (std * np.sqrt(<span class="number">2</span> * np.pi))</span><br><span class="line">plt.plot(x, y, <span class="string">"g"</span>, linewidth=<span class="number">2</span>)</span><br><span class="line">plt.show()</span><br><span class="line"></span><br><span class="line">workbook2 = xlrd.open_workbook(filename=file2)</span><br><span class="line">sheet2 = workbook2.sheet_by_index(<span class="number">0</span>)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, sheet2.nrows):</span><br><span class="line">    admet = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>, sheet2.ncols):</span><br><span class="line">        <span class="comment"># 1,0异或1即取反</span></span><br><span class="line">        <span class="keyword">if</span> (sheet2.row_values(<span class="number">0</span>)[j] == <span class="string">'hERG'</span>) <span class="keyword">or</span> (sheet2.row_values(<span class="number">0</span>)[j] == <span class="string">'MN'</span>):</span><br><span class="line">            num = (int(sheet2.row_values(i)[j]))^<span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            num = int(sheet2.row_values(i)[j])</span><br><span class="line">        admet += num</span><br><span class="line">    <span class="keyword">if</span> admet &lt; <span class="number">3</span>:</span><br><span class="line">        <span class="keyword">del</span> pIC50_dict[sheet2.row_values(i)[<span class="number">0</span>]]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删去小于期望的分子式（按value删除字典元素）</span></span><br><span class="line"><span class="keyword">for</span> k <span class="keyword">in</span> pIC50_dict.copy():</span><br><span class="line">    <span class="keyword">if</span> pIC50_dict[k] &lt; mean:</span><br><span class="line">        <span class="keyword">del</span> pIC50_dict[k]</span><br><span class="line"></span><br><span class="line">print(pIC50_dict)</span><br><span class="line">list = sorted(pIC50_dict.items(), key=<span class="keyword">lambda</span> item: item[<span class="number">1</span>], reverse=<span class="literal">True</span>)</span><br><span class="line">print(len(list))</span><br><span class="line">print(list)</span><br><span class="line"><span class="comment"># print(len(list(pIC50_dict.values())))</span></span><br><span class="line"><span class="comment"># pIC50_name_list = list(pIC50_dict.keys())</span></span><br><span class="line"><span class="comment"># set1 = set(pIC50_name_list)</span></span><br><span class="line"><span class="comment"># set2 = set(ADMET_list)</span></span><br><span class="line"><span class="comment"># del_list = (set1^set2)</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># print(list(del_list))</span></span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/10/02/CTF数论快速入门/" rel="next" title="CTF数论快速入门（待更新）">
+                <i class="fa fa-chevron-left"></i> CTF数论快速入门（待更新）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/zql.jpg" alt="尘林">
+            
+              <p class="site-author-name" itemprop="name">尘林</p>
+              <p class="site-description motion-element" itemprop="description">势，只会裹挟随波逐流之人。一心既定，便不问大势所趋。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">52</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">66</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#从两张表中读数据进行对比并将结果写入新表"><span class="nav-number">1.</span> <span class="nav-text">从两张表中读数据进行对比并将结果写入新表</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#选择数据并画正态分布图"><span class="nav-number">2.</span> <span class="nav-text">选择数据并画正态分布图</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">尘林</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

