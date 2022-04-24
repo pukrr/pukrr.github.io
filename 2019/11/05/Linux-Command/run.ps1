@@ -1,1 +1,0 @@
-Write-Host "I_love_study"
