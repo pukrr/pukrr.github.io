@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="C语言,汇编语言,逆向,shellcode,栈溢出,">
+  <meta name="keywords" content="C语言,汇编语言,shellcode,逆向,栈溢出,">
 
 
 
@@ -80,7 +80,7 @@
 
 
 <meta name="description" content="关于栈溢出的简单实验，借此来理解栈溢出。">
-<meta name="keywords" content="C语言,汇编语言,逆向,shellcode,栈溢出">
+<meta name="keywords" content="C语言,汇编语言,shellcode,逆向,栈溢出">
 <meta property="og:type" content="article">
 <meta property="og:title" content="栈溢出简单实验">
 <meta property="og:url" content="http://yoursite.com/2020/02/15/栈溢出简单实验/index.html">
@@ -98,7 +98,7 @@
 <meta property="og:image" content="http://yoursite.com/2020/02/15/栈溢出简单实验/00问题.png">
 <meta property="og:image" content="http://yoursite.com/2020/02/15/栈溢出简单实验/完整版.png">
 <meta property="og:image" content="http://yoursite.com/2020/02/15/栈溢出简单实验/解释.png">
-<meta property="og:updated_time" content="2020-02-15T16:37:47.302Z">
+<meta property="og:updated_time" content="2022-04-24T01:30:48.202Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="栈溢出简单实验">
 <meta name="twitter:description" content="关于栈溢出的简单实验，借此来理解栈溢出。">
@@ -317,8 +317,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/基础训练/" itemprop="url" rel="index">
-                    <span itemprop="name">基础训练</span>
+                  <a href="/categories/pwn/" itemprop="url" rel="index">
+                    <span itemprop="name">pwn</span>
                   </a>
                 </span>
 
@@ -373,7 +373,7 @@
 <p>第二个小实验，进一步完成利用溢出调用完函数后的返回问题。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;stdafx.h&quot;</span><br><span class="line">#include &quot;string.h&quot;</span><br><span class="line">char *shellcode=&quot;\x64\x65\x66\x67\x90\x90\x90\x90\x05\x10\x40\x00&quot;;</span><br><span class="line">//char *shellcode=&quot;\x64\x65\x66\x67\x34\xff\x19\x00\x05\x10\x40\x00&quot;;</span><br><span class="line">void fun1(int a, int b)</span><br><span class="line">&#123;</span><br><span class="line">   printf(&quot;fun1 run!para a=%d,b=%d\n&quot;,a,b);</span><br><span class="line">    char aa[4]=&#123;0&#125;;</span><br><span class="line">	strcpy(aa,shellcode);</span><br><span class="line">&#125;</span><br><span class="line">void fun2(int a)</span><br><span class="line">&#123;</span><br><span class="line">   printf(&quot;fun2 run! para a=%d\n&quot;,a);</span><br><span class="line">&#125;</span><br><span class="line">void fun3(int a,int b,int c)</span><br><span class="line">&#123;</span><br><span class="line">  printf(&quot;fun3 run! para a=%d,b=%d,c=%d\n&quot;,a,b,c);</span><br><span class="line">&#125;</span><br><span class="line">int main(int argc, char* argv[])</span><br><span class="line">&#123;</span><br><span class="line">	printf(&quot;begin\n&quot;);</span><br><span class="line">	fun1(4198801,2);</span><br><span class="line">	//printf(&quot;end\n&quot;);</span><br><span class="line">	__asm&#123;</span><br><span class="line">		sub esp,4</span><br><span class="line">		mov ebp,0x0019ff30</span><br><span class="line">	&#125;</span><br><span class="line">	printf(&quot;end\n&quot;);</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>这里在fun1的参数中，参数一是调用完fun1后平衡堆栈<code>add esp,8</code>那步操作。因为shellcode字符串中后四位是fun2的地址，刚好溢出覆盖fun1的返回地址，故调用完fun1后会跳转到fun2继续执行。<br>fun2的参数中，由于第二个参数2先入栈，故2会作为fun2的参数。而第一个参数则会作为fun2的返回地址。（具体变化结合OD进行调试）<br><img src="/2020/02/15/栈溢出简单实验/demo2_返回.png" alt></p>
 <hr>
-<h1 id="jmp-esp跳板"><a href="#jmp-esp跳板" class="headerlink" title="jmp esp跳板"></a>jmp esp跳板</h1><blockquote><p>函数返回时，这个地址被弹入 EIP 寄存器，处理器按照 EIP 寄存器中的地址取指令，最后栈中的数据被处理器当成指令得以执行。在函数返回的时候，ESP 恰好指向栈帧中返回地址的后一个位置！<br><img src="/2020/02/15/栈溢出简单实验/跳板原理.png" alt><br><img src="/2020/02/15/栈溢出简单实验/跳板原理2.png" alt><br>由于 ESP 寄存器在函数返回后不被溢出数据干扰，且始终指向返回地址之后的位置，我们可以使用图 3.2.3 所示的这种定位 shellcode 的方法来进行动态定位。<br>（1）用内存中任意一个 jmp esp 指令的地址覆盖函数返回地址，而不是原来用手工查出的shellcode 起始地址直接覆盖。<br>（2）函数返回后被重定向去执行内存中的这条jmp esp指令，而不是直接开始执行shellcode。<br>（3）由于 esp 在函数返回时仍指向栈区（函数返回地址之后），jmp esp 指令被执行后，处理器会到栈区函数返回地址之后的地方取指令执行。<br>（4）重新布置 shellcode。在淹没函数返回地址后，继续淹没一片栈空间。将缓冲区前边一段地方用任意数据填充，把 shellcode 恰好摆放在函数返回地址之后。这样，jmp esp 指令执行过后会恰好跳进 shellcode。</p>
+<h1 id="jmp-esp跳板"><a href="#jmp-esp跳板" class="headerlink" title="jmp esp跳板"></a>jmp esp跳板</h1><blockquote><p>函数返回时，这个地址被弹入 EIP 寄存器，处理器按照 EIP 寄存器中的地址取指令，最后栈中的数据被处理器当成指令得以执行。在函数返回的时候，ESP 恰好指向栈帧中返回地址的后一个位置！<br><img src="/2020/02/15/栈溢出简单实验/跳板原理.png" alt><br><img src="/2020/02/15/栈溢出简单实验/跳板原理2.png" alt><br>由于 ESP 寄存器在函数返回后不被溢出数据干扰，且始终指向返回地址之后的位置，我们可以使用图 3.2.3 所示的这种定位 shellcode 的方法来进行动态定位。<br>（1）用内存中任意一个 jmp esp 指令的地址覆盖函数返回地址，而不是原来用手工查出的shellcode 起始地址直接覆盖。<br>（2）函数返回后被重定向去执行内存中的这条jmp esp指令，而不是直接开始执行shellcode。<br>（3）由于 esp 在函数返回时仍指向栈区（函数返回地址之后），jmp esp 指令被执行后，处理器会到栈区函数返回地址之后的地方取指令执行。<br>（4)重新布置 shellcode。在淹没函数返回地址后，继续淹没一片栈空间。将缓冲区前边一段地方用任意数据填充，把 shellcode 恰好摆放在函数返回地址之后。这样，jmp esp 指令执行过后会恰好跳进 shellcode。</p>
 <p>这种定位 shellcode 的方法使用进程空间里一条 jmp esp 指令作为“跳板”，不论栈帧怎么“移位”，都能够精确地跳回栈区，从而适应程序运行中 shellcode 内存地址的动态变化。</p>
 </blockquote>
 <h2 id="获取跳板地址"><a href="#获取跳板地址" class="headerlink" title="获取跳板地址"></a>获取跳板地址</h2><p><strong>利用动态链接库中的jmp esp指令地址，如user32.dll，kernel32.dll。</strong><br><blockquote><p>我们应当明白除了 PE 文件的代码被读入内存空间，一些经常被用到的动态链接库也将会一同被映射到内存。其中，诸如 kernel.32.dll、user32.dll 之类的动态链接库会被几乎所有的进程加载，且加载基址始终相同。2.4 节实验中的有漏洞的密码验证程序已经加载了 user32.dll，所以我们准备使用 user32.dll中的 jmp esp 作为跳板。获得 user32.dll 内跳转指令地址最直观的方法就是编程序搜索内存。</p>
@@ -403,9 +403,9 @@
           
             <a href="/tags/汇编语言/" rel="tag"># 汇编语言</a>
           
-            <a href="/tags/逆向/" rel="tag"># 逆向</a>
-          
             <a href="/tags/shellcode/" rel="tag"># shellcode</a>
+          
+            <a href="/tags/逆向/" rel="tag"># 逆向</a>
           
             <a href="/tags/栈溢出/" rel="tag"># 栈溢出</a>
           
@@ -511,7 +511,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">52</span>
+                  <span class="site-state-item-count">31</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -522,7 +522,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -533,7 +533,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">66</span>
+                  <span class="site-state-item-count">63</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -586,7 +586,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

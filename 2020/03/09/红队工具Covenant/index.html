@@ -92,7 +92,7 @@
 <meta property="og:image" content="http://yoursite.com/2020/03/09/红队工具Covenant/run.png">
 <meta property="og:image" content="http://yoursite.com/2020/03/09/红队工具Covenant/模块.png">
 <meta property="og:image" content="http://yoursite.com/2020/03/09/红队工具Covenant/dashboard.png">
-<meta property="og:image" content="http://yoursite.com/2020/03/09/红队工具Covenant/httplistener.png">
+<meta property="og:image" content="http://yoursite.com/2020/03/09/红队工具Covenant/红队工具Covenant/httplistener.png">
 <meta property="og:image" content="http://yoursite.com/2020/03/09/红队工具Covenant/launchers.png">
 <meta property="og:image" content="http://yoursite.com/2020/03/09/红队工具Covenant/binary.png">
 <meta property="og:image" content="http://yoursite.com/2020/03/09/红队工具Covenant/binary查杀.png">
@@ -108,8 +108,8 @@
 <meta property="og:image" content="http://yoursite.com/2020/03/09/红队工具Covenant/reg32.png">
 <meta property="og:image" content="http://yoursite.com/2020/03/09/红队工具Covenant/reg32出错.png">
 <meta property="og:image" content="http://yoursite.com/2020/03/09/红队工具Covenant/grunts.png">
-<meta property="og:image" content="http://yoursite.com/2020/03/09/红队工具Covenant/interact.png">
-<meta property="og:updated_time" content="2020-03-10T02:40:47.614Z">
+<meta property="og:image" content="http://yoursite.com/2020/03/09/红队工具Covenant/interact1.png">
+<meta property="og:updated_time" content="2022-04-24T00:53:43.382Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="红队工具Covenant">
 <meta name="twitter:description" content="Covenant是一个.NET命令和控制框架，旨在突出.NET的攻击面，使进攻性.NET贸易工具的使用更加轻松，并充当红队成员的协作命令和控制平台。 Covenant是一个ASP.NET Core跨平台应用程序，其中包括基于Web的界面，该界面允许多用户协作。">
@@ -328,8 +328,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/工具使用/" itemprop="url" rel="index">
-                    <span itemprop="name">工具使用</span>
+                  <a href="/categories/工具/" itemprop="url" rel="index">
+                    <span itemprop="name">工具</span>
                   </a>
                 </span>
 
@@ -384,10 +384,11 @@
 <p>这里会显示一个网址<br><img src="/2020/03/09/红队工具Covenant/run.png" alt><br>本地访问。我在访问的时候，火狐浏览器说这是未配置签名的网站，这时点高级-&gt;允许例外，添加上这个网址的例外，再进行访问。</p>
 <p>然后就到了注册页面。</p>
 <h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><p>注册用户名和密码，你就成了管理员。其他用户的加入需要管理员来添加。</p>
-<p>各个模块的作用。<br><img src="/2020/03/09/红队工具Covenant/模块.png" alt><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Dashboard      #主页面。你可以很快地看到你得到的活跃的Grunts，当前活跃的监听器，以及一些最近分配给Grunts的任务。</span><br><span class="line">Listeners      #提供用于管理监听器和监听器配置文件的界面。</span><br><span class="line">Launchers      #提供用于创建，托管和下载启动器的界面，以用于启动新的Grunts。</span><br><span class="line">Grunts         #显示一个表格，以查看所有活动和不活动的Grunts，以及与Grunts进行交互并为其分配新任务。</span><br><span class="line">Templates      #植入模板 可自定义很多payload模板</span><br><span class="line">Tasks          #任务内置Mimikatz等很多模块执行多种任务，也可自行定制</span><br><span class="line">Taskings       #显示一个表格，以查看分配给Grunts的所有任务。</span><br><span class="line">Graph          #提供图形视图以可视化监听器，Grunts和对等图形。</span><br><span class="line">Data           #提供有关在操作过程中从Grunts 收集的数据的视图，例如凭据，指示器和下载的文件。</span><br><span class="line">Users          #提供用于用户管理和创建的界面。</span><br></pre></td></tr></table></figure></p>
+<p>各个模块的作用。<br><img src="/2020/03/09/红队工具Covenant/模块.png" alt></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Dashboard      #主页面。你可以很快地看到你得到的活跃的Grunts，当前活跃的监听器，以及一些最近分配给Grunts的任务。</span><br><span class="line">Listeners      #提供用于管理监听器和监听器配置文件的界面。</span><br><span class="line">Launchers      #提供用于创建，托管和下载启动器的界面，以用于启动新的Grunts。</span><br><span class="line">Grunts         #显示一个表格，以查看所有活动和不活动的Grunts，以及与Grunts进行交互并为其分配新任务。</span><br><span class="line">Templates      #植入模板 可自定义很多payload模板</span><br><span class="line">Tasks          #任务内置Mimikatz等很多模块执行多种任务，也可自行定制</span><br><span class="line">Taskings       #显示一个表格，以查看分配给Grunts的所有任务。</span><br><span class="line">Graph          #提供图形视图以可视化监听器，Grunts和对等图形。</span><br><span class="line">Data           #提供有关在操作过程中从Grunts 收集的数据的视图，例如凭据，指示器和下载的文件。</span><br><span class="line">Users          #提供用于用户管理和创建的界面。</span><br></pre></td></tr></table></figure>
 <h2 id="Dashboard-仪表盘"><a href="#Dashboard-仪表盘" class="headerlink" title="Dashboard 仪表盘"></a>Dashboard 仪表盘</h2><p><img src="/2020/03/09/红队工具Covenant/dashboard.png" alt></p>
 <h2 id="Listeners-监听器"><a href="#Listeners-监听器" class="headerlink" title="Listeners 监听器"></a>Listeners 监听器</h2><p>和CS、msf一样，在这里选择监听端口之类的。Covenant提供两种监听器，一种是HTTP，一种是TCP。当前，Covenant支持的唯一内置本机侦听器是HttpListener。</p>
-<p>点Creat进入配置。<br><img src="httplistener.png" alt></p>
+<p>点Creat进入配置。<br><img src="红队工具Covenant/httplistener.png" alt></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Name					#监听器名称</span><br><span class="line">BindAddress				#监听器绑定的本地地址，一般选择0.0.0.0</span><br><span class="line">BindPort				#监听器绑定的本地端口</span><br><span class="line">ConnectPort				#Grunts直接连接的回调端口，也是URL的端口</span><br><span class="line">ConnectAddress				#回调地址，代表Url的主机名部分。必须至少指定一个ConnectAddress，也可以指定任意多个防止故障。Grunts将尝试连接到每个ConnectAddress，并将使用成功的第一个。如果使用重定向器，则应为指向外部重定向器的url。</span><br><span class="line">Url					#根据ConnectPort和ConnectAddress生成</span><br><span class="line">UseSSL					#确定监听器器应使用HTTPS还是HTTP协议。如果UseSSL值为true，则需要提供SSLCertificate。</span><br><span class="line">SSLCertificate				#如果UseSSL为true，则SSLCertificate是侦听器使用的证书。该证书应为PFX格式。</span><br><span class="line">SSLCertificatePassword			#用于保护SSLCertificate的密码。</span><br><span class="line">HttpProfile-HttpProfile确定Grunt和Listener通信的行为。</span><br></pre></td></tr></table></figure>
 <p>这里生成一个默认HTTP监听器。使用HTTP协议同C2 server进行通信。执行后反弹连接至C2 server。</p>
 <p>tcp监听器和HTTP监听器设置过程没有什么区别。</p>
@@ -408,12 +409,14 @@
 <p>代码示例：</p>
 <p>和Binary的配置差不多，点击generate会生成powershell单行代码。分为加密和未加密两个版本。生成好之后点击host输入文件名（例如a.ps1）<br><img src="/2020/03/09/红队工具Covenant/powerhost.png" alt><br><img src="/2020/03/09/红队工具Covenant/powershell.png" alt><br>会自动跳转到生成页面，现在我们的url和路径就会自动加载了。打开目标机powershell执行上线。</p>
 <h2 id="MSbuild"><a href="#MSbuild" class="headerlink" title="MSbuild"></a>MSbuild</h2><p>MSBuild启动器用于生成MSBuild XML文件，该文件使用msbuild.exe启动Grunt。</p>
-<p>生成操作都类似。然后generate并下载。<br><img src="/2020/03/09/红队工具Covenant/msbuild.png" alt><br>在<code>C:\Windows\Microsoft.NET\Framework\v4.0.30319</code>目录下执行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MSBuild.exe GruntStager.xml</span><br></pre></td></tr></table></figure></p>
+<p>生成操作都类似。然后generate并下载。<br><img src="/2020/03/09/红队工具Covenant/msbuild.png" alt><br>在<code>C:\Windows\Microsoft.NET\Framework\v4.0.30319</code>目录下执行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MSBuild.exe GruntStager.xml</span><br></pre></td></tr></table></figure>
 <p><img src="/2020/03/09/红队工具Covenant/msbuild执行.png" alt></p>
 <p>将.NET程序集保存在数组，通过Assembly.Load()在内存进行加载。<br>代码示例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">System.Reflection.Assembly.Load(oms.ToArray()).EntryPoint.Invoke(0, new object[] &#123; new string[]&#123; &#125; &#125;);</span><br></pre></td></tr></table></figure></p>
 <p>火绒、360均未报毒。virustotal查杀率6/59。<br><img src="/2020/03/09/红队工具Covenant/xml查杀.png" alt></p>
 <h2 id="InstallUtil"><a href="#InstallUtil" class="headerlink" title="InstallUtil"></a>InstallUtil</h2><p>InstallUtil启动器用于生成InstallUtil dll文件，该文件使用installutil.exe启动Grunt。</p>
-<p>生成操作都类似。然后generate并下载。<br><img src="/2020/03/09/红队工具Covenant/installutil.png" alt><br>生成了dll文件，可通过<code>C:\Windows\Microsoft.NET\Framework\v4.0.30319</code>目录下的InstallUtil.exe执行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">InstallUtil.exe /logfile= /LogToConsole=false /U GruntStager.dll</span><br></pre></td></tr></table></figure></p>
+<p>生成操作都类似。然后generate并下载。<br><img src="/2020/03/09/红队工具Covenant/installutil.png" alt><br>生成了dll文件，可通过<code>C:\Windows\Microsoft.NET\Framework\v4.0.30319</code>目录下的InstallUtil.exe执行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">InstallUtil.exe /logfile= /LogToConsole=false /U GruntStager.dll</span><br></pre></td></tr></table></figure>
 <p><img src="/2020/03/09/红队工具Covenant/installutil执行.png" alt><br><img src="/2020/03/09/红队工具Covenant/installutil上线.png" alt></p>
 <p>火绒、360均未报毒。virustotal查杀率9/71。<br><img src="/2020/03/09/红队工具Covenant/installutil查杀.png" alt></p>
 <blockquote><p>Please keep in mind that any of the launchers that rely on DotNetToJScript may not work on some of the latest versions of Windows 10 and Windows Server 2016 and/or may be signatured by some AMSI providers.<br>任何依赖DotNetToJScript的启动器可能无法在Windows 10和Windows Server 2016的某些最新版本上运行，并且/或者可能由某些AMSI提供程序签名。</p>
@@ -431,7 +434,7 @@
 <h2 id="cscript"><a href="#cscript" class="headerlink" title="cscript"></a>cscript</h2><p>cscript file.js<br>这里借助了DotNetToJScript，其他内容同上。</p>
 <h2 id="wscript"><a href="#wscript" class="headerlink" title="wscript"></a>wscript</h2><p>wscript file.js<br>这里借助了DotNetToJScript，其他内容同上。</p>
 <h1 id="Grunts"><a href="#Grunts" class="headerlink" title="Grunts"></a>Grunts</h1><p>上线主机列表。<br><img src="/2020/03/09/红队工具Covenant/grunts.png" alt></p>
-<p>info        记录上线主机信息<br>interact    与上线主机进行交互。Covenant内置了多种命令和工具都可以在此处与主机进行交互（详情见Tasks）<br>task         Grunt支持的功能，给上线主机下发任务，内置了多个开源工具<br>tasking        正在进行的任务<br><img src="/2020/03/09/红队工具Covenant/interact.png" alt><br>这里怎么发挥就是另一篇文章了。关于后渗透测试、内网等。</p>
+<p>info        记录上线主机信息<br>interact    与上线主机进行交互。Covenant内置了多种命令和工具都可以在此处与主机进行交互（详情见Tasks）<br>task         Grunt支持的功能，给上线主机下发任务，内置了多个开源工具<br>tasking        正在进行的任务<br><img src="/2020/03/09/红队工具Covenant/interact1.png" alt><br>这里怎么发挥就是另一篇文章了。关于后渗透测试、内网等。</p>
 <h1 id="Templates"><a href="#Templates" class="headerlink" title="Templates"></a>Templates</h1><p>在Templates里会显示现已有的Grunt通讯模板，可以进行添加修改。</p>
 <h1 id="Tasks"><a href="#Tasks" class="headerlink" title="Tasks"></a>Tasks</h1><p>已有的任务，如mimikatz，portscan等，还有描述，可以谷歌翻译一下。<br>可以进行插件的添加。</p>
 <h1 id="Taskings"><a href="#Taskings" class="headerlink" title="Taskings"></a>Taskings</h1><p>所有主机任务情况。</p>
@@ -468,8 +471,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/03/08/汇编语言——结构/" rel="next" title="汇编语言——结构">
-                <i class="fa fa-chevron-left"></i> 汇编语言——结构
+              <a href="/2020/02/29/红队工具Octopus/" rel="next" title="红队工具Octopus">
+                <i class="fa fa-chevron-left"></i> 红队工具Octopus
               </a>
             
           </div>
@@ -478,8 +481,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2020/03/16/C语言笔记（二）——函数与程序结构/" rel="prev" title="C语言笔记（二）——函数与程序结构">
-                C语言笔记（二）——函数与程序结构 <i class="fa fa-chevron-right"></i>
+              <a href="/2020/04/08/pwn入门学习/" rel="prev" title="pwn入门学习">
+                pwn入门学习 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -559,7 +562,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">52</span>
+                  <span class="site-state-item-count">31</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -570,7 +573,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -581,7 +584,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">66</span>
+                  <span class="site-state-item-count">63</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -634,7 +637,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

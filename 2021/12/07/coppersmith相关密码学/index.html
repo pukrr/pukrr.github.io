@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="密码学,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="最近做题遇到了关于低位丢失（高位泄露）等题目，于是了解到了coppersmith算法。具体关于格密码的学习还未开始，仅仅会在github上找工具解题。格密码下学期做完毕业论文会开始学习。越来越觉得每个方向都是一个无底洞，学是永远也学不完的，永远在路上。">
+<meta name="keywords" content="密码学">
+<meta property="og:type" content="article">
+<meta property="og:title" content="coppersmith相关密码学">
+<meta property="og:url" content="http://yoursite.com/2021/12/07/coppersmith相关密码学/index.html">
+<meta property="og:site_name" content="pukr&#39;s BLOG">
+<meta property="og:description" content="最近做题遇到了关于低位丢失（高位泄露）等题目，于是了解到了coppersmith算法。具体关于格密码的学习还未开始，仅仅会在github上找工具解题。格密码下学期做完毕业论文会开始学习。越来越觉得每个方向都是一个无底洞，学是永远也学不完的，永远在路上。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2021/12/07/coppersmith相关密码学/1.blogs/source/_posts/密码学笔记（一）/sagemathcell.jpg">
+<meta property="og:updated_time" content="2022-04-24T00:06:59.607Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="coppersmith相关密码学">
+<meta name="twitter:description" content="最近做题遇到了关于低位丢失（高位泄露）等题目，于是了解到了coppersmith算法。具体关于格密码的学习还未开始，仅仅会在github上找工具解题。格密码下学期做完毕业论文会开始学习。越来越觉得每个方向都是一个无底洞，学是永远也学不完的，永远在路上。">
+<meta name="twitter:image" content="http://yoursite.com/2021/12/07/coppersmith相关密码学/1.blogs/source/_posts/密码学笔记（一）/sagemathcell.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2021/12/07/coppersmith相关密码学/">
+
+
+
+
+
+  <title>coppersmith相关密码学 | pukr's BLOG</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">pukr's BLOG</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">人类的悲欢并不相通</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/12/07/coppersmith相关密码学/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="尘林">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/zql.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="pukr's BLOG">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">coppersmith相关密码学</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-12-07T18:02:53+08:00">
+                2021-12-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/密码学/" itemprop="url" rel="index">
+                    <span itemprop="name">密码学</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近做题遇到了关于低位丢失（高位泄露）等题目，于是了解到了coppersmith算法。具体关于格密码的学习还未开始，仅仅会在github上找工具解题。格密码下学期做完毕业论文会开始学习。越来越觉得每个方向都是一个无底洞，学是永远也学不完的，永远在路上。<br><a id="more"></a></p>
+<h1 id="已知p高位"><a href="#已知p高位" class="headerlink" title="已知p高位"></a>已知p高位</h1><p><a href="https://www.jianshu.com/p/1a0e876d5929" target="_blank" rel="noopener">对RSA-Factoring with High Bits Known理解</a><br>这篇文章把原理讲解了，我只会用脚本，格基规约还在学习中…..<br>以这道CTF题目为例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> Crypto.Util.number <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> binascii</span><br><span class="line"><span class="keyword">import</span> gmpy2</span><br><span class="line">flag = <span class="string">'*****************************************'</span></span><br><span class="line">hex_flag=int(flag.encode(<span class="string">"hex"</span>),<span class="number">16</span>)</span><br><span class="line"></span><br><span class="line">p=getPrime(<span class="number">256</span>)</span><br><span class="line">q=getPrime(<span class="number">256</span>)</span><br><span class="line">n=p*q</span><br><span class="line"></span><br><span class="line">e=getPrime(<span class="number">100</span>)</span><br><span class="line"></span><br><span class="line">c=pow(hex_flag,e,n)</span><br><span class="line"></span><br><span class="line">p=((p&gt;&gt;<span class="number">60</span>)&lt;&lt;<span class="number">60</span>)</span><br><span class="line"></span><br><span class="line">print(<span class="string">"n="</span>,hex(n))</span><br><span class="line">print(<span class="string">"p="</span>,hex(p))</span><br><span class="line">print(<span class="string">"e="</span>,hex(e))</span><br><span class="line">print(<span class="string">"c="</span>,hex(c))</span><br><span class="line"><span class="string">'''</span></span><br><span class="line"><span class="string">('n=', '0x558477ce1d081f831cfa159290ee4fd14888422c216a16ad86e2b2d4335e3cb18ed0120a955f970b17b229a8e7d0ae1b6f0c40213ad0e127eba99ae0d8a82397L')</span></span><br><span class="line"><span class="string">('p=', '0x8fbcbb7d1e9f393ee21b537d6e0bd2cf8629e315f4e356c1e000000000000000L')</span></span><br><span class="line"><span class="string">('e=', '0xf7278179324b11fd83d08aa6fL')</span></span><br><span class="line"><span class="string">('c=', '0x36e1c09ccad45cd63a0f07e704d3811c39d70cdfdad999d2df90255a76c58cf6fe99ac1ab1d5d99a4ce1a2ebdbfbc49ce72df2a0b90766ff84ab0ef62068d46bL')</span></span><br><span class="line"><span class="string">'''</span></span><br></pre></td></tr></table></figure>
+<p>首先通过sage分解n：<br><a href="https://sagecell.sagemath.org/" target="_blank" rel="noopener">在线运行sage</a><br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">n = 0x558477ce1d081f831cfa159290ee4fd14888422c216a16ad86e2b2d4335e3cb18ed0120a955f970b17b229a8e7d0ae1b6f0c40213ad0e127eba99ae0d8a82397L</span><br><span class="line">p_fake = 0x8fbcbb7d1e9f393ee21b537d6e0bd2cf8629e315f4e356c1e000000000000000L</span><br><span class="line"></span><br><span class="line">pbits = 256</span><br><span class="line">kbits = 60  #p失去的低位</span><br><span class="line">pbar = p_fake &amp; (2^pbits-2^kbits)</span><br><span class="line"> </span><br><span class="line">PR.&lt;x&gt; = PolynomialRing(Zmod(n))</span><br><span class="line">f = x + pbar</span><br><span class="line"> </span><br><span class="line">x0 = f.small_roots(X=2^kbits, beta=0.4)[0]</span><br><span class="line">p= x0 + pbar</span><br><span class="line">print(p)</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2021/12/07/coppersmith相关密码学/1.blogs\source\_posts\密码学笔记（一）\sagemathcell.jpg" alt><br>这样就得到了p，接下来就是常规解题了：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> Crypto.Util.number <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> gmpy2</span><br><span class="line"><span class="keyword">import</span> binascii</span><br><span class="line"><span class="comment"># from sage import *</span></span><br><span class="line"></span><br><span class="line">n = <span class="number">0x558477ce1d081f831cfa159290ee4fd14888422c216a16ad86e2b2d4335e3cb18ed0120a955f970b17b229a8e7d0ae1b6f0c40213ad0e127eba99ae0d8a82397</span></span><br><span class="line">p = <span class="number">65014198595370482567008424566891688124621484545138665561606519358457336776131</span></span><br><span class="line">e = <span class="number">0xf7278179324b11fd83d08aa6f</span></span><br><span class="line">c = <span class="number">0x36e1c09ccad45cd63a0f07e704d3811c39d70cdfdad999d2df90255a76c58cf6fe99ac1ab1d5d99a4ce1a2ebdbfbc49ce72df2a0b90766ff84ab0ef62068d46b</span></span><br><span class="line">pp = binascii.b2a_hex(long_to_bytes(p)).decode()</span><br><span class="line">print(pp)</span><br><span class="line">ppp = <span class="number">0x8fbcbb7d1e9f393ee21b537d6e0bd2cf8629e315f4e356c1e7c5e22d8cff45c3</span></span><br><span class="line">q = n // ppp</span><br><span class="line">phi = (ppp<span class="number">-1</span>)*(q<span class="number">-1</span>)</span><br><span class="line">d = gmpy2.invert(e, phi)</span><br><span class="line">m = pow(c, d, n)</span><br><span class="line">print(long_to_bytes(m))</span><br></pre></td></tr></table></figure></p>
+<h1 id="2021赣网杯crypto2"><a href="#2021赣网杯crypto2" class="headerlink" title="2021赣网杯crypto2"></a>2021赣网杯crypto2</h1><p>这道题涉及了三元copper，又学习了新的知识点。<br>题干：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> Crypto.Util.number <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> random <span class="keyword">import</span> randint, getrandbits</span><br><span class="line"><span class="keyword">from</span> sympy <span class="keyword">import</span> nextprime</span><br><span class="line"><span class="keyword">from</span> secret <span class="keyword">import</span> flag, secreteBitNum</span><br><span class="line"></span><br><span class="line">hint = bytes_to_long((<span class="string">f'secreteBitNum = <span class="subst">&#123;secreteBitNum&#125;</span>'</span>).encode())</span><br><span class="line">tmp_e = <span class="number">65537</span></span><br><span class="line">tmp_p = getPrime(int(<span class="number">512</span>))</span><br><span class="line">tmp_q = getPrime(int(<span class="number">512</span>))</span><br><span class="line">tmp_N = tmp_p * tmp_q</span><br><span class="line">print(<span class="string">f'tmp_N = <span class="subst">&#123;tmp_N&#125;</span>'</span>)</span><br><span class="line">print(pow(hint, tmp_e, tmp_N))</span><br><span class="line">print(tmp_p &gt;&gt; <span class="number">180</span>)</span><br><span class="line"></span><br><span class="line">target_bits = int(<span class="number">256</span>)</span><br><span class="line">prime = getPrime(target_bits)</span><br><span class="line">s = randint(prime&gt;&gt;<span class="number">10</span>, prime)</span><br><span class="line">r = getrandbits(secreteBitNum)</span><br><span class="line">t = (r*(s^<span class="number">2</span> + <span class="number">2</span>*s)) % prime</span><br><span class="line">gifts = [<span class="number">3</span>, <span class="number">2</span>]</span><br><span class="line">ks = [floor(target_bits * (gift / (gift + <span class="number">1</span>))) <span class="keyword">for</span> gift <span class="keyword">in</span> gifts]</span><br><span class="line">leak1 = s &gt;&gt; (target_bits - ks[<span class="number">0</span>])</span><br><span class="line">leak2 = t &gt;&gt; (target_bits - ks[<span class="number">1</span>])</span><br><span class="line"></span><br><span class="line">p = nextprime((s*(nextprime(s) * nextprime(r) + t)))</span><br><span class="line">q = getPrime(p.bit_length())</span><br><span class="line">N = p*q</span><br><span class="line">e = <span class="number">65537</span></span><br><span class="line">m = bytes_to_long(flag)</span><br><span class="line">c = pow(m, e, N)</span><br><span class="line"></span><br><span class="line">print(<span class="string">f'prime = <span class="subst">&#123;prime&#125;</span>'</span>)</span><br><span class="line">print(<span class="string">f'c = <span class="subst">&#123;c&#125;</span>'</span>)</span><br><span class="line">print(<span class="string">f'N = <span class="subst">&#123;N&#125;</span>'</span>)</span><br><span class="line">print(<span class="string">f'leak1 = <span class="subst">&#123;leak1&#125;</span>'</span>)</span><br><span class="line">print(<span class="string">f'leak2 = <span class="subst">&#123;leak2&#125;</span>'</span>)</span><br><span class="line"></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">tmp_N = 67275889677378946734903321404206582364153218707836044936581311977721676158433934674861722018390091292542128885311842688233567992017423854706617140651934525455990460080562308585391373661331461122947028205118969966760791488914164391921330229025670176008518053339148134137770309365614255463111202481834705060173</span></span><br><span class="line"><span class="string">40399377632586118650556149454962332599993544072289982576457293479237148938553095258299197606759611718110458893982875730643146645623512300513916266262798465380752083932871857821720398540072426424439422364690204675516506456125988918985863308292449915493404572808822346197667419207669315093927318993921905479596</span></span><br><span class="line"><span class="string">4877155090632997781879191807827231697420271396210537080241322765167927413977000532975047982026915056</span></span><br><span class="line"><span class="string">prime = 82321753209337659641812698792368753307257174920293482309329229017641186204037</span></span><br><span class="line"><span class="string">c = 4327179356609269294409009935591795772603625779675971467878490086808144060225614005300908314649047950861015994603326121468330956776913366179511247457747179889685304469999218104955814145411915021238933150884498316563808220329632240175418452382843973948334446343545955570063628905102384071000832724697885872043017030707897928</span></span><br><span class="line"><span class="string">N = 43941665823196509154346632368475246193489316520677500866461851257383928558997955146720003171553041820199105630143274308184375615057136594812756966125202091119439909980006181740220827474838356621605513939553184451557022029987518161532780360148932769025277495283357745880781214097057768654158857096614016596756958574010574773</span></span><br><span class="line"><span class="string">leak1 = 4392924728395269190263639346144303703257730516994610750658</span></span><br><span class="line"><span class="string">leak2 = 838456777370923849008096179359487752850229097203212</span></span><br><span class="line"><span class="string">"""</span></span><br></pre></td></tr></table></figure></p>
+<p>首先分析题目流程：<br>第一部分如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">hint = bytes_to_long((<span class="string">f'secreteBitNum = <span class="subst">&#123;secreteBitNum&#125;</span>'</span>).encode())</span><br><span class="line">tmp_e = <span class="number">65537</span></span><br><span class="line">tmp_p = getPrime(int(<span class="number">512</span>))</span><br><span class="line">tmp_q = getPrime(int(<span class="number">512</span>))</span><br><span class="line">tmp_N = tmp_p * tmp_q</span><br><span class="line">print(<span class="string">f'tmp_N = <span class="subst">&#123;tmp_N&#125;</span>'</span>)</span><br><span class="line">print(pow(hint, tmp_e, tmp_N))</span><br><span class="line">print(tmp_p &gt;&gt; <span class="number">180</span>)</span><br></pre></td></tr></table></figure></p>
+<p>已知n、c和p的高位，可以利用一元的coppersmith求出secreteBitNum。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">ph = <span class="number">4877155090632997781879191807827231697420271396210537080241322765167927413977000532975047982026915056</span></span><br><span class="line">pp = ph &lt;&lt; <span class="number">180</span></span><br><span class="line">print(pp)</span><br><span class="line">N = <span class="number">67275889677378946734903321404206582364153218707836044936581311977721676158433934674861722018390091292542128885311842688233567992017423854706617140651934525455990460080562308585391373661331461122947028205118969966760791488914164391921330229025670176008518053339148134137770309365614255463111202481834705060173</span></span><br><span class="line">PR.&lt;x&gt; = PolynomialRing(Zmod(N))</span><br><span class="line">f = x+pp</span><br><span class="line">pl = f.small_roots(X=<span class="number">2</span>^<span class="number">180</span>,beta=<span class="number">0.4</span>)[<span class="number">0</span>]</span><br><span class="line">print(pl)</span><br><span class="line">p=pp+pl</span><br><span class="line">print(p)</span><br><span class="line"><span class="comment">#p=7474218428506439131024561238447007658574698902527126414652353026654065729675401366440504060759323896095490193371294094265057254763085596066166150006638181</span></span><br></pre></td></tr></table></figure></p>
+<p>求出p后，就可以正常流程解出明文secreteBitNum了。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">tmp_e = <span class="number">65537</span></span><br><span class="line">tmp_N = <span class="number">67275889677378946734903321404206582364153218707836044936581311977721676158433934674861722018390091292542128885311842688233567992017423854706617140651934525455990460080562308585391373661331461122947028205118969966760791488914164391921330229025670176008518053339148134137770309365614255463111202481834705060173</span></span><br><span class="line">tmp_p = <span class="number">7474218428506439131024561238447007658574698902527126414652353026654065729675401366440504060759323896095490193371294094265057254763085596066166150006638181</span></span><br><span class="line">tmp_q = tmp_N // tmp_p</span><br><span class="line">phi = (tmp_q<span class="number">-1</span>)*(tmp_p<span class="number">-1</span>)</span><br><span class="line">d = gmpy2.invert(tmp_e, phi)</span><br><span class="line">c = <span class="number">40399377632586118650556149454962332599993544072289982576457293479237148938553095258299197606759611718110458893982875730643146645623512300513916266262798465380752083932871857821720398540072426424439422364690204675516506456125988918985863308292449915493404572808822346197667419207669315093927318993921905479596</span></span><br><span class="line">m = pow(c,d,tmp_N)</span><br><span class="line">print(long_to_bytes(m))</span><br><span class="line"><span class="comment">#b'secreteBitNum = 26'</span></span><br></pre></td></tr></table></figure></p>
+<p>得到secreteBitNum = 26后，继续分析题目第二部分。经过运算得出ks=[192, 170]<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">target_bits = int(<span class="number">256</span>)</span><br><span class="line">prime = getPrime(target_bits)</span><br><span class="line">s = randint(prime&gt;&gt;<span class="number">10</span>, prime)</span><br><span class="line">r = getrandbits(secreteBitNum)</span><br><span class="line">t = (r*(s^<span class="number">2</span> + <span class="number">2</span>*s)) % prime</span><br><span class="line">gifts = [<span class="number">3</span>, <span class="number">2</span>]</span><br><span class="line">ks = [floor(target_bits * (gift / (gift + <span class="number">1</span>))) <span class="keyword">for</span> gift <span class="keyword">in</span> gifts]</span><br><span class="line">leak1 = s &gt;&gt; (target_bits - ks[<span class="number">0</span>])</span><br><span class="line">leak2 = t &gt;&gt; (target_bits - ks[<span class="number">1</span>])</span><br></pre></td></tr></table></figure></p>
+<p>这是一个三元的copper，使用脚本解出s，r，t。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> itertools</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">small_roots</span><span class="params">(f, bounds, m=<span class="number">1</span>, d=None)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> d:</span><br><span class="line">                d = f.degree()</span><br><span class="line"> </span><br><span class="line">        R = f.base_ring()</span><br><span class="line">        N = R.cardinality()</span><br><span class="line">        </span><br><span class="line">        f /= f.coefficients().pop(<span class="number">0</span>)</span><br><span class="line">        f = f.change_ring(ZZ)</span><br><span class="line"> </span><br><span class="line">        G = Sequence([], f.parent())</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(m+<span class="number">1</span>):</span><br><span class="line">                base = N^(m-i) * f^i</span><br><span class="line">                <span class="keyword">for</span> shifts <span class="keyword">in</span> itertools.product(range(d), repeat=f.nvariables()):</span><br><span class="line">                        g = base * prod(map(power, f.variables(), shifts))</span><br><span class="line">                        G.append(g)</span><br><span class="line"> </span><br><span class="line">        B, monomials = G.coefficient_matrix()</span><br><span class="line">        monomials = vector(monomials)</span><br><span class="line"> </span><br><span class="line">        factors = [monomial(*bounds) <span class="keyword">for</span> monomial <span class="keyword">in</span> monomials]</span><br><span class="line">        <span class="keyword">for</span> i, factor <span class="keyword">in</span> enumerate(factors):</span><br><span class="line">                B.rescale_col(i, factor)</span><br><span class="line"> </span><br><span class="line">        B = B.dense_matrix().LLL()</span><br><span class="line"> </span><br><span class="line">        B = B.change_ring(QQ)</span><br><span class="line">        <span class="keyword">for</span> i, factor <span class="keyword">in</span> enumerate(factors):</span><br><span class="line">                B.rescale_col(i, <span class="number">1</span>/factor)</span><br><span class="line"> </span><br><span class="line">        H = Sequence([], f.parent().change_ring(QQ))</span><br><span class="line">        <span class="keyword">for</span> h <span class="keyword">in</span> filter(<span class="literal">None</span>, B*monomials):</span><br><span class="line">                H.append(h)</span><br><span class="line">                I = H.ideal()</span><br><span class="line">                <span class="keyword">if</span> I.dimension() == <span class="number">-1</span>:</span><br><span class="line">                        H.pop()</span><br><span class="line">                <span class="keyword">elif</span> I.dimension() == <span class="number">0</span>:</span><br><span class="line">                        roots = []</span><br><span class="line">                        <span class="keyword">for</span> root <span class="keyword">in</span> I.variety(ring=ZZ):</span><br><span class="line">                                root = tuple(R(root[var]) <span class="keyword">for</span> var <span class="keyword">in</span> f.variables())</span><br><span class="line">                                roots.append(root)</span><br><span class="line">                        <span class="keyword">return</span> roots</span><br><span class="line">        <span class="keyword">return</span> []</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">trivariate</span><span class="params">()</span>:</span></span><br><span class="line">        print(<span class="string">'Trivariate'</span>)</span><br><span class="line">        bounds = (<span class="number">1</span>&lt;&lt;<span class="number">64</span>, <span class="number">1</span>&lt;&lt;<span class="number">86</span>, <span class="number">1</span>&lt;&lt;<span class="number">26</span>)</span><br><span class="line">        <span class="comment">#roots = tuple(randrange(bound) for bound in bounds)</span></span><br><span class="line">        R = Integers(prime)</span><br><span class="line">        P.&lt;sl, tl, r&gt; = PolynomialRing(R)</span><br><span class="line">        f = ((sh + sl)**<span class="number">2</span>+<span class="number">2</span>*(sh+sl))*r - (th + tl)</span><br><span class="line">        print(small_roots(f, bounds,<span class="number">6</span>))</span><br><span class="line"> </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">        prime = <span class="number">82321753209337659641812698792368753307257174920293482309329229017641186204037</span></span><br><span class="line">        leak1 = <span class="number">4392924728395269190263639346144303703257730516994610750658</span></span><br><span class="line">        leak2 = <span class="number">838456777370923849008096179359487752850229097203212</span></span><br><span class="line">        sh = leak1 &lt;&lt; <span class="number">64</span></span><br><span class="line">        th = leak2 &lt;&lt; <span class="number">86</span></span><br><span class="line">        trivariate()</span><br><span class="line"><span class="comment">#[(2837580634489900859, 63360403616040741532234070, 29943235)]</span></span><br></pre></td></tr></table></figure></p>
+<p>继续分析第三部分，第三部分就是简单的RSA加解密。得到flag：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> gmpy2</span><br><span class="line"><span class="keyword">from</span> Crypto.Util.number <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> sympy <span class="keyword">import</span> nextprime</span><br><span class="line"></span><br><span class="line">leak1 = <span class="number">4392924728395269190263639346144303703257730516994610750658</span></span><br><span class="line">leak2 = <span class="number">838456777370923849008096179359487752850229097203212</span></span><br><span class="line">sl, tl, r = (<span class="number">2837580634489900859</span>, <span class="number">63360403616040741532234070</span>, <span class="number">29943235</span>)</span><br><span class="line">sh = leak1 &lt;&lt; <span class="number">64</span></span><br><span class="line">th = leak2 &lt;&lt; <span class="number">86</span></span><br><span class="line">s = sh+sl</span><br><span class="line">t = th+tl</span><br><span class="line">p = nextprime((s*(nextprime(s) * nextprime(r) + t)))</span><br><span class="line">n = <span class="number">43941665823196509154346632368475246193489316520677500866461851257383928558997955146720003171553041820199105630143274308184375615057136594812756966125202091119439909980006181740220827474838356621605513939553184451557022029987518161532780360148932769025277495283357745880781214097057768654158857096614016596756958574010574773</span></span><br><span class="line">q = n // p</span><br><span class="line">phi = (p<span class="number">-1</span>)*(q<span class="number">-1</span>)</span><br><span class="line">e = <span class="number">65537</span></span><br><span class="line">d = gmpy2.invert(e, phi)</span><br><span class="line">c = <span class="number">4327179356609269294409009935591795772603625779675971467878490086808144060225614005300908314649047950861015994603326121468330956776913366179511247457747179889685304469999218104955814145411915021238933150884498316563808220329632240175418452382843973948334446343545955570063628905102384071000832724697885872043017030707897928</span></span><br><span class="line">m = pow(c,d,n)</span><br><span class="line">print(long_to_bytes(m))</span><br><span class="line"><span class="comment">#b'flag&#123;bc33c490-4b95-11ec-ad04-00155d9a1603&#125;'</span></span><br></pre></td></tr></table></figure></p>
+<p>附上找到的coppersmith脚本，可用于1、2、3元copper，approximate_factor，boneh_durfee<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> itertools</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">small_roots</span><span class="params">(f, bounds, m=<span class="number">1</span>, d=None)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> d:</span><br><span class="line">                d = f.degree()</span><br><span class="line"> </span><br><span class="line">        R = f.base_ring()</span><br><span class="line">        N = R.cardinality()</span><br><span class="line">        </span><br><span class="line">        f /= f.coefficients().pop(<span class="number">0</span>)</span><br><span class="line">        f = f.change_ring(ZZ)</span><br><span class="line"> </span><br><span class="line">        G = Sequence([], f.parent())</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(m+<span class="number">1</span>):</span><br><span class="line">                base = N^(m-i) * f^i</span><br><span class="line">                <span class="keyword">for</span> shifts <span class="keyword">in</span> itertools.product(range(d), repeat=f.nvariables()):</span><br><span class="line">                        g = base * prod(map(power, f.variables(), shifts))</span><br><span class="line">                        G.append(g)</span><br><span class="line"> </span><br><span class="line">        B, monomials = G.coefficient_matrix()</span><br><span class="line">        monomials = vector(monomials)</span><br><span class="line"> </span><br><span class="line">        factors = [monomial(*bounds) <span class="keyword">for</span> monomial <span class="keyword">in</span> monomials]</span><br><span class="line">        <span class="keyword">for</span> i, factor <span class="keyword">in</span> enumerate(factors):</span><br><span class="line">                B.rescale_col(i, factor)</span><br><span class="line"> </span><br><span class="line">        B = B.dense_matrix().LLL()</span><br><span class="line"> </span><br><span class="line">        B = B.change_ring(QQ)</span><br><span class="line">        <span class="keyword">for</span> i, factor <span class="keyword">in</span> enumerate(factors):</span><br><span class="line">                B.rescale_col(i, <span class="number">1</span>/factor)</span><br><span class="line"> </span><br><span class="line">        H = Sequence([], f.parent().change_ring(QQ))</span><br><span class="line">        <span class="keyword">for</span> h <span class="keyword">in</span> filter(<span class="literal">None</span>, B*monomials):</span><br><span class="line">                H.append(h)</span><br><span class="line">                I = H.ideal()</span><br><span class="line">                <span class="keyword">if</span> I.dimension() == <span class="number">-1</span>:</span><br><span class="line">                        H.pop()</span><br><span class="line">                <span class="keyword">elif</span> I.dimension() == <span class="number">0</span>:</span><br><span class="line">                        roots = []</span><br><span class="line">                        <span class="keyword">for</span> root <span class="keyword">in</span> I.variety(ring=ZZ):</span><br><span class="line">                                root = tuple(R(root[var]) <span class="keyword">for</span> var <span class="keyword">in</span> f.variables())</span><br><span class="line">                                roots.append(root)</span><br><span class="line">                        <span class="keyword">return</span> roots</span><br><span class="line">        <span class="keyword">return</span> []</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">univariate</span><span class="params">()</span>:</span></span><br><span class="line">        print(<span class="string">'Univariate'</span>)</span><br><span class="line">        bounds = (floor(N^<span class="number">.3</span>),)</span><br><span class="line">        roots = tuple(randrange(bound) <span class="keyword">for</span> bound <span class="keyword">in</span> bounds)</span><br><span class="line">        R = Integers(N)</span><br><span class="line">        P.&lt;x&gt; = PolynomialRing(R, <span class="number">1</span>)</span><br><span class="line">        monomials = [x, x^<span class="number">2</span>, x^<span class="number">3</span>]</span><br><span class="line">        f = sum(randrange(N)*monomial <span class="keyword">for</span> monomial <span class="keyword">in</span> monomials)</span><br><span class="line">        f -= f(*roots)</span><br><span class="line">        print(small_roots(f, bounds, m=<span class="number">7</span>))</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bivariate</span><span class="params">()</span>:</span></span><br><span class="line">        print(<span class="string">'Bivariate'</span>)</span><br><span class="line">        bounds = (floor(N^<span class="number">.15</span>), floor(N^<span class="number">.15</span>))</span><br><span class="line">        roots = tuple(randrange(bound) <span class="keyword">for</span> bound <span class="keyword">in</span> bounds)</span><br><span class="line">        R = Integers(N)</span><br><span class="line">        P.&lt;x, y&gt; = PolynomialRing(R)</span><br><span class="line">        monomials = [x, y, x*y, x^<span class="number">2</span>]</span><br><span class="line">        f = sum(randrange(N)*monomial <span class="keyword">for</span> monomial <span class="keyword">in</span> monomials)</span><br><span class="line">        f -= f(*roots)</span><br><span class="line">        print(small_roots(f, bounds))</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">trivariate</span><span class="params">()</span>:</span></span><br><span class="line">        print(<span class="string">'Trivariate'</span>)</span><br><span class="line">        bounds = (floor(N^<span class="number">.12</span>), floor(N^<span class="number">.12</span>), floor(N^<span class="number">.12</span>))</span><br><span class="line">        roots = tuple(randrange(bound) <span class="keyword">for</span> bound <span class="keyword">in</span> bounds)</span><br><span class="line">        R = Integers(N)</span><br><span class="line">        P.&lt;x, y, z&gt; = PolynomialRing(R)</span><br><span class="line">        monomials = [x, y, x*y, x*z, y*z]</span><br><span class="line">        f = sum(randrange(N)*monomial <span class="keyword">for</span> monomial <span class="keyword">in</span> monomials)</span><br><span class="line">        f -= f(*roots)</span><br><span class="line">        print(small_roots(f, bounds))</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">boneh_durfee</span><span class="params">()</span>:</span></span><br><span class="line">        print(<span class="string">'Boneh Durfee'</span>)</span><br><span class="line">        bounds = (floor(N^<span class="number">.25</span>), <span class="number">2</span>^<span class="number">1024</span>)</span><br><span class="line">        d = random_prime(bounds[<span class="number">0</span>])</span><br><span class="line">        e = inverse_mod(d, (p<span class="number">-1</span>)*(q<span class="number">-1</span>))</span><br><span class="line">        roots = (e*d//((p<span class="number">-1</span>)*(q<span class="number">-1</span>)), (p+q)//<span class="number">2</span>)</span><br><span class="line">        R = Integers(e)</span><br><span class="line">        P.&lt;k, s&gt; = PolynomialRing(R)</span><br><span class="line">        f = <span class="number">2</span>*k*((N+<span class="number">1</span>)//<span class="number">2</span> - s) + <span class="number">1</span></span><br><span class="line">        print(small_roots(f, bounds, m=<span class="number">3</span>, d=<span class="number">4</span>))</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">approximate_factor</span><span class="params">()</span>:</span></span><br><span class="line">        print(<span class="string">'Approximate factor'</span>)</span><br><span class="line">        bounds = (floor(N^<span class="number">.05</span>), floor(N^<span class="number">.05</span>))</span><br><span class="line">        roots = tuple(randrange(bound) <span class="keyword">for</span> bound <span class="keyword">in</span> bounds)</span><br><span class="line">        R = Integers(N)</span><br><span class="line">        P = PolynomialRing(R, len(bounds), <span class="string">'x'</span>)</span><br><span class="line">        f = sum(randrange(<span class="number">2</span>^<span class="number">128</span>)*x <span class="keyword">for</span> x <span class="keyword">in</span> P.gens())</span><br><span class="line">        f += p - f(*roots)</span><br><span class="line">        print(small_roots(f, bounds, m=<span class="number">2</span>, d=<span class="number">4</span>))</span><br><span class="line"> </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">        print(<span class="string">'Generating primes'</span>)</span><br><span class="line">        p = random_prime(<span class="number">2</span>^<span class="number">1024</span>)</span><br><span class="line">        q = random_prime(<span class="number">2</span>^<span class="number">1024</span>)</span><br><span class="line">        N = p*q</span><br><span class="line">        univariate()</span><br><span class="line">        bivariate()</span><br><span class="line">        trivariate()</span><br><span class="line">        boneh_durfee()</span><br><span class="line">        approximate_factor()</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/密码学/" rel="tag"># 密码学</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/10/30/sqlmap中转注入/" rel="next" title="sqlmap中转注入">
+                <i class="fa fa-chevron-left"></i> sqlmap中转注入
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/12/15/记录第一次破解小游戏/" rel="prev" title="记录第一次破解小游戏">
+                记录第一次破解小游戏 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/zql.jpg" alt="尘林">
+            
+              <p class="site-author-name" itemprop="name">尘林</p>
+              <p class="site-description motion-element" itemprop="description">势，只会裹挟随波逐流之人。一心既定，便不问大势所趋。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">31</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">63</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#已知p高位"><span class="nav-number">1.</span> <span class="nav-text">已知p高位</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2021赣网杯crypto2"><span class="nav-number">2.</span> <span class="nav-text">2021赣网杯crypto2</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">尘林</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

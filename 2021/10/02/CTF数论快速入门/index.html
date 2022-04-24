@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT">
+  <meta name="keywords" content="初等数论,CTF,密码学,">
 
 
 
@@ -80,16 +80,21 @@
 
 
 <meta name="description" content="仅介绍公式进行运算，偶尔涉及部分推导便于理解，严格规范证明还是要看《初等数论》书。">
+<meta name="keywords" content="初等数论,CTF,密码学">
 <meta property="og:type" content="article">
-<meta property="og:title" content="CTF数论快速入门（待更新）">
+<meta property="og:title" content="CTF数论快速入门（持续更新）">
 <meta property="og:url" content="http://yoursite.com/2021/10/02/CTF数论快速入门/index.html">
 <meta property="og:site_name" content="pukr&#39;s BLOG">
 <meta property="og:description" content="仅介绍公式进行运算，偶尔涉及部分推导便于理解，严格规范证明还是要看《初等数论》书。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2021-10-15T01:25:47.822Z">
+<meta property="og:image" content="http://yoursite.com/2021/10/02/CTF数论快速入门/欧拉定理.png">
+<meta property="og:image" content="http://yoursite.com/2021/10/02/CTF数论快速入门/解密.png">
+<meta property="og:image" content="http://yoursite.com/2021/10/02/CTF数论快速入门/条件.png">
+<meta property="og:updated_time" content="2022-04-24T00:29:05.446Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="CTF数论快速入门（待更新）">
+<meta name="twitter:title" content="CTF数论快速入门（持续更新）">
 <meta name="twitter:description" content="仅介绍公式进行运算，偶尔涉及部分推导便于理解，严格规范证明还是要看《初等数论》书。">
+<meta name="twitter:image" content="http://yoursite.com/2021/10/02/CTF数论快速入门/欧拉定理.png">
 
 
 
@@ -125,7 +130,7 @@
 
 
 
-  <title>CTF数论快速入门（待更新） | pukr's BLOG</title>
+  <title>CTF数论快速入门（持续更新） | pukr's BLOG</title>
   
 
 
@@ -269,7 +274,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">CTF数论快速入门（待更新）</h1>
+          <h1 class="post-title" itemprop="name headline">CTF数论快速入门（持续更新）</h1>
         
 
         <div class="post-meta">
@@ -291,6 +296,28 @@
             
           </span>
 
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/密码学/" itemprop="url" rel="index">
+                    <span itemprop="name">密码学</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -358,16 +385,48 @@ x & \equiv & 2 & (mod7)
 <p>b划掉4+5，两个9，剩下3。$b\equiv 3(mod9)$</p>
 <p>P划掉两个4+5，3+6，剩下1+1+2+1=5，$P\equiv 5(mod9)$</p>
 <p>由于$3\cdot 8\not\equiv 5(mod9)$，计算错误。</p>
-<h2 id="解同余式"><a href="#解同余式" class="headerlink" title="解同余式"></a>解同余式</h2><p>一次同余式<br>$ax\equiv b(mod m)$化为不定方程求解。</p>
-<p>方程组</p>
-<script type="math/tex; mode=display">\left\{\begin{matrix}
+<h1 id="解同余式"><a href="#解同余式" class="headerlink" title="解同余式"></a>解同余式</h1><h2 id="一次同余式"><a href="#一次同余式" class="headerlink" title="一次同余式"></a>一次同余式</h2><p>$ax\equiv b(mod m)$化为不定方程求解。</p>
+<h2 id="方程组"><a href="#方程组" class="headerlink" title="方程组"></a>方程组</h2><script type="math/tex; mode=display">\left\{\begin{matrix}
 x & \equiv  & a_{1} & mod(m_{1})\\ 
 x & \equiv  & a_{2} & mod(m_{2})\\ 
 ... & ... &  & \\ 
 x & \equiv & a_{n} & mod(m_{n})
 \end{matrix}\right.</script><p>应用孙子定理。</p>
-<p>高次同余式<br>一般同余式<br>若$m_{1}$，$m_{2}$，…，$m_{k}$是$k$个两两互质的正整数，且$m=m_{1}m_{2}…m_{k}$，则同余式$f(x)\equiv 0(mod m)$与同余式组$f(x)\equiv 0(mod m_{i})$等价。</p>
-<p>例：解同余式$31x^{4}+57x^{3}+96x+191\equiv 0(mod 225)$<br>$225=3^{2} \cdot 5$<br>解</p>
+<h2 id="高次同余式"><a href="#高次同余式" class="headerlink" title="高次同余式"></a>高次同余式</h2><h3 id="一般同余式"><a href="#一般同余式" class="headerlink" title="一般同余式"></a>一般同余式</h3><p>若$m_{1}$，$m_{2}$，…，$m_{k}$是$k$个两两互质的正整数，且$m=m_{1}m_{2}…m_{k}$，则同余式$f(x)\equiv 0(mod m)$与同余式组$f(x)\equiv 0(mod m_{i})$等价。</p>
+<p>例1：解同余式$31x^{4}+57x^{3}+96x+191\equiv 0(mod 225)$<br>$225=3^{2} \cdot 5^{2}$<br>解：<br>等价于解同余式方程组<br>$\left\{\begin{matrix}4x^{4} +3x^{3}+6x+2\equiv 0(mod 3^{2})<br> \\<br>6x^{4} +7x^{3}-4x-9\equiv 0(mod 5^{2})<br>\end{matrix}\right.$<br>1）先解$4x^{4} +3x^{3}+6x+2\equiv 0(mod 3)$<br>$x^{4} -1\equiv 0\left ( mod 3 \right ) $<br>$x\equiv \pm 1 \left ( mod 3 \right ) $<br>验证：<br>$f’\left ( x \right ) = 16x^{3} +9x^{2} +6$<br>$f’\left ( 1 \right ) =31$，$3 \nmid 31$。<br>$f’\left ( 1 \right ) =-1$，$3 \nmid -1$。</p>
+<p>$x_{1} =3t_{1}+1$，$f\left ( 1+3t_{1} \right ) = f\left ( 1 \right ) +3t_{1}f’\left ( 1 \right )\equiv 0\left ( mod9 \right ) $<br>$15+93t_{1}\equiv 0\left ( mod9 \right ) $ （泰勒公式）<br>$5+31t_{1}\equiv 0\left ( mod3 \right ) $ （$am\equiv bm\left ( modqm \right ) $ =&gt; $a\equiv b\left ( modq \right ) $）<br>$2+t_{1}\equiv 0\left ( mod3 \right ) $<br>$t_{1}\equiv 1\left ( mod3 \right ) $<br>=&gt; $x_{1}\equiv 1+3t_{1}\equiv 4\left ( mod3^{2} \right ) $</p>
+<p>同理，$x_{2} =3t_{2}-1$，$f\left ( 3t_{2}-1 \right ) = f\left ( -1 \right ) +3t_{2}f’\left ( -1 \right )\equiv 0\left ( mod9 \right )$。<br>$f\left ( -1 \right ) +3t_{2}f\left ( -1 \right ) \equiv 0\left ( mod9 \right ) $<br>$-3-3t_{2}\equiv 0\left ( mod9 \right ) $<br>$-1-t_{2}\equiv 0\left ( mod3 \right ) $<br>$t_{2}\equiv 2\left ( mod3 \right ) $<br>=&gt; $x_{2}\equiv 2t_{2}-1\equiv 5\left ( mod3^{2} \right ) $</p>
+<p>2）再解$g(x)=6x^{4} +7x^{3}-4x-9\equiv 0(mod 5^{2})$<br>$x^{4}+2x^{3}+x+1\equiv 0\left ( mod5 \right ) $<br>验证0~4哪个符合，得到$x\equiv 1,2\left ( mod5 \right ) $<br>验证：<br>$g’(x)=24x^{3}+21x^{2}-4$<br>$g’(1)=41$，$5 \nmid 41$<br>$g’(2)=272$，$5 \nmid 272$</p>
+<p>$x_{3} =5t_{3}+1$，$x_{4} =5t_{4}+2$<br>$g(5t_{3}+1)=g(1)+5t_{3}g’(1)\equiv 0(mod25)$<br>$5\times 41t_{3}\equiv 0(mod25)$<br>$41t_{3}\equiv 0(mod5)$<br>$t_{3}\equiv 0(mod5)$<br>=&gt;$x_{3} \equiv 5t_{3}+1 \equiv 1(mod25)$</p>
+<p>同理，<br>$g(5t_{4}+2)=g(2)+5t_{4}g’(2)\equiv 0(mod25)$<br>$135+272\times 5t_{4} \equiv 0(mod25)$<br>$t_{4} \equiv 4(mod 5)$<br>=&gt;$x_{4} \equiv 5t_{4}+2 \equiv 22 \equiv -3(mod25)$</p>
+<p>联立：<br>$\left\{\begin{matrix}<br>x \equiv b_{1} (mod9),b_{1}=4,5<br> \\<br>x \equiv b_{2} (mod25),b_{2}=1,-3<br>\end{matrix}\right.$<br>根据孙子定理解得：<br>$x \equiv 100b_{1}+126b_{2}(mod 225)$<br>即原式的四个解为$x \equiv 76，22，176，122(mod 225)$</p>
+<p>例2：解同余式$f(x) \equiv 0(mod 27)$，$f(x)=x^{4}+7x+4$.<br>解：$f(x) \equiv 0(mod3)$，解得$x \equiv 1(mod3)$，即x=1+3t_{1}<br>$f’(x)=4x^{3}+7$，$f’(1)=11$，$3 \nmid 11$。</p>
+<p>$x=1+3t_{1}$<br>代入$f(x) \equiv 0(mod3^{2})$<br>$f(1)+3t_{1}f’(1) \equiv0(mod9)$<br>$12+33t_{1} \equiv 0(mod9)$<br>$1+2t_{1} \equiv 0(mod3)$<br>$t_{1} \equiv 1(mod3)$<br>=&gt; $t_{1}=1+3t_{2}$</p>
+<p>$x=1+3t_{1}=1+3(1+3t_{2})=4+9t_{2}$<br>再代入 $f(x) \equiv 0(mod 27)$中<br>$288+9t_{2} \times263 \equiv 0(mod27)$<br>$32+263t_{2} \equiv 0(mod3)$<br>$2+2t_{2} \equiv 0(mod3)$<br>$t_{2} \equiv 2(mod3)$<br>=&gt;$t_{2}=2+3t_{3}$<br>即$x=4+9t_{2}=4+9(2+3t_{3})=22+27t_{3}$</p>
+<h1 id="质数模的同余式"><a href="#质数模的同余式" class="headerlink" title="质数模的同余式"></a>质数模的同余式</h1><h1 id="RSA加密原理"><a href="#RSA加密原理" class="headerlink" title="RSA加密原理"></a>RSA加密原理</h1><h2 id="知识补充"><a href="#知识补充" class="headerlink" title="知识补充"></a>知识补充</h2><p><strong>欧拉函数</strong><br>欧拉函数φ(a)是定义在正整数上的函数，它在正整数a上的值等于序列0，1，2…，a-1中与a互质的数的个数。</p>
+<p>若a是质数，则φ(a)=a-1</p>
+<p>若m1，m2是两个互质的正整数，则φ(m1m2)=φ(m1)·φ(m2)</p>
+<p>a=p^α，p是质数，则φ(a)=( p^α ) - [ p^(α-1) ] = ( p-1 )[ p^(α-1) ]</p>
+<p>设a=( p1^α1 )( p2^α2 )…( pk^αk )，则φ(a)=a( 1-1/p1 )( 1-1/p2 ) … ( 1-1/pk )<br><img src="/2021/10/02/CTF数论快速入门/欧拉定理.png" alt></p>
+<h1 id="RSA加密"><a href="#RSA加密" class="headerlink" title="RSA加密"></a>RSA加密</h1><p>设p，q是两个大质数，例如位数超过100；N=pq；e，d满足关系：ed ≡ 1(mod φ(N))。这里密钥和解钥分别是e，N和d。加密过程如下：</p>
+<p>设有一明码是数字a(0 ≤ a ≤ N-1)，将a通过关系a^e ≡ b(mod N)，0 ≤ b ≤ N-1，转换成b，发送方将密码b传给接收方；</p>
+<p>接收方通过<br><img src="/2021/10/02/CTF数论快速入门/解密.png" alt><br>将b转换成a。φ(N)=(p-1)(q-1)</p>
+<p>当(a，N)=1时，由欧拉定理知相等关系成立，否则需要证明<br><img src="/2021/10/02/CTF数论快速入门/条件.png" alt></p>
+<p>密钥e，N可以公开。要想知道d，就必须知道φ(N)，从而必须知道质因子p，q。而若p，q很大，N的分解就难以在有限时间内取得。</p>
+<h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1><p>python代码<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> Crypto.Util.number <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> gmpy2</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"><span class="keyword">from</span> flag <span class="keyword">import</span> flag</span><br><span class="line"></span><br><span class="line">p = getPrime(<span class="number">1024</span>)</span><br><span class="line">r = random.randint(<span class="number">2</span>, <span class="number">10</span>)</span><br><span class="line">e =<span class="number">65537</span></span><br><span class="line">n=p**r</span><br><span class="line">m=flag</span><br><span class="line"><span class="keyword">assert</span>(int(m.encode(<span class="string">'hex'</span>), <span class="number">16</span>) &lt; n)</span><br><span class="line">c = pow(int(m.encode(<span class="string">'hex'</span>), <span class="number">16</span>),e,n)</span><br><span class="line">c=long_to_bytes(c)</span><br><span class="line"><span class="keyword">print</span> <span class="string">'c =\n'</span>, c.encode(<span class="string">'base64'</span>),n</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="string">'''</span></span><br><span class="line"><span class="string">c =</span></span><br><span class="line"><span class="string">apxy3z3DgGnzaEedcUy3A49wAsqyyn9sqx6eYZL5iDrCq0Wjs8BOY2Ofza5wuaFigm32PVpO5jpu</span></span><br><span class="line"><span class="string">Dgw9b6oX8KM2ZB9/dDmwQc7JKnAKhCQrIc1v9qt7iQbnTK0DTQj/xvQkz/IBeSjoWBmHOx4s0tDx</span></span><br><span class="line"><span class="string">ZRAjOPui5wwAywNM3ynULEPczv+xN2v+6HBeoS2YuyfF5mq/pIAMPwZs+QpkuwxSbNQ6xPNP9Ox1</span></span><br><span class="line"><span class="string">IeKz/41F7/D2fDsGB5CcFdAiQq+r95BhVeGzeaiQBpzwAXAPKIyO+fP6/M9XmpSJwjaMSiAUnksp</span></span><br><span class="line"><span class="string">9KfVOXgEG9Z0FmxP6rgqPl0vU+rVeJ2RsTUYCSP8Vy+PD3PGwDDdUtNzvcEXKr2BKiNoOUxprBAt</span></span><br><span class="line"><span class="string">yvcsmGqRLgDl1ZVgzSZ1U4MAmJ9x42mIU0XvolqaOCJZzaym1kJoBlw7/7+Nej4owEtan/c3TIkD</span></span><br><span class="line"><span class="string">kr/gCenUD/8MSlvnfTUMGdQLkSht2BZiuiHxVVRVzY5ETG6v+w9AtDMC</span></span><br><span class="line"><span class="string">4600616808891590817884946117009414083548013610469076381106568481948720521467073218024827360073980550620353792084520767372304347132535784875671026563160583598386773718586111034826555689602824563172463446924287072570386712719870348862904936370894695108302490867826094352072132696743116741635111860205049129717948520534270924834318704244999690532431941248905257880347561221151841978982240191397364038490250930604211256385925496658620755582058753376328583001312846508295319286941837220522563729215928111164274042890696771820759856790994461944209269732769269559257608440686713206622111649275898426040931301005711446055819707704086201357712959922814300067907536161841255533171805313149332383712997091780368142625499055149806043238057037400510197255364471685815004154357049874205884682322443391374020169114833722616851257895369648472048116320266548560787733764126281102645474252013714507014577620450816459153848279084910457288549191</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line"></span><br><span class="line"><span class="number">3</span>*<span class="number">13</span>*</span><br><span class="line"><span class="number">11796453356132284148422938761562600214225675924279683028478380722945437234530956969294429128323092738689527969689357592743831130347384964371001958489912012357659500550437774821149419489076424374880866463705660701853957618782968842965923758029758553804789069707336180380168094605200629824934960177545822373599659300509496124689870163356274233546217714559643444924926479403669660041925945133462798197896115911135151918828684724230761295703383108946288663598655415926970307153390774138393949704878228989851570676562192222015916809796378291700732897469560166879367161203636851808270864851690464388827539561299917226173329661307550306261776146994083834852759190786838800169797734596817908360023879512966960155277428402668876957890075895456776924818141952867724500850559110593572625223410181840522260067320488593584770339437359933346415314240114658610641132163001278825791914931344702342923594079867531349150032253727426883898669649237603809250967532413494387247319852615736269410630195396174781003944827668843857879193569</span></span><br><span class="line"></span><br><span class="line"><span class="number">283114880547174819562150530277502405141416222182712392683481137350690493628742967263066299079754225728548671272544582225851947128337239144904047003757888296583828013210506595707586067737834184997140795128935856844494982850791252231182170192714205291314937672976068329124034270524815115798439044261099736966391823212227906992556883920550581605109225149431442678198235505688071841006222683203107156749506781867243646051888433381538271096881194614710927926367729982247287371681378579321454792917077495756437696237492613328382003435113079000817589539269444005104811868887284443398500756440571145331860949471198013428159911871381207350282627527858012036466220578884131204075145630323629800640573108311207043726658281664053046989361821490962646195635406868825388020413418654245743005361844364172534241615691726246034488146496638400313967541762751806655387171912030691819005958352272856230166257916820752379600774089458245213568071581702491422023220777923865293935676462777670465855124689508194744094675864052252589100645632</span></span><br></pre></td></tr></table></figure></p>
+<p>分析：<br>getPrime(1024)返回一个随机的1024位素数p；</p>
+<p>random.randint(2, 10)返回一个随机的满足2 ≤ r ≤ 10的数r；</p>
+<p>公钥n等于p的r次幂（欧拉函数幂次问题）</p>
+<p>int函数将明文信息（设为a）转化为16进制整型，pow函数先取幂再取模，即a^e ≡ c (mod n)</p>
+<p>再利用long_to_bytes函数把长整数转换为字节字符串，再base64加密一下。</p>
+<p>得到c和n。</p>
+<p>所以解密思路是：</p>
+<p>分解n，得到n等于某个质数p的r次方。</p>
+<p>base64解码c，再bytes_to_long转化加密信息c。</p>
+<p>利用欧拉函数求φ(n)，由于是幂次问题，可以通过φ(n)=( p-1 )[ p^(r-1) ]求得φ(n)。</p>
+<p>因为ed ≡ 1(mod φ(N))，所以d是e关于φ(N)的逆模，利用libnum.modular.invmod函数求逆模，找出d；</p>
+<p>要求明文信息a，因为（c^d） ≡ a （mod n），所以c的d次方取模n就是明文a,再转化成字符串得到flag。</p>
+<p>python代码：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> libnum</span><br><span class="line"><span class="keyword">from</span> Crypto.Util.number <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> gmpy2</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"><span class="keyword">import</span> base64</span><br><span class="line"></span><br><span class="line">n=<span class="number">4600616808891590817884946117009414083548013610469076381106568481948720521467073218024827360073980550620353792084520767372304347132535784875671026563160583598386773718586111034826555689602824563172463446924287072570386712719870348862904936370894695108302490867826094352072132696743116741635111860205049129717948520534270924834318704244999690532431941248905257880347561221151841978982240191397364038490250930604211256385925496658620755582058753376328583001312846508295319286941837220522563729215928111164274042890696771820759856790994461944209269732769269559257608440686713206622111649275898426040931301005711446055819707704086201357712959922814300067907536161841255533171805313149332383712997091780368142625499055149806043238057037400510197255364471685815004154357049874205884682322443391374020169114833722616851257895369648472048116320266548560787733764126281102645474252013714507014577620450816459153848279084910457288549191</span></span><br><span class="line">c=<span class="string">'apxy3z3DgGnzaEedcUy3A49wAsqyyn9sqx6eYZL5iDrCq0Wjs8BOY2Ofza5wuaFigm32PVpO5jpuDgw9b6oX8KM2ZB9/dDmwQc7JKnAKhCQrIc1v9qt7iQbnTK0DTQj/xvQkz/IBeSjoWBmHOx4s0tDxZRAjOPui5wwAywNM3ynULEPczv+xN2v+6HBeoS2YuyfF5mq/pIAMPwZs+QpkuwxSbNQ6xPNP9Ox1IeKz/41F7/D2fDsGB5CcFdAiQq+r95BhVeGzeaiQBpzwAXAPKIyO+fP6/M9XmpSJwjaMSiAUnksp9KfVOXgEG9Z0FmxP6rgqPl0vU+rVeJ2RsTUYCSP8Vy+PD3PGwDDdUtNzvcEXKr2BKiNoOUxprBAtyvcsmGqRLgDl1ZVgzSZ1U4MAmJ9x42mIU0XvolqaOCJZzaym1kJoBlw7/7+Nej4owEtan/c3TIkDkr/gCenUD/8MSlvnfTUMGdQLkSht2BZiuiHxVVRVzY5ETG6v+w9AtDMC'</span></span><br><span class="line">yz=libnum.factorize(n)</span><br><span class="line">cf=bytes_to_long(base64.b64decode(c))</span><br><span class="line"><span class="comment">#print(cf)</span></span><br><span class="line"><span class="comment">#print(yz)</span></span><br><span class="line"><span class="keyword">for</span> k,v <span class="keyword">in</span> yz.items():</span><br><span class="line">	p=k;</span><br><span class="line">	r=v;</span><br><span class="line">phi=(p**(r<span class="number">-1</span>))*(p<span class="number">-1</span>)</span><br><span class="line">e=<span class="number">65537</span></span><br><span class="line">d = libnum.modular.invmod(e, phi)</span><br><span class="line">m = libnum.n2s(pow(cf, d, n)) </span><br><span class="line">print(m)</span><br></pre></td></tr></table></figure></p>
 
       
     </div>
@@ -382,6 +441,16 @@ x & \equiv & a_{n} & mod(m_{n})
     
 
     <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/初等数论/" rel="tag"># 初等数论</a>
+          
+            <a href="/tags/CTF/" rel="tag"># CTF</a>
+          
+            <a href="/tags/密码学/" rel="tag"># 密码学</a>
+          
+        </div>
       
 
       
@@ -483,7 +552,7 @@ x & \equiv & a_{n} & mod(m_{n})
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">52</span>
+                  <span class="site-state-item-count">31</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -494,7 +563,7 @@ x & \equiv & a_{n} & mod(m_{n})
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -505,7 +574,7 @@ x & \equiv & a_{n} & mod(m_{n})
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">66</span>
+                  <span class="site-state-item-count">63</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -538,7 +607,7 @@ x & \equiv & a_{n} & mod(m_{n})
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#不定方程"><span class="nav-number">1.</span> <span class="nav-text">不定方程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#二元一次不定方程"><span class="nav-number">1.1.</span> <span class="nav-text">二元一次不定方程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#欧拉函数及其性质"><span class="nav-number">2.</span> <span class="nav-text">欧拉函数及其性质</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#欧拉定理"><span class="nav-number">3.</span> <span class="nav-text">欧拉定理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#费马小定理"><span class="nav-number">4.</span> <span class="nav-text">费马小定理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#求逆元的两种方法"><span class="nav-number">5.</span> <span class="nav-text">求逆元的两种方法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#费马小定理-1"><span class="nav-number">5.1.</span> <span class="nav-text">费马小定理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#扩展的欧几里得算法"><span class="nav-number">5.2.</span> <span class="nav-text">扩展的欧几里得算法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#孙子定理"><span class="nav-number">6.</span> <span class="nav-text">孙子定理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#离散对数"><span class="nav-number">7.</span> <span class="nav-text">离散对数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#一些小运算技巧"><span class="nav-number">8.</span> <span class="nav-text">一些小运算技巧</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#弃九法——判断乘积是否正确的充分条件"><span class="nav-number">8.1.</span> <span class="nav-text">弃九法——判断乘积是否正确的充分条件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解同余式"><span class="nav-number">8.2.</span> <span class="nav-text">解同余式</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#不定方程"><span class="nav-number">1.</span> <span class="nav-text">不定方程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#二元一次不定方程"><span class="nav-number">1.1.</span> <span class="nav-text">二元一次不定方程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#欧拉函数及其性质"><span class="nav-number">2.</span> <span class="nav-text">欧拉函数及其性质</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#欧拉定理"><span class="nav-number">3.</span> <span class="nav-text">欧拉定理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#费马小定理"><span class="nav-number">4.</span> <span class="nav-text">费马小定理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#求逆元的两种方法"><span class="nav-number">5.</span> <span class="nav-text">求逆元的两种方法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#费马小定理-1"><span class="nav-number">5.1.</span> <span class="nav-text">费马小定理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#扩展的欧几里得算法"><span class="nav-number">5.2.</span> <span class="nav-text">扩展的欧几里得算法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#孙子定理"><span class="nav-number">6.</span> <span class="nav-text">孙子定理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#离散对数"><span class="nav-number">7.</span> <span class="nav-text">离散对数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#一些小运算技巧"><span class="nav-number">8.</span> <span class="nav-text">一些小运算技巧</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#弃九法——判断乘积是否正确的充分条件"><span class="nav-number">8.1.</span> <span class="nav-text">弃九法——判断乘积是否正确的充分条件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#解同余式"><span class="nav-number">9.</span> <span class="nav-text">解同余式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一次同余式"><span class="nav-number">9.1.</span> <span class="nav-text">一次同余式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#方程组"><span class="nav-number">9.2.</span> <span class="nav-text">方程组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#高次同余式"><span class="nav-number">9.3.</span> <span class="nav-text">高次同余式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#一般同余式"><span class="nav-number">9.3.1.</span> <span class="nav-text">一般同余式</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#质数模的同余式"><span class="nav-number">10.</span> <span class="nav-text">质数模的同余式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#RSA加密原理"><span class="nav-number">11.</span> <span class="nav-text">RSA加密原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#知识补充"><span class="nav-number">11.1.</span> <span class="nav-text">知识补充</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#RSA加密"><span class="nav-number">12.</span> <span class="nav-text">RSA加密</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#例子"><span class="nav-number">13.</span> <span class="nav-text">例子</span></a></li></ol></div>
             
 
           </div>
@@ -558,7 +627,7 @@ x & \equiv & a_{n} & mod(m_{n})
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
